@@ -1,0 +1,2596 @@
+<!DOCTYPE html>
+<html lang=3D"en">
+<head>
+    <meta charset=3D"UTF-8">
+    <meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=
+=3D1.0">
+    <title>Arjun Srinivasan Ambalam - Data Science Portfolio</title>
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --dark-color: #2d3748;
+            --light-color: #f7fafc;
+            --text-color: #4a5568;
+            --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px
+-5px rgba(0, 0, 0, 0.04);
+            --gradient-bg: linear-gradient(135deg, var(--primary-color) 0%,
+var(--secondary-color) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe
+UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            scroll-behavior: smooth;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-bg);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--gradient-bg);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: var(--gradient-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns=3D"
+http://www.w3.org/2000/svg" viewBox=3D"0 0 100 100"><defs><pattern id=3D"gr=
+ain"
+width=3D"100" height=3D"100" patternUnits=3D"userSpaceOnUse"><circle cx=3D"=
+25"
+cy=3D"25" r=3D"1" fill=3D"rgba(255,255,255,0.1)"/><circle cx=3D"75" cy=3D"7=
+5" r=3D"1"
+fill=3D"rgba(255,255,255,0.1)"/><circle cx=3D"50" cy=3D"10" r=3D"0.5"
+fill=3D"rgba(255,255,255,0.1)"/></pattern></defs><rect width=3D"100"
+height=3D"100" fill=3D"url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            text-align: center;
+            color: white;
+            z-index: 1;
+            max-width: 800px;
+            padding: 0 2rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .hero .description {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Professional Floating Elements */
+        .floating-element {
+            position: absolute;
+            animation: float 6s ease-in-out infinite;
+            color: rgba(255,255,255,0.3);
+            font-size: 2.5rem;
+        }
+
+        .floating-element:nth-child(1) {
+            top: 15%;
+            left: 8%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 65%;
+            right: 8%;
+            animation-delay: 2s;
+        }
+
+        .floating-element:nth-child(3) {
+            top: 35%;
+            left: 85%;
+            animation-delay: 4s;
+        }
+
+        .floating-element:nth-child(4) {
+            top: 25%;
+            right: 25%;
+            animation-delay: 1s;
+        }
+
+        .floating-element:nth-child(5) {
+            top: 75%;
+            left: 25%;
+            animation-delay: 3s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(1deg); }
+            66% { transform: translateY(-10px) rotate(-1deg); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--gradient-bg);
+            border-radius: 2px;
+        }
+
+        /* Academic Journey Section */
+        .academic-journey {
+            background: var(--light-color);
+            padding: 5rem 2rem;
+        }
+
+        .academic-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .education-section {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .education-header {
+            color: var(--text-color);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .education-title {
+            color: var(--dark-color);
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .education-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .education-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .education-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .university-logo-container {
+            min-width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .university-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 0;
+            object-fit: cover;
+            display: block;
+        }
+
+        .university-logo.error {
+            display: none;
+        }
+
+        .logo-fallback {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-bg);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .university-logo.error + .logo-fallback {
+            display: flex;
+        }
+
+        .education-info {
+            flex: 1;
+        }
+
+        .education-info h4 {
+            color: var(--dark-color);
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .education-info p {
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .university-name {
+            font-weight: 600;
+            color: var(--primary-color) !important;
+            font-size: 1.1rem !important;
+        }
+
+        .gpa {
+            background: var(--gradient-bg);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 0.75rem;
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4rem;
+            align-items: flex-start;
+        }
+
+        .about-text h3 {
+            font-size: 2rem;
+            color: var(--dark-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-item > :first-child {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-bg);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Enhanced Skills Section */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-category {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .skill-category:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .skill-category h3 {
+            color: var(--dark-color);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .skill-category h3::before {
+            content: attr(data-icon);
+            font-size: 1.8rem;
+        }
+
+        .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.skill-tag {
+    color: white;
+    padding: 1.5rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    transition: all 0.3s ease;
+    min-width: 80px;
+    min-height: 80px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.skill-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.skill-icon {
+    width: 32px;
+    height: 32px;
+    filter: brightness(0) invert(1); /* White icons */
+}
+
+/* Individual brand colors */
+.skill-tag.python {
+    background: linear-gradient(135deg, #3776ab, #ffd43b);
+}
+
+.skill-tag.cpp {
+    background: linear-gradient(135deg, #00599c, #004482);
+}
+
+.skill-tag.c {
+    background: linear-gradient(135deg, #a8b9cc, #283593);
+}
+
+.skill-tag.sql {
+    background: linear-gradient(135deg, #336791, #4479a1);
+}
+
+.skill-tag.bash {
+    background: linear-gradient(135deg, #4eaa25, #89e051);
+}
+
+.skill-tag.javascript {
+    background: linear-gradient(135deg, #f0db4f, #f7df1e);
+    color: black; /* Black text for better contrast on yellow */
+}
+
+/* Machine Learning & AI */
+.skill-tag.pytorch {
+    background: linear-gradient(135deg, #ee4c2c, #ff6b35);
+}
+
+.skill-tag.tensorflow {
+    background: linear-gradient(135deg, #ff6f00, #ff8f00);
+}
+
+.skill-tag.transformers {
+    background: linear-gradient(135deg, #ff9d00, #ffb347);
+}
+
+.skill-tag.vllm {
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+}
+
+.skill-tag.lightning {
+    background: linear-gradient(135deg, #792ee5, #9146ff);
+}
+
+.skill-tag.spacy {
+    background: linear-gradient(135deg, #09a3d5, #1cb7e0);
+}
+
+.skill-tag.opencv {
+    background: linear-gradient(135deg, #5c3317, #8b4513);
+}
+
+/* Big Data & Cloud */
+.skill-tag.aws {
+    background: linear-gradient(135deg, #ff9900, #ffb84d);
+}
+
+.skill-tag.gcp {
+    background: linear-gradient(135deg, #4285f4, #34a853);
+}
+
+.skill-tag.airflow {
+    background: linear-gradient(135deg, #017cee, #0288d1);
+}
+
+.skill-tag.mlflow {
+    background: linear-gradient(135deg, #0194e2, #0288d1);
+}
+
+.skill-tag.dvc {
+    background: linear-gradient(135deg, #945dd6, #b377f0);
+}
+
+.skill-tag.spark {
+    background: linear-gradient(135deg, #e25a1c, #f16537);
+}
+
+/* DevOps & Tools */
+.skill-tag.docker {
+    background: linear-gradient(135deg, #2496ed, #0db7ed);
+}
+
+.skill-tag.linux {
+    background: linear-gradient(135deg, #fcc624, #fdd835);
+    color: black;
+}
+
+.skill-tag.git {
+    background: linear-gradient(135deg, #f03c2e, #e84d39);
+}
+
+.skill-tag.kubernetes {
+    background: linear-gradient(135deg, #326ce5, #4285f4);
+}
+
+.skill-tag.jira {
+    background: linear-gradient(135deg, #0052cc, #2684ff);
+}
+
+.skill-tag.vscode {
+    background: linear-gradient(135deg, #007acc, #0078d4);
+}
+
+/* Black icons for light backgrounds */
+.skill-tag.linux .skill-icon {
+    filter: brightness(0);
+}
+
+/* Black icons for JavaScript due to yellow background */
+.skill-tag.javascript .skill-icon {
+    filter: brightness(0); /* Black icons instead of white */
+}
+
+        /* Projects Section */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .project-header {
+            background: var(--gradient-bg);
+            padding: 1.5rem;
+            color: white;
+        }
+
+        .project-header h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-date {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .project-content li {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .project-content li::before {
+            content: '=E2=96=B8';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* Experience Section */
+        .experience-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .experience-timeline::before {
+            content: '';
+            position: absolute;
+            left: 1rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gradient-bg);
+        }
+
+        .experience-item {
+            position: relative;
+            background: white;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            margin-left: 2rem;
+        }
+
+        .experience-item::before {
+            content: '';
+            position: absolute;
+            left: -3rem;
+            top: 2rem;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px var(--primary-color);
+        }
+
+        .experience-header {
+            margin-bottom: 1rem;
+        }
+
+        .company-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+
+        .position {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin: 0.25rem 0;
+        }
+
+        .duration {
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        /* Publications Section */
+        .publications-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .publication-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .publication-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        .publication-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .publication-authors {
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+
+        .publication-venue {
+            color: var(--primary-color);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Contact Section */
+       .contact {
+    background: var(--light-color);
+    padding: 4rem 0;
+    margin-bottom: 0;
+}
+
+.contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.contact-items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: start;
+}
+
+.contact-info h3 {
+    color: var(--dark-color);
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.contact-item:hover {
+    transform: translateX(5px);
+}
+
+.contact-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--gradient-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.contact-icon svg {
+    width: 24px;
+    height: 24px;
+    color: white;
+    fill: currentColor;
+}
+
+.contact-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.contact-details h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--dark-color);
+    font-size: 1.1rem;
+}
+
+.contact-details p,
+.contact-details a {
+    margin: 0;
+    color: var(--text-color);
+    text-decoration: none;
+    word-break: break-all;
+}
+
+.contact-details a:hover {
+    color: var(--primary-color);
+}
+
+.contact-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: var(--card-shadow);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--dark-color);
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.form-group textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+.submit-btn {
+    background: var(--gradient-bg);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    width: 100%;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Footer */
+footer {
+    background: var(--dark-color);
+    color: white;
+    padding: 3rem 2rem 2rem;
+    text-align: center;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.footer-about h3 {
+    color: white;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.footer-about p {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.footer-links h4,
+.footer-contact h4 {
+    color: white;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.footer-links ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links a,
+.footer-contact a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover,
+.footer-contact a:hover {
+    color: var(--accent-color);
+}
+
+.footer-contact p {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.social-link {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.social-link:hover {
+    background: var(--gradient-bg);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.social-link svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 2rem;
+    text-align: center;
+}
+
+.footer-bottom p {
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0.5rem 0;
+}
+
+.footer-bottom .highlight {
+    background: var(--gradient-bg);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .footer-top {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        text-align: center;
+    }
+
+    .contact-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 0 1rem;
+    }
+
+    .contact-items {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .contact-item {
+        padding: 0.75rem;
+    }
+
+    .contact-form {
+        padding: 1.5rem;
+    }
+
+    .contact-details p,
+    .contact-details a {
+        font-size: 0.9rem;
+        word-break: break-word;
+    }
+
+    .social-links {
+        gap: 0.75rem;
+    }
+
+    .social-link {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-content {
+        padding: 0 0.5rem;
+    }
+
+    .contact-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .contact-icon {
+        margin-bottom: 0.5rem;
+    }
+
+    footer {
+        padding: 2rem 1rem 1.5rem;
+        margin-top: 2rem;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id=3D"navbar">
+        <div class=3D"nav-container">
+            <div class=3D"logo">Arjun S. Ambalam</div>
+            <ul class=3D"nav-links">
+                <li><a href=3D"#home">Home</a></li>
+                <li><a href=3D"#about">About</a></li>
+                <li><a href=3D"#education">Education</a></li>
+                <li><a href=3D"#skills">Skills</a></li>
+                <li><a href=3D"#projects">Projects</a></li>
+                <li><a href=3D"#experience">Experience</a></li>
+                <li><a href=3D"#publications">Publications</a></li>
+                <li><a href=3D"#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id=3D"home" class=3D"hero">
+        <div class=3D"floating-element">
+            <svg viewBox=3D"0 0 24 24" fill=3D"currentColor" style=3D"width=
+:
+48px; height: 48px;">
+                <path d=3D"M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91
+9.74L2 9L10.91 8.26L12 2Z"/>
+            </svg>
+        </div>
+        <div class=3D"floating-element">
+            <svg viewBox=3D"0 0 24 24" fill=3D"currentColor" style=3D"width=
+:
+40px; height: 40px;">
+                <path d=3D"M9 11H7v9h2v-9zm4 0h-2v9h2v-9zm4
+0h-2v9h2v-9zm2.5-9H15V1H9v1H4.5A1.5 1.5 0 003 3.5v1A1.5 1.5 0 004.5
+6h15A1.5 1.5 0 0021 4.5v-1A1.5 1.5 0 0019.5 2z"/>
+            </svg>
+        </div>
+        <div class=3D"floating-element">
+            <svg viewBox=3D"0 0 24 24" fill=3D"currentColor" style=3D"width=
+:
+44px; height: 44px;">
+                <path d=3D"M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+            </svg>
+        </div>
+        <div class=3D"floating-element">
+            <svg viewBox=3D"0 0 24 24" fill=3D"currentColor" style=3D"width=
+:
+36px; height: 36px;">
+                <path d=3D"M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10=
+ 5
+10-5"/>
+            </svg>
+        </div>
+        <div class=3D"floating-element">
+            <svg viewBox=3D"0 0 24 24" fill=3D"currentColor" style=3D"width=
+:
+42px; height: 42px;">
+                <circle cx=3D"12" cy=3D"12" r=3D"3"/>
+                <path d=3D"M12 1v6m0 6v6m11-7h-6m-6 0H1m15.5-6.5l-4.24
+4.24M7.76 16.24l-4.24 4.24m12.02 0l-4.24-4.24M7.76 7.76L3.52 3.52"/>
+            </svg>
+        </div>
+
+        <div class=3D"hero-content">
+            <h1>Arjun Srinivasan Ambalam</h1>
+            <p class=3D"subtitle">Research Data Scientist & AI Engineer</p>
+            <p class=3D"description">Transforming complex data into
+intelligent solutions through cutting-edge machine learning, deep learning,
+and AI research. Specialized in computer vision, NLP, and predictive
+modeling.</p>
+            <div class=3D"cta-buttons">
+                <a href=3D"#about" class=3D"btn btn-primary">
+                    <svg viewBox=3D"0 0 24 24" fill=3D"currentColor"
+style=3D"width: 20px; height: 20px;">
+                        <path d=3D"M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4
+1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                    Learn More
+                </a>
+                <a href=3D"#contact" class=3D"btn btn-secondary">
+                    <svg viewBox=3D"0 0 24 24" fill=3D"currentColor"
+style=3D"width: 20px; height: 20px;">
+                        <path d=3D"M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.=
+9
+2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                    Get In Touch
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id=3D"about">
+        <div class=3D"container">
+            <div class=3D"section-header fade-in">
+                <h2 class=3D"section-title">About Me</h2>
+            </div>
+            <div class=3D"about-content fade-in">
+                <div class=3D"stats">
+                    <div class=3D"stat-item">
+                        =F0=9F=8E=93
+                        <div class=3D"stat-number">3.94</div>
+                        <div>GPA (Masters)</div>
+                    </div>
+                    <div class=3D"stat-item">
+                        =F0=9F=92=BC
+                        <div class=3D"stat-number">5</div>
+                        <div>Years Experience</div>
+                    </div>
+                    <div class=3D"stat-item">
+                        =F0=9F=93=84
+                        <div class=3D"stat-number">4</div>
+                        <div>Publications</div>
+                    </div>
+                    <div class=3D"stat-item">
+                        =F0=9F=9A=80
+                        <div class=3D"stat-number">15</div>
+                        <div>AI Projects</div>
+                    </div>
+                </div>
+                <div class=3D"about-text">
+                    <h3>Passionate AI Researcher & Engineer</h3>
+                    <p>With over 4 years of experience at Fraunhofer USA
+Center Mid-Atlantic, I specialize in developing cutting-edge AI solutions
+for real-world applications. My expertise spans from deep learning model
+optimization to deploying production-ready systems in manufacturing and
+robotics.</p>
+                    <p>I hold a Master's in Robotics Engineering from the
+University of Maryland with a 3.94 GPA and have contributed to numerous NSF
+and DoD-funded projects. My work has been published in top-tier conferences
+and journals, making significant contributions to the fields of computer
+vision, NLP, and predictive modeling.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Academic Journey Section -->
+    <section id=3D"education" class=3D"academic-journey">
+        <div class=3D"container">
+            <div class=3D"section-header fade-in">
+                <h2 class=3D"section-title">Academic Journey</h2>
+            </div>
+            <div class=3D"academic-content fade-in">
+                <div class=3D"education-section">
+                    <h3 class=3D"education-header">My Academic Foundation</=
+h3>
+                    <h2 class=3D"education-title">Educational Excellence</h=
+2>
+                    <div class=3D"education-cards">
+                        <div class=3D"education-card">
+                            <div class=3D"university-logo-container">
+                                <img
+                                    src=3D"
+https://umd-brand.transforms.svdcdn.com/production/uploads/images/logos-for=
+mal-seal.jpg?w=3D1801&h=3D1801&auto=3Dcompress%2Cformat&fit=3Dcrop&dm=3D165=
+1267392&s=3D81a14f930f7888983f0f8bc10146c0b2"
+
+                                    alt=3D"University of Maryland"
+                                    class=3D"university-logo"
+                                    onerror=3D"this.classList.add('error');=
+"
+                                >
+                                <div class=3D"logo-fallback">UMD</div>
+                            </div>
+                            <div class=3D"education-info">
+                                <h4>Master's in Robotics Engineering</h4>
+                                <p>Aug 2019 - May 2021</p>
+                                <p class=3D"university-name">University of
+Maryland, College Park</p>
+                                <div class=3D"gpa">3.94/4.0 GPA</div>
+                            </div>
+                        </div>
+                        <div class=3D"education-card">
+                            <div class=3D"university-logo-container">
+                                <img
+                                    src=3D"
+https://upload.wikimedia.org/wikipedia/commons/0/0b/NITT_logo.png?201811261=
+81641"
+
+                                    alt=3D"NIT Trichy"
+                                    class=3D"university-logo"
+                                    onerror=3D"this.classList.add('error');=
+"
+                                >
+                                <div class=3D"logo-fallback">NIT</div>
+                            </div>
+                            <div class=3D"education-info">
+                                <h4>Bachelor's in Mechanical
+Engineering</h4>
+                                <p>Jul 2013 - May 2017</p>
+                                <p class=3D"university-name">NIT
+Tiruchirappalli, Tamil Nadu, India</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Skills Section -->
+    <section id=3D"skills" class=3D"skills">
+        <div class=3D"container">
+            <div class=3D"section-header fade-in">
+                <h2 class=3D"section-title">Technical Expertise</h2>
+            </div>
+            <div class=3D"skills-grid fade-in">
+                <div class=3D"skill-category" data-icon=3D"=F0=9F=92=BB">
+                    <h3>Programming & Scripting</h3>
+                    <div class=3D"skill-tags">
+                        <span class=3D"skill-tag python">
+                            <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.s=
+vg"
+alt=3D"Python" class=3D"skill-icon">
+                            Python
+                        </span>
+                        <span class=3D"skill-tag cpp">
+                            <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-orig=
+inal.svg"
+alt=3D"C++" class=3D"skill-icon">
+                            C++
+                        </span>
+                        <span class=3D"skill-tag c">
+                            <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg"
+alt=3D"C" class=3D"skill-icon">
+                            C
+                        </span>
+                        <span class=3D"skill-tag sql">
+                            <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg=
+"
+alt=3D"SQL" class=3D"skill-icon">
+                            SQL
+                        </span>
+                        <span class=3D"skill-tag bash">
+                            <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg"
+alt=3D"Bash" class=3D"skill-icon">
+                            Bash
+                        </span>
+                        <span class=3D"skill-tag javascript">
+                            <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-or=
+iginal.svg"
+alt=3D"JavaScript" class=3D"skill-icon">
+                            JavaScript
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class=3D"skill-category" data-icon=3D"=F0=9F=A7=A0">
+                <h3>Machine Learning & AI</h3>
+                <div class=3D"skill-tags">
+                    <span class=3D"skill-tag pytorch">
+                        <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original=
+.svg"
+alt=3D"PyTorch" class=3D"skill-icon">
+                        PyTorch
+                    </span>
+                    <span class=3D"skill-tag tensorflow">
+                        <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-or=
+iginal.svg"
+alt=3D"TensorFlow" class=3D"skill-icon">
+                        TensorFlow
+                    </span>
+                    <span class=3D"skill-tag transformers">
+                        <svg class=3D"skill-icon" viewBox=3D"0 0 24 24"
+fill=3D"currentColor">
+                            <path d=3D"M12 2L2 7l10 5 10-5-10-5zM2 17l10 5
+10-5M2 12l10 5 10-5"/>
+                        </svg>
+                        Transformers
+                    </span>
+                    <span class=3D"skill-tag vllm">
+                        <svg class=3D"skill-icon" viewBox=3D"0 0 24 24"
+fill=3D"currentColor">
+                            <path d=3D"M12 2L13.09 8.26L22 9L13.09 9.74L12
+16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
+                        </svg>
+                        VLLM
+                    </span>
+                    <span class=3D"skill-tag lightning">
+                        <svg class=3D"skill-icon" viewBox=3D"0 0 24 24"
+fill=3D"currentColor">
+                            <path d=3D"M13 0L4 14h6l-2 10 9-14h-6l2-10z"/>
+                        </svg>
+                        Lightning
+                    </span>
+                    <span class=3D"skill-tag spacy">
+                        <img src=3D"
+https://upload.wikimedia.org/wikipedia/commons/8/88/SpaCy_logo.svg"
+alt=3D"spaCy" class=3D"skill-icon">
+                        spaCy
+                    </span>
+                    <span class=3D"skill-tag opencv">
+                        <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.s=
+vg"
+alt=3D"OpenCV" class=3D"skill-icon">
+                        OpenCV
+                    </span>
+                </div>
+            </div>
+
+            <div class=3D"skill-category" data-icon=3D"=E2=98=81=EF=B8=8F">
+                <h3>Big Data & Cloud</h3>
+                <div class=3D"skill-tags">
+                    <span class=3D"skill-tag aws">
+                        <img src=3D"
+https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Log=
+o.svg"
+alt=3D"AWS" class=3D"skill-icon">
+                        AWS
+                    </span>
+                    <span class=3D"skill-tag gcp">
+                        <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-=
+original.svg"
+alt=3D"GCP" class=3D"skill-icon">
+                        GCP
+                    </span>
+                    <span class=3D"skill-tag airflow">
+                        <svg class=3D"skill-icon" viewBox=3D"0 0 24 24"
+fill=3D"currentColor">
+                            <path d=3D"M12 2L2 7v10l10 5 10-5V7l-10-5zm8
+13.5l-8 4-8-4v-7l8-4 8 4v7z"/>
+                        </svg>
+                        Airflow
+                    </span>
+                    <span class=3D"skill-tag mlflow">
+                        <svg class=3D"skill-icon" viewBox=3D"0 0 24 24"
+fill=3D"currentColor">
+                            <path d=3D"M12 2L22 8.5v7L12 22 2 15.5v-7L12 2z=
+m8
+12.5L12 19l-8-4.5v-5L12 14l8-4.5v5z"/>
+                        </svg>
+                        MLflow
+                    </span>
+                    <span class=3D"skill-tag dvc">
+                        <img src=3D"
+https://dvc.org/img/dvc_icon-color--square_vector.svg" alt=3D"DVC"
+class=3D"skill-icon">
+                        DVC
+                    </span>
+                    <span class=3D"skill-tag spark">
+                        <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachespark/apachespark-=
+original.svg"
+alt=3D"Spark" class=3D"skill-icon">
+                        Spark
+                    </span>
+                </div>
+            </div>
+        <div class=3D"skill-category" data-icon=3D"=E2=9A=99=EF=B8=8F">
+                <h3>DevOps & Tools</h3>
+                <div class=3D"skill-tags">
+                    <span class=3D"skill-tag docker">
+                        <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.s=
+vg"
+alt=3D"Docker" class=3D"skill-icon">
+                        Docker
+                    </span>
+                    <span class=3D"skill-tag linux">
+                        <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg=
+"
+alt=3D"Linux" class=3D"skill-icon">
+                        Linux
+                    </span>
+                    <span class=3D"skill-tag git">
+                        <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"
+alt=3D"Git" class=3D"skill-icon">
+                        Git
+                    </span>
+                    <span class=3D"skill-tag kubernetes">
+                        <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-pl=
+ain.svg"
+alt=3D"Kubernetes" class=3D"skill-icon">
+                        Kubernetes
+                    </span>
+                    <span class=3D"skill-tag jira">
+                        <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jira/jira-original.svg"
+alt=3D"Jira" class=3D"skill-icon">
+                        Jira
+                    </span>
+                    <span class=3D"skill-tag vscode">
+                        <img src=3D"
+https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.s=
+vg"
+alt=3D"VS Code" class=3D"skill-icon">
+                        VS Code
+                    </span>
+                </div>
+            </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id=3D"projects" style=3D"background-color: var(--light-color);=
+">
+        <div class=3D"container">
+            <div class=3D"section-header fade-in">
+                <h2 class=3D"section-title">Featured Projects</h2>
+            </div>
+            <div class=3D"projects-grid fade-in">
+                <div class=3D"project-card">
+                    <div class=3D"project-header">
+                        <h3>LLaMA 3 Model Optimization</h3>
+                        <div class=3D"project-date">July 2024</div>
+                    </div>
+                    <div class=3D"project-content">
+                        <ul>
+                            <li>Comprehensive fine-tuning and alignment
+optimization of LLaMA 3-8B model</li>
+                            <li>Achieved 74.5% win-rate on AlpacaEval 2.0
+benchmark</li>
+                            <li>Implemented LoRA and 4-bit QLoRA
+quantization techniques</li>
+                            <li>Applied Direct Preference Optimization for
+model alignment</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class=3D"project-card">
+                    <div class=3D"project-header">
+                        <h3>AI-Driven CVD Diamond Manufacturing</h3>
+                        <div class=3D"project-date">NSF-Funded Project</div=
+>
+                    </div>
+                    <div class=3D"project-content">
+                        <ul>
+                            <li>Developed hybrid CNN-LSTM models for
+crystal growth prediction</li>
+                            <li>Achieved ~99% accuracy in forecasting
+growth trajectories</li>
+                            <li>Enabled anomaly detection up to 6 hours in
+advance</li>
+                            <li>Implemented human-in-the-loop annotation
+system</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class=3D"project-card">
+                    <div class=3D"project-header">
+                        <h3>AI-Assisted Laser Welding System</h3>
+                        <div class=3D"project-date">Manufacturing AI</div>
+                    </div>
+                    <div class=3D"project-content">
+                        <ul>
+                            <li>Built real-time inference pipeline with 3ms
+latency</li>
+                            <li>Integrated multi-sensor fusion (camera,
+microphone, 3D scanner)</li>
+                            <li>Reduced weld defects by 30% using ensemble
+deep learning</li>
+                            <li>Deployed via Triton Inference Server for
+production</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class=3D"project-card">
+                    <div class=3D"project-header">
+                        <h3>BERT User Requirement Classification</h3>
+                        <div class=3D"project-date">Jan 2022</div>
+                    </div>
+                    <div class=3D"project-content">
+                        <ul>
+                            <li>Fine-tuned BERT for automatic user feedback
+categorization</li>
+                            <li>Achieved 87% overall accuracy on
+classification tasks</li>
+                            <li>Leveraged transfer learning for small
+dataset optimization</li>
+                            <li>Achieved 91+ precision and recall with
+minimal training data</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class=3D"project-card">
+                    <div class=3D"project-header">
+                        <h3>Trust-Aware Robot Navigation</h3>
+                        <div class=3D"project-date">University of
+Maryland</div>
+                    </div>
+                    <div class=3D"project-content">
+                        <ul>
+                            <li>Developed socially intelligent navigation
+using reinforcement learning</li>
+                            <li>Integrated natural language instructions
+and human intent signals</li>
+                            <li>Implemented PPO algorithm in PyTorch for
+policy optimization</li>
+                            <li>Published findings at IEEE ICRA
+conference</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class=3D"project-card">
+                    <div class=3D"project-header">
+                        <h3>STAR - AI Robustness Testing</h3>
+                        <div class=3D"project-date">Fraunhofer CMA</div>
+                    </div>
+                    <div class=3D"project-content">
+                        <ul>
+                            <li>Designed AI-based robustness testing tools
+for computer vision models</li>
+                            <li>Built semi-supervised models to estimate
+robustness distributions</li>
+                            <li>Utilized latent diffusion models for
+synthetic data generation</li>
+                            <li>Developed full-stack test tool with 30%
+faster query performance</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id=3D"experience">
+        <div class=3D"container">
+            <div class=3D"section-header fade-in">
+                <h2 class=3D"section-title">Professional Experience</h2>
+            </div>
+            <div class=3D"experience-timeline fade-in">
+                <div class=3D"experience-item">
+                    <div class=3D"experience-header">
+                        <div class=3D"company-name">Fraunhofer USA Center
+Mid-Atlantic CMA</div>
+                        <div class=3D"position">Research Data Scientist</di=
+v>
+                        <div class=3D"duration">October 2020 - Present |
+Riverdale, MD</div>
+                    </div>
+                    <p>Leading AI research and development projects focused
+on real-time defect detection, predictive modeling, and model robustness
+testing in manufacturing and imaging systems. Collaborating with U.S.
+government-funded programs (NSF, DoD) to deliver deployable, high-impact AI
+solutions.</p>
+                    <ul>
+                        <li>Architected hybrid CNN-LSTM models achieving
+~99% accuracy in crystal growth prediction</li>
+                        <li>Led cross-functional AI engineering teams
+building real-time inference pipelines (3ms latency)</li>
+                        <li>Published 3 peer-reviewed papers in top-tier
+conferences and journals</li>
+                        <li>Mentored junior engineers and interns in sprint
+planning and deployment best practices</li>
+                    </ul>
+                </div>
+
+                <div class=3D"experience-item">
+                    <div class=3D"experience-header">
+                        <div class=3D"company-name">University of Maryland,
+College Park</div>
+                        <div class=3D"position">Research Assistant</div>
+                        <div class=3D"duration">June 2020 - October 2020 |
+College Park, MD</div>
+                    </div>
+                    <p>Developed socially intelligent navigation policy for
+robots using reinforcement learning, integrating natural language
+instructions and human intent signals for effective human-robot
+collaboration.</p>
+                    <ul>
+                        <li>Designed trust-aware policy architecture using
+Proximal Policy Optimization (PPO)</li>
+                        <li>Collected and curated dataset of 200+ natural
+language instructions</li>
+                        <li>Simulated robot navigation in 3D environments
+using Unity3D and ROS</li>
+                        <li>Published findings at IEEE ICRA conference</li>
+                    </ul>
+                </div>
+
+                <div class=3D"experience-item">
+                    <div class=3D"experience-header">
+                        <div class=3D"company-name">SimInsights</div>
+                        <div class=3D"position">Machine Learning Intern</di=
+v>
+                        <div class=3D"duration">May 2020 - June 2020 |
+Irvine, CA</div>
+                    </div>
+                    <p>Built synthetic data pipeline using simulation to
+accelerate training and deployment of object detection models for
+industrial tools on edge devices.</p>
+                    <ul>
+                        <li>Created large-scale synthetic datasets using
+NVIDIA Isaac Sim with domain randomization</li>
+                        <li>Automated simulation scenes via Unity3D and
+Python scripting</li>
+                        <li>Trained YOLOv3 models using NVIDIA Transfer
+Learning Toolkit</li>
+                        <li>Applied TensorRT optimization for real-time
+inference on Jetson Nano</li>
+                    </ul>
+                </div>
+
+                <div class=3D"experience-item">
+                    <div class=3D"experience-header">
+                        <div class=3D"company-name">Fiat Chrysler
+Automobiles</div>
+                        <div class=3D"position">Research and Development
+Engineer</div>
+                        <div class=3D"duration">July 2017 - July 2019 |
+Chennai, India</div>
+                    </div>
+                    <p>Designed and implemented AI-driven system to
+optimize in-cabin climate control in passenger vehicles using vision-based
+occupant detection and pose estimation.</p>
+                    <ul>
+                        <li>Developed computer vision system using
+TensorFlow for passenger detection</li>
+                        <li>Integrated real-time inference with Raspberry
+Pi and motor controllers</li>
+                        <li>Collected and annotated facial orientation data
+across varying conditions</li>
+                        <li>Conducted field validation testing for thermal
+comfort optimization</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Publications Section -->
+    <section id=3D"publications" style=3D"background-color:
+var(--light-color);">
+        <div class=3D"container">
+            <div class=3D"section-header fade-in">
+                <h2 class=3D"section-title">Publications</h2>
+            </div>
+            <div class=3D"publications-grid fade-in">
+                <div class=3D"publication-card" onclick=3D"window.open('
+https://ieeexplore.ieee.org/abstract/document/9561983', '_blank')">
+                    <div class=3D"publication-title">Can a robot trust you?=
+:
+A drl-based approach to trust-driven human-guided navigation</div>
+                    <div class=3D"publication-authors">V. S. Dorbala, A.
+Srinivasan, and A. Bera</div>
+                    <div class=3D"publication-venue">
+                        =F0=9F=94=97 2021 IEEE International Conference on =
+Robotics
+and Automation (ICRA), 2021, pp. 3538=E2=80=933545
+                    </div>
+                </div>
+
+                <div class=3D"publication-card" onclick=3D"window.open('
+https://arxiv.org/abs/2404.07306', '_blank')">
+                    <div class=3D"publication-title">AI-guided frame
+prediction techniques to model single crystal diamond growth</div>
+                    <div class=3D"publication-authors">Mekala, R. R.,
+Srinivasan, A., Muehle, M., Garratt, E., Porter, A., & Lindvall, M.</div>
+                    <div class=3D"publication-venue">
+                        =F0=9F=94=97 Journal of Vacuum Science & Technology=
+ A, 43(3),
+2025
+                    </div>
+                </div>
+
+                <div class=3D"publication-card" onclick=3D"window.open('
+https://www.scientific.net/KEM.993.67', '_blank')">
+                    <div class=3D"publication-title">AI-Guided Defect
+Detection Techniques to Model Single Crystal Diamond Growth</div>
+                    <div class=3D"publication-authors">Mekala, R. R.,
+Garratt, E., Muehle, M., Srinivasan, A., Porter, A., & Lindvall, M.</div>
+                    <div class=3D"publication-venue">
+                        =F0=9F=94=97 arXiv preprint arXiv:2404.07306, 2024
+                    </div>
+                </div>
+
+                <div class=3D"publication-card" onclick=3D"window.open('
+https://pubs.aip.org/avs/jva/article/43/3/032708/3345804', '_blank')">
+                    <div class=3D"publication-title">AI-Guided Feature
+Segmentation Techniques to Model Features from Single Crystal Diamond
+Growth</div>
+                    <div class=3D"publication-authors">Mekala, R. R.,
+Garratt, E., Muehle, M., Srinivasan, A., Porter, A., & Lindvall, M.</div>
+                    <div class=3D"publication-venue">
+                        =F0=9F=94=97 Key Engineering Materials, 993, 67-74,=
+ 2024
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <meta charset=3D"UTF-8">
+    <meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=
+=3D1.0">
+    <title>Contact Section - Vertical Layout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
+Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        .contact-info {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .contact-info h3 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        /* Updated: Stack contact items vertically */
+        .contact-items {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        .contact-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .contact-icon svg {
+            width: 22px;
+            height: 22px;
+            color: white;
+        }
+
+        .contact-details {
+            flex: 1;
+        }
+
+        .contact-details h4 {
+            color: #333;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .contact-details a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .contact-details a:hover {
+            color: #007bff;
+        }
+
+        .contact-form {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .contact-form h3 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            background: #fff;
+            color: #333;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #999;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(238, 90, 36, 0.4);
+        }
+
+        .submit-btn svg {
+            transition: transform 0.3s ease;
+        }
+
+        .submit-btn:hover svg {
+            transform: translateX(5px);
+        }
+
+        .fade-in {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s ease;
+        }
+
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .contact-info,
+            .contact-form {
+                padding: 30px;
+            }
+
+            .contact-item {
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .contact-icon {
+                width: 45px;
+                height: 45px;
+            }
+
+            .contact-icon svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .contact-info,
+            .contact-form {
+                padding: 25px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Contact Section -->
+    <section id=3D"contact" class=3D"contact">
+        <div class=3D"container">
+            <div class=3D"section-header fade-in">
+                <h2 class=3D"section-title">Get In Touch</h2>
+            </div>
+            <div class=3D"contact-content fade-in">
+                <div class=3D"contact-info">
+                    <h3>Let's Connect</h3>
+                    <div class=3D"contact-items">
+                        <div class=3D"contact-item">
+                            <div class=3D"contact-icon">
+                                <svg viewBox=3D"0 0 24 24"
+fill=3D"currentColor">
+                                    <path d=3D"M20 4H4c-1.1 0-1.99.9-1.99 2=
+L2
+18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5
+8-5v2z"/>
+                                </svg>
+                            </div>
+                            <div class=3D"contact-details">
+                                <h4>Email</h4>
+                                <a href=3D"mailto:arjunsrinivasan.a@gmail.c=
+om
+">arjunsrinivasan.a@gmail.com</a>
+                            </div>
+                        </div>
+                        <div class=3D"contact-item">
+                            <div class=3D"contact-icon">
+                                <svg viewBox=3D"0 0 24 24"
+fill=3D"currentColor">
+                                    <path d=3D"M6.62 10.79c1.44 2.83 3.76
+5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0
+1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0
+1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                                </svg>
+                            </div>
+                            <div class=3D"contact-details">
+                                <h4>Phone</h4>
+                                <a href=3D"tel:+15714738938">+1
+571-473-8938</a>
+                            </div>
+                        </div>
+                        <div class=3D"contact-item">
+                            <div class=3D"contact-icon">
+                                <svg viewBox=3D"0 0 24 24"
+fill=3D"currentColor">
+                                    <path d=3D"M20.5 2h-17A1.5 1.5 0 002
+3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8
+19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19
+19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000
+.14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/>
+                                </svg>
+                            </div>
+                            <div class=3D"contact-details">
+                                <h4>LinkedIn</h4>
+                                <a href=3D"
+https://linkedin.com/in/arjunsrinivasana/" target=3D"_blank">
+linkedin.com/in/arjunsrinivasana/</a>
+                            </div>
+                        </div>
+                        <div class=3D"contact-item">
+                            <div class=3D"contact-icon">
+                                <svg viewBox=3D"0 0 24 24"
+fill=3D"currentColor">
+                                    <path d=3D"M12 0c-6.626 0-12 5.373-12 1=
+2
+0 5.302 3.438 9.8 8.207
+11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-=
+.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729
+1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304
+3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931
+0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322
+3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404
+2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235
+1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823
+2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386
+0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                            </div>
+                            <div class=3D"contact-details">
+                                <h4>GitHub</h4>
+                                <a href=3D"https://github.com/aarjunsriniva=
+san"
+target=3D"_blank">github.com/aarjunsrinivasan</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class=3D"contact-form">
+                    <h3>Send a Message</h3>
+                    <form>
+                        <div class=3D"form-group">
+                            <label for=3D"name">Name</label>
+                            <input type=3D"text" id=3D"name" name=3D"name"
+required>
+                        </div>
+                        <div class=3D"form-group">
+                            <label for=3D"email">Email</label>
+                            <input type=3D"email" id=3D"email" name=3D"emai=
+l"
+required>
+                        </div>
+                        <div class=3D"form-group">
+                            <label for=3D"subject">Subject</label>
+                            <input type=3D"text" id=3D"subject" name=3D"sub=
+ject"
+required>
+                        </div>
+                        <div class=3D"form-group">
+                            <label for=3D"message">Message</label>
+                            <textarea id=3D"message" name=3D"message"
+required></textarea>
+                        </div>
+                        <button type=3D"submit" class=3D"submit-btn">
+                            <svg viewBox=3D"0 0 24 24" fill=3D"currentColor=
+"
+style=3D"width: 20px; height: 20px;">
+                                <path d=3D"M2.01 21L23 12 2.01 3 2 10l15 2-=
+15
+2z"/>
+                            </svg>
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+        <div class=3D"footer-content">
+            <div class=3D"footer-top">
+                <div class=3D"footer-about">
+                    <h3>Arjun Srinivasan Ambalam</h3>
+                    <p>Research Data Scientist & AI Engineer passionate
+about transforming complex data into intelligent solutions through
+cutting-edge machine learning, deep learning, and AI research.</p>
+                    <p>Specialized in computer vision, NLP, and predictive
+modeling with 5+ years of experience in deploying production-ready AI
+systems.</p>
+                </div>
+                <div class=3D"footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href=3D"#about">About Me</a></li>
+                        <li><a href=3D"#education">Education</a></li>
+                        <li><a href=3D"#skills">Technical Skills</a></li>
+                        <li><a href=3D"#projects">Featured Projects</a></li=
+>
+                        <li><a href=3D"#experience">Experience</a></li>
+                        <li><a href=3D"#publications">Publications</a></li>
+                    </ul>
+                </div>
+                <div class=3D"footer-contact">
+                    <h4>Get In Touch</h4>
+                    <p><a href=3D"mailto:arjunsrinivasan.a@gmail.com">
+arjunsrinivasan.a@gmail.com</a></p>
+                    <p><a href=3D"tel:+15714738938">+1 571-473-8938</a></p>
+                    <p>Maryland, USA</p>
+                </div>
+            </div>
+
+            <div class=3D"social-links">
+                <a href=3D"https://linkedin.com/in/arjunsrinivasana/"
+target=3D"_blank" class=3D"social-link" aria-label=3D"LinkedIn">
+                    <svg viewBox=3D"0 0 24 24">
+                        <path d=3D"M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5=
+ 0
+003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5
+8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19
+19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000
+.14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/>
+                    </svg>
+                </a>
+                <a href=3D"https://github.com/aarjunsrinivasan"
+target=3D"_blank" class=3D"social-link" aria-label=3D"GitHub">
+                    <svg viewBox=3D"0 0 24 24">
+                        <path d=3D"M12 0c-6.626 0-12 5.373-12 12 0 5.302
+3.438 9.8 8.207
+11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-=
+.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729
+1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304
+3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931
+0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322
+3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404
+2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235
+1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823
+2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386
+0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                </a>
+                <a href=3D"mailto:arjunsrinivasan.a@gmail.com"
+class=3D"social-link" aria-label=3D"Email">
+                    <svg viewBox=3D"0 0 24 24">
+                        <path d=3D"M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.=
+9
+2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                </a>
+                <a href=3D"tel:+15714738938" class=3D"social-link"
+aria-label=3D"Phone">
+                    <svg viewBox=3D"0 0 24 24">
+                        <path d=3D"M6.62 10.79c1.44 2.83 3.76 5.14 6.59
+6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1
+1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1
+1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                    </svg>
+                </a>
+            </div>
+
+
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^=3D"#"]').forEach(anchor =3D> {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target =3D
+document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar background change on scroll
+        window.addEventListener('scroll', function() {
+            const navbar =3D document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background =3D 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow =3D '0 2px 20px rgba(0,0,0,0.1)';
+            } else {
+                navbar.style.background =3D 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow =3D 'none';
+            }
+        });
+
+        // Fade in animation on scroll
+        const observerOptions =3D {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer =3D new IntersectionObserver(function(entries) {
+            entries.forEach(entry =3D> {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el =3D> {
+            observer.observe(el);
+        });
+
+        // Contact form submission with EmailJS
+        document.querySelector('.contact-form
+form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form data
+            const formData =3D new FormData(this);
+            const name =3D formData.get('name');
+            const email =3D formData.get('email');
+            const subject =3D formData.get('subject');
+            const message =3D formData.get('message');
+
+            // Show loading state
+            const submitBtn =3D this.querySelector('.submit-btn');
+            const originalText =3D submitBtn.innerHTML;
+            submitBtn.innerHTML =3D '<svg viewBox=3D"0 0 24 24"
+fill=3D"currentColor" style=3D"width: 20px; height: 20px; animation: spin 1=
+s
+linear infinite;"><path d=3D"M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1
+8-8z"/></svg> Sending...';
+            submitBtn.disabled =3D true;
+
+            // Create the email body
+            const emailBody =3D `
+Name: ${name}
+Email: ${email}
+Subject: ${subject}
+
+Message:
+${message}
+
+---
+Sent from Portfolio Contact Form
+            `.trim();
+
+            // Try to send via EmailJS if available, otherwise fallback to
+mailto
+            if (typeof emailjs !=3D=3D 'undefined') {
+                emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', {
+                    from_name: name,
+                    from_email: email,
+                    subject: subject,
+                    message: message,
+                    to_email: 'arjunsrinivasan.a@gmail.com'
+                })
+                .then(() =3D> {
+                    // Success
+                    submitBtn.innerHTML =3D '<svg viewBox=3D"0 0 24 24"
+fill=3D"currentColor" style=3D"width: 20px; height: 20px;"><path d=3D"M9
+16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Message Sent!';
+                    submitBtn.style.background =3D '#10B981';
+
+                    // Reset form
+                    this.reset();
+
+                    // Reset button after 3 seconds
+                    setTimeout(() =3D> {
+                        submitBtn.innerHTML =3D originalText;
+                        submitBtn.style.background =3D '';
+                        submitBtn.disabled =3D false;
+                    }, 3000);
+                })
+                .catch(() =3D> {
+                    // Fallback to mailto
+                    fallbackToMailto();
+                });
+            } else {
+                // EmailJS not available, use mailto
+                fallbackToMailto();
+            }
+
+            function fallbackToMailto() {
+                const mailtoLink =3D `mailto:arjunsrinivasan.a@gmail.com
+?subject=3D${encodeURIComponent(subject)}&body=3D${encodeURIComponent(email=
+Body)}`;
+                window.location.href =3D mailtoLink;
+
+                // Reset button
+                submitBtn.innerHTML =3D originalText;
+                submitBtn.disabled =3D false;
+
+                // Show message
+                alert('Email client opened! Please send the email to
+complete your message.');
+
+                // Reset form
+                this.reset();
+            }
+        });
+
+        // Add active nav link highlighting
+        window.addEventListener('scroll', function() {
+            const sections =3D document.querySelectorAll('section[id]');
+            const navLinks =3D document.querySelectorAll('.nav-links a');
+
+            let current =3D '';
+            sections.forEach(section =3D> {
+                const sectionTop =3D section.offsetTop;
+                const sectionHeight =3D section.clientHeight;
+                if (pageYOffset >=3D sectionTop - 200) {
+                    current =3D section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link =3D> {
+                link.classList.remove('active');
+                if (link.getAttribute('href') =3D=3D=3D '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Add typing effect to hero subtitle
+        function typeWriter(element, text, speed =3D 100) {
+            let i =3D 0;
+            element.innerHTML =3D '';
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML +=3D text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        // Initialize typing effect after page loads
+        window.addEventListener('load', function() {
+            const subtitle =3D document.querySelector('.hero .subtitle');
+            const originalText =3D subtitle.textContent;
+            setTimeout(() =3D> {
+                typeWriter(subtitle, originalText, 80);
+            }, 1000);
+        });
+
+        // Add hover effects to project cards
+        document.querySelectorAll('.project-card').forEach(card =3D> {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform =3D 'translateY(-10px) scale(1.02)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.transform =3D 'translateY(-10px)';
+            });
+        });
+
+        // Parallax effect for hero background
+        window.addEventListener('scroll', function() {
+            const scrolled =3D window.pageYOffset;
+            const hero =3D document.querySelector('.hero');
+            const rate =3D scrolled * -0.5;
+            hero.style.transform =3D `translateY(${rate}px)`;
+        });
+
+        // Add number counter animation for stats
+        function animateCounter(element, start, end, duration) {
+            let startTimestamp =3D null;
+            const step =3D (timestamp) =3D> {
+                if (!startTimestamp) startTimestamp =3D timestamp;
+                const progress =3D Math.min((timestamp - startTimestamp) /
+duration, 1);
+                element.innerHTML =3D Math.floor(progress * (end - start) +
+start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Initialize counter animation when stats come into view
+        const statsObserver =3D new IntersectionObserver(function(entries) =
+{
+            entries.forEach(entry =3D> {
+                if (entry.isIntersecting) {
+                    const statNumbers =3D
+entry.target.querySelectorAll('.stat-number');
+                    statNumbers.forEach(stat =3D> {
+                        const finalValue =3D parseFloat(stat.textContent);
+                        if (stat.textContent.includes('.')) {
+                            // For GPA, animate with decimal
+                            let current =3D 0;
+                            const increment =3D finalValue / 100;
+                            const timer =3D setInterval(() =3D> {
+                                current +=3D increment;
+                                if (current >=3D finalValue) {
+                                    current =3D finalValue;
+                                    clearInterval(timer);
+                                }
+                                stat.textContent =3D current.toFixed(2);
+                            }, 20);
+                        } else {
+                            // For whole numbers
+                            animateCounter(stat, 0, finalValue, 2000);
+                        }
+                    });
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        });
+
+        const statsSection =3D document.querySelector('.stats');
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+    </script>
+</body>
+</html>
