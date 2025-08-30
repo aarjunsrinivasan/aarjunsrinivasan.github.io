@@ -511,7 +511,8 @@ nav.scrolled {
             display: flex;
             gap: 1rem;
             justify-content: flex-start;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            align-items: center;
         }
 
         .btn {
@@ -525,6 +526,8 @@ nav.scrolled {
             gap: 0.5rem;
             transition: all 0.3s ease;
             cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .btn-primary {
@@ -1424,6 +1427,14 @@ footer {
         }
 
         @media (max-width: 768px) {
+            .theme-toggle {
+                top: 0.5rem;
+                right: 4rem; /* Move away from hamburger button */
+                width: 45px;
+                height: 45px;
+                font-size: 1rem;
+            }
+            
             .mobile-menu-btn {
                 display: block;
             }
@@ -1458,6 +1469,8 @@ footer {
             
             .cta-buttons {
                 justify-content: center;
+                flex-wrap: nowrap;
+                align-items: center;
             }
             
             .hero {
@@ -1611,39 +1624,124 @@ footer {
             }
         }
 
-        @media (max-width: 480px) {
+        /* iPhone 14 and similar devices */
+        @media (max-width: 430px) {
+            .theme-toggle {
+                top: 0.5rem;
+                right: 3.2rem;
+                width: 38px;
+                height: 38px;
+                font-size: 0.85rem;
+            }
+            
             .hero {
-                height: 55vh;
-                min-height: 400px;
+                height: 100vh;
+                min-height: 450px;
+            }
+            
+            .hero-container {
+                gap: 1rem;
+                padding: 0 0.75rem;
+            }
+            
+            .profile-photo {
+                width: 130px;
+                height: 130px;
             }
             
             .hero h1 {
-                font-size: 2rem;
+                font-size: 1.6rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .hero .description {
+                font-size: 0.8rem;
+                line-height: 1.3;
+            }
+            
+            .education-badge {
+                padding: 0.5rem 0.7rem;
+                max-width: 260px;
+            }
+            
+            .education-badge .degree {
+                font-size: 0.8rem;
+            }
+            
+            .education-badge .university {
+                font-size: 0.7rem;
+            }
+            
+            .cta-buttons {
+                gap: 0.75rem;
+            }
+            
+            .btn {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .theme-toggle {
+                top: 0.5rem;
+                right: 3.5rem; /* Further adjust for smaller screens */
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
+            }
+            
+            .hero {
+                height: 100vh;
+                min-height: 500px;
+                padding: 1rem 0;
+            }
+            
+            .hero-container {
+                gap: 1.5rem;
+                padding: 0 1rem;
+            }
+            
+            .profile-photo {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+                margin-bottom: 0.5rem;
             }
             
             .hero .subtitle {
                 font-size: 1rem;
+                margin-bottom: 0.5rem;
             }
             
             .hero .description {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
+                line-height: 1.4;
+                margin-bottom: 1rem;
             }
             
             .hero-education {
-                margin: 1rem 0;
+                margin: 0.75rem 0;
             }
             
             .education-badge {
-                padding: 0.7rem 1rem;
-                max-width: 300px;
+                padding: 0.6rem 0.8rem;
+                max-width: 280px;
+                margin: 0.25rem 0;
             }
             
             .education-badge .degree {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
             }
             
             .education-badge .university {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
             }
             
             .cta-buttons {
