@@ -307,17 +307,19 @@ body {
     scroll-behavior: smooth;
 }
 
-/* Navigation */
-nav {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    z-index: 1000;
-    transition: all 0.3s ease;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            height: 80px; /* Fixed height for consistent spacing */
+            box-sizing: border-box;
+        }
 
 [data-theme="dark"] nav {
     background: var(--dark-nav-bg);
@@ -442,8 +444,8 @@ nav.scrolled {
 
         /* Hero Section - Made Full Page */
         .hero {
-            height: 100vh; /* Changed from 70vh to 100vh for full page */
-            min-height: 600px; /* Increased minimum height */
+            height: 100vh; /* Full viewport height */
+            min-height: 600px; /* Minimum height */
             background: var(--gradient-bg);
             display: flex;
             align-items: center;
@@ -451,6 +453,7 @@ nav.scrolled {
             position: relative;
             overflow: hidden;
             box-sizing: border-box;
+            padding-top: 80px; /* Account for fixed navigation bar */
         }
 
         .hero::before {
@@ -474,6 +477,7 @@ nav.scrolled {
             z-index: 1;
             animation: fadeInUp 1s ease;
             box-sizing: border-box;
+            padding-top: 20px; /* Additional top padding for safety */
         }
 
         .hero-photo {
@@ -1712,21 +1716,24 @@ footer {
             }
             
             .hero {
-                min-height: 100vh;
-                padding: 1rem 0;
+                min-height: calc(100vh - 80px); /* Account for nav bar */
+                padding: 2rem 0 1rem 0; /* Top padding for nav, bottom for content */
+                margin-top: 80px; /* Push content below nav */
             }
             
             .hero-container {
                 flex-direction: column;
                 gap: 1.5rem;
                 padding: 0 1rem;
-                justify-content: center;
-                min-height: 100vh;
+                justify-content: flex-start; /* Start from top */
+                min-height: calc(100vh - 80px);
+                align-items: center;
             }
             
             .hero-photo {
                 order: 1;
                 display: block;
+                margin-top: 1rem;
             }
             
             .profile-photo {
@@ -1734,12 +1741,14 @@ footer {
                 height: 160px;
                 margin-bottom: 0.5rem;
                 object-fit: cover;
+                display: block;
             }
             
             .hero-content {
                 order: 2;
                 text-align: center;
                 padding: 0 0.5rem;
+                width: 100%;
             }
             
             .hero h1 {
@@ -1791,6 +1800,7 @@ footer {
                 padding: 0.7rem 1.25rem;
                 font-size: 0.85rem;
                 justify-content: center;
+                display: flex;
             }
         }
 
@@ -1815,18 +1825,22 @@ footer {
             }
             
             .hero {
-                min-height: 100vh;
-                padding: 1.5rem 0;
+                min-height: calc(100vh - 80px);
+                padding: 1.5rem 0 1rem 0;
+                margin-top: 80px;
             }
             
             .hero-container {
                 gap: 1.25rem;
                 padding: 0 0.75rem;
+                justify-content: flex-start;
+                min-height: calc(100vh - 80px);
             }
             
             .profile-photo {
                 width: 140px;
                 height: 140px;
+                display: block;
             }
             
             .hero h1 {
@@ -1845,12 +1859,18 @@ footer {
             .cta-buttons {
                 gap: 0.6rem;
                 margin-top: 0.75rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
             }
             
             .btn {
                 max-width: 240px;
                 padding: 0.6rem 1rem;
                 font-size: 0.8rem;
+                display: flex;
+                justify-content: center;
             }
         }
 
@@ -1875,18 +1895,22 @@ footer {
             }
             
             .hero {
-                min-height: 100vh;
+                min-height: calc(100vh - 80px);
                 padding: 1rem 0;
+                margin-top: 80px;
             }
             
             .hero-container {
                 gap: 1rem;
                 padding: 0 0.5rem;
+                justify-content: flex-start;
+                min-height: calc(100vh - 80px);
             }
             
             .profile-photo {
                 width: 120px;
                 height: 120px;
+                display: block;
             }
             
             .hero h1 {
@@ -1925,20 +1949,27 @@ footer {
             .cta-buttons {
                 gap: 0.5rem;
                 margin-top: 0.6rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
             }
             
             .btn {
                 max-width: 220px;
                 padding: 0.5rem 0.9rem;
                 font-size: 0.75rem;
+                display: flex;
+                justify-content: center;
             }
         }
 
         /* Landscape Mode for Mobile Devices */
         @media (max-width: 768px) and (orientation: landscape) {
             .hero {
-                min-height: 100vh;
+                min-height: calc(100vh - 80px);
                 padding: 0.5rem 0;
+                margin-top: 80px;
             }
             
             .hero-container {
@@ -1946,6 +1977,7 @@ footer {
                 gap: 2rem;
                 align-items: center;
                 justify-content: center;
+                min-height: calc(100vh - 80px);
             }
             
             .hero-photo {
@@ -1956,6 +1988,7 @@ footer {
                 width: 100px;
                 height: 100px;
                 margin-bottom: 0;
+                display: block;
             }
             
             .hero-content {
@@ -2002,6 +2035,7 @@ footer {
                 gap: 0.5rem;
                 margin-top: 0.5rem;
                 justify-content: flex-start;
+                display: flex;
             }
             
             .btn {
@@ -2009,17 +2043,25 @@ footer {
                 max-width: none;
                 padding: 0.5rem 1rem;
                 font-size: 0.75rem;
+                display: flex;
             }
         }
 
         @media (max-width: 480px) and (orientation: landscape) {
+            .hero {
+                margin-top: 80px;
+                min-height: calc(100vh - 80px);
+            }
+            
             .hero-container {
                 gap: 1.5rem;
+                min-height: calc(100vh - 80px);
             }
             
             .profile-photo {
                 width: 80px;
                 height: 80px;
+                display: block;
             }
             
             .hero h1 {
@@ -2036,11 +2078,13 @@ footer {
             
             .cta-buttons {
                 gap: 0.4rem;
+                display: flex;
             }
             
             .btn {
                 padding: 0.4rem 0.8rem;
                 font-size: 0.7rem;
+                display: flex;
             }
         }
 
@@ -2063,9 +2107,20 @@ footer {
                 padding: 0.2rem;
             }
             
+            .hero {
+                margin-top: 80px;
+                min-height: calc(100vh - 80px);
+            }
+            
+            .hero-container {
+                min-height: calc(100vh - 80px);
+                justify-content: flex-start;
+            }
+            
             .profile-photo {
                 width: 100px;
                 height: 100px;
+                display: block;
             }
             
             .hero h1 {
@@ -2080,10 +2135,19 @@ footer {
                 font-size: 0.7rem;
             }
             
+            .cta-buttons {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+            }
+            
             .btn {
                 max-width: 200px;
                 padding: 0.4rem 0.8rem;
                 font-size: 0.7rem;
+                display: flex;
+                justify-content: center;
             }
         }
 
@@ -2225,18 +2289,22 @@ footer {
             }
             
             .hero {
-                min-height: 650px;
+                min-height: calc(100vh - 80px);
                 padding: 1.5rem 0;
+                margin-top: 80px;
             }
             
             .hero-container {
                 gap: 1.5rem;
                 padding: 0 0.75rem;
+                justify-content: flex-start;
+                min-height: calc(100vh - 80px);
             }
             
             .profile-photo {
                 width: 160px;
                 height: 160px;
+                display: block;
             }
             
             .hero h1 {
@@ -2257,12 +2325,18 @@ footer {
             .cta-buttons {
                 gap: 0.75rem;
                 margin-top: 1rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
             }
             
             .btn {
                 max-width: 260px;
                 padding: 0.7rem 1.25rem;
                 font-size: 0.85rem;
+                display: flex;
+                justify-content: center;
             }
             
             .education-badge {
