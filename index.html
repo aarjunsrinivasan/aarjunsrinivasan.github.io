@@ -979,6 +979,53 @@ nav.scrolled {
             font-weight: bold;
         }
 
+        /* Project Buttons */
+        .project-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .project-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .project-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .codebase-btn {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .codebase-btn:hover {
+            background: var(--primary-dark);
+            color: white;
+        }
+
+                    .video-btn {
+                background: var(--primary-color);
+                color: white;
+            }
+
+            .video-btn:hover {
+                background: var(--primary-dark);
+                color: white;
+            }
+
         /* Experience Section */
         .experience-timeline {
             position: relative;
@@ -1823,6 +1870,16 @@ footer {
                 padding: 1.2rem;
             }
             
+            .project-buttons {
+                gap: 0.75rem;
+                margin-top: 1rem;
+            }
+            
+            .project-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+            
             .experience-item {
                 padding: 1.2rem;
             }
@@ -1880,6 +1937,11 @@ footer {
                 width: 20px;
                 height: 20px;
             }
+            
+            .project-btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
         }
 
         /* Animation for fade-in elements */
@@ -1914,10 +1976,12 @@ footer {
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <!-- <li><a href="#about">About</a></li> -->
-                <li><a href="#skills">Skills</a></li>
+                <!-- <li><a href="#skills">Skills</a></li> -->
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#experience">Experience</a></li>
                 <li><a href="#publications">Publications</a></li>
+                <li><a href="#skills">Skills</a></li>
+
                 <li><a href="#contact">Contact</a></li>
             </ul>
             <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
@@ -1926,9 +1990,10 @@ footer {
             <ul class="nav-links">
                 <li><a href="#home" onclick="closeMobileMenu()">Home</a></li>
                 <!-- <li><a href="#about" onclick="closeMobileMenu()">About</a></li> -->
-                <li><a href="#skills" onclick="closeMobileMenu()">Skills</a></li>
                 <li><a href="#projects" onclick="closeMobileMenu()">Projects</a></li>
                 <li><a href="#experience" onclick="closeMobileMenu()">Experience</a></li>
+                <li><a href="#skills" onclick="closeMobileMenu()">Skills</a></li>
+
                 <li><a href="#publications" onclick="closeMobileMenu()">Publications</a></li>
                 <li><a href="#contact" onclick="closeMobileMenu()">Contact</a></li>
             </ul>
@@ -2018,6 +2083,103 @@ footer {
                 <h2 class="section-title">Featured Projects</h2>
             </div>
             <div class="projects-grid fade-in">
+
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3>AI-Driven CVD Diamond Manufacturing</h3>
+                        <div class="project-date">NSF-Funded Project</div>
+                    </div>
+                    <div class="project-content">
+                        <ul>
+                            <li>Developed hybrid CNN-LSTM models for crystal growth prediction</li>
+                            <li>Achieved ~99% accuracy in forecasting growth trajectories</li>
+                            <li>Enabled anomaly detection up to 6 hours in advance</li>
+                            <li>Implemented human-in-the-loop annotation system</li>
+                        </ul>
+                        <div class="project-buttons">
+                            <a href="https://pubs.aip.org/avs/jva/article-abstract/43/3/032708/3345804/AI-guided-frame-prediction-techniques-to-model?redirectedFrom=fulltext" target="_blank" class="project-btn video-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                Project Link
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3>AI-Assisted Laser Welding System</h3>
+                        <div class="project-date">Manufacturing AI</div>
+                    </div>
+                    <div class="project-content">
+                        <ul>
+                            <li>Built real-time inference pipeline with 3ms latency</li>
+                            <li>Integrated multi-sensor fusion (camera, microphone, 3D scanner)</li>
+                            <li>Reduced weld defects by 30% using ensemble deep learning</li>
+                            <li>Deployed via Triton Inference Server for production</li>
+                        </ul>
+                        <div class="project-buttons">
+                            <a href="https://icaleo.org/program/44th-annual-icaleo/aimodelingmonitoring-track/aimodelingmonitoring-tbd/19330" target="_blank" class="project-btn video-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                Project Link
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3>Trust-Aware Robot Navigation</h3>
+                        <div class="project-date">University of Maryland</div>
+                    </div>
+                    <div class="project-content">
+                        <ul>
+                            <li>Developed socially intelligent navigation using reinforcement learning</li>
+                            <li>Integrated natural language instructions and human intent signals</li>
+                            <li>Implemented PPO algorithm in PyTorch for policy optimization</li>
+                            <li>Published findings at IEEE ICRA conference</li>
+                        </ul>
+                        <div class="project-buttons">
+                            <a href="https://github.com/vdorbala/DRL-Robot-Trust" target="_blank" class="project-btn codebase-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                                Codebase
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3>Adversarial Reinforcement Learning for Autonomous Driving</h3>
+                        <div class="project-date">Fraunhofer CMA</div>
+                    </div>
+                    <div class="project-content">
+                        <ul>
+                            <li>Developed a learning-based adversarial framework to generate failure scenarios for rule-based autonomous driving agents</li>
+                            <li>Formulated adversarial rewards to degrade ego-agent performance (by ~30% reduction in cumulative reward).</li>
+                            <li>Designed a defense pipeline to improve ego-agent resilience against adversarial attacks.</li>
+                            <li>Extended Highway-Env simulator for multi-agent adversarial training with kinematic observation</li>
+
+                        </ul>
+                        <div class="project-buttons">
+                            <a href="https://github.com/aarjunsrinivasan/RAL-MARL" target="_blank" class="project-btn codebase-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                                Codebase
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="project-card">
                     <div class="project-header">
                         <h3>LLaMA 3 Model Optimization</h3>
@@ -2035,36 +2197,6 @@ footer {
 
                 <div class="project-card">
                     <div class="project-header">
-                        <h3>AI-Driven CVD Diamond Manufacturing</h3>
-                        <div class="project-date">NSF-Funded Project</div>
-                    </div>
-                    <div class="project-content">
-                        <ul>
-                            <li>Developed hybrid CNN-LSTM models for crystal growth prediction</li>
-                            <li>Achieved ~99% accuracy in forecasting growth trajectories</li>
-                            <li>Enabled anomaly detection up to 6 hours in advance</li>
-                            <li>Implemented human-in-the-loop annotation system</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>AI-Assisted Laser Welding System</h3>
-                        <div class="project-date">Manufacturing AI</div>
-                    </div>
-                    <div class="project-content">
-                        <ul>
-                            <li>Built real-time inference pipeline with 3ms latency</li>
-                            <li>Integrated multi-sensor fusion (camera, microphone, 3D scanner)</li>
-                            <li>Reduced weld defects by 30% using ensemble deep learning</li>
-                            <li>Deployed via Triton Inference Server for production</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-header">
                         <h3>BERT User Requirement Classification</h3>
                         <div class="project-date">Jan 2022</div>
                     </div>
@@ -2074,36 +2206,6 @@ footer {
                             <li>Achieved 87% overall accuracy on classification tasks</li>
                             <li>Leveraged transfer learning for small dataset optimization</li>
                             <li>Achieved 91+ precision and recall with minimal training data</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>Trust-Aware Robot Navigation</h3>
-                        <div class="project-date">University of Maryland</div>
-                    </div>
-                    <div class="project-content">
-                        <ul>
-                            <li>Developed socially intelligent navigation using reinforcement learning</li>
-                            <li>Integrated natural language instructions and human intent signals</li>
-                            <li>Implemented PPO algorithm in PyTorch for policy optimization</li>
-                            <li>Published findings at IEEE ICRA conference</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>STAR - AI Robustness Testing</h3>
-                        <div class="project-date">Fraunhofer CMA</div>
-                    </div>
-                    <div class="project-content">
-                        <ul>
-                            <li>Designed AI-based robustness testing tools for computer vision models</li>
-                            <li>Built semi-supervised models to estimate robustness distributions</li>
-                            <li>Utilized latent diffusion models for synthetic data generation</li>
-                            <li>Developed full-stack test tool with 30% faster query performance</li>
                         </ul>
                     </div>
                 </div>
@@ -2252,10 +2354,10 @@ footer {
                             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg" alt="Bash" class="skill-icon">
                             Bash
                         </span>
-                        <span class="skill-tag javascript">
+                        <!-- <span class="skill-tag javascript">
                             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" class="skill-icon">
                             JavaScript
-                        </span>
+                        </span> -->
                     </div>
                 </div>
             </div>
@@ -2310,12 +2412,12 @@ footer {
                         <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg" alt="GCP" class="skill-icon">
                         GCP
                     </span>
-                    <span class="skill-tag airflow">
+                    <!-- <span class="skill-tag airflow">
                         <svg class="skill-icon" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 2L2 7v10l10 5 10-5V7l-10-5zm8 13.5l-8 4-8-4v-7l8-4 8 4v7z"/>
                         </svg>
                         Airflow
-                    </span>
+                    </span> -->
                     <span class="skill-tag mlflow">
                         <svg class="skill-icon" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 2L22 8.5v7L12 22 2 15.5v-7L12 2zm8 12.5L12 19l-8-4.5v-5L12 14l8-4.5v5z"/>
@@ -2326,10 +2428,10 @@ footer {
                         <img src="https://dvc.org/img/dvc_icon-color--square_vector.svg" alt="DVC" class="skill-icon">
                         DVC
                     </span>
-                    <span class="skill-tag spark">
+                    <!-- <span class="skill-tag spark">
                         <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachespark/apachespark-original.svg" alt="Spark" class="skill-icon">
                         Spark
-                    </span>
+                    </span> -->
                 </div>
             </div>
         <div class="skill-category" data-icon="⚙️">
