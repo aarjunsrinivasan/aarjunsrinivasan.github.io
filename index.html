@@ -38,15 +38,15 @@
     z-index: 1001;
     background: var(--light-color);
     border: 2px solid var(--primary-color);
-    padding: 0.5rem;
+    padding: 0.4rem;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: var(--primary-color);
     box-shadow: var(--card-shadow);
     transition: all 0.3s ease;
-    width: 50px;
-    height: 50px;
+    width: 42px;
+    height: 42px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -59,8 +59,8 @@
 
 .theme-icon {
     transition: all 0.3s ease;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
 }
 
 /* Apply Theme Based on Data Attribute */
@@ -248,39 +248,51 @@
     border-radius: 2px;
 }
 /* Mobile responsiveness for theme toggle */
-@media (max-width: 768px) {
-    .theme-toggle {
-        top: 0.75rem;
-        right: 0.75rem;
-        width: 48px;
-        height: 48px;
-        font-size: 1.1rem;
-    }
-    
-    .theme-icon {
-        width: 20px;
-        height: 20px;
-    }
-}
+        @media (max-width: 768px) {
+            .theme-toggle {
+                top: 0.75rem;
+                right: 4rem; /* Move away from hamburger menu */
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
+            }
+            
+            .theme-icon {
+                width: 18px;
+                height: 18px;
+            }
+            
+            .mobile-menu-btn {
+                font-size: 1.4rem;
+                padding: 0.4rem;
+            }
+        }
 
-@media (max-width: 480px) {
-    .theme-toggle {
-        top: 0.5rem;
-        right: 0.5rem;
-        width: 48px;
-        height: 48px;
-        font-size: 1rem;
-    }
-    
-    .theme-icon {
-        width: 18px;
-        height: 18px;
-    }
-    .theme-toggle:active {
+        @media (max-width: 480px) {
+            .theme-toggle {
+                top: 0.5rem;
+                right: 3.5rem; /* Further adjust for smaller screens */
+                width: 36px;
+                height: 36px;
+                font-size: 0.85rem;
+            }
+            
+            .theme-icon {
+                width: 16px;
+                height: 16px;
+            }
+            
+            .mobile-menu-btn {
+                font-size: 1.3rem;
+                padding: 0.3rem;
+                margin-right: 0.25rem;
+            }
+            
+            .theme-toggle:active {
     transform: scale(0.95);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
-}
+        }
 
 * {
     margin: 0;
@@ -407,6 +419,8 @@ nav.scrolled {
             font-size: 1.5rem;
             cursor: pointer;
             color: var(--text-color);
+            padding: 0.5rem;
+            margin-right: 0.5rem;
         }
 
         .mobile-menu {
@@ -1751,67 +1765,77 @@ footer {
             .theme-toggle {
                 top: 0.5rem;
                 right: 3.5rem; /* Further adjust for smaller screens */
-                width: 40px;
-                height: 40px;
-                font-size: 0.9rem;
+                width: 36px;
+                height: 36px;
+                font-size: 0.85rem;
             }
             
             .hero {
                 height: 100vh;
-                min-height: 500px;
-                padding: 1rem 0;
+                min-height: 600px;
+                padding: 2rem 0;
             }
             
             .hero-container {
                 flex-direction: column;
-                gap: 1.5rem;
+                gap: 2rem;
                 padding: 0 1rem;
                 align-items: center;
+                justify-content: center;
+                min-height: 100vh;
             }
             
             .hero-photo {
                 display: block;
                 flex-shrink: 0;
+                order: 1;
             }
             
             .profile-photo {
-                width: 150px;
-                height: 150px;
+                width: 180px;
+                height: 180px;
                 display: block;
-            }
-            
-            .hero h1 {
-                font-size: 1.8rem;
-                margin-bottom: 0.5rem;
-            }
-            
-            .hero .subtitle {
-                font-size: 1rem;
-                margin-bottom: 0.5rem;
-            }
-            
-            .hero .description {
-                font-size: 0.85rem;
-                line-height: 1.4;
                 margin-bottom: 1rem;
             }
             
+            .hero-content {
+                order: 2;
+                text-align: center;
+                padding: 0 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .hero .description {
+                font-size: 0.9rem;
+                line-height: 1.5;
+                margin-bottom: 1.5rem;
+            }
+            
             .hero-education {
-                margin: 0.75rem 0;
+                margin: 1rem 0;
             }
             
             .education-badge {
-                padding: 0.6rem 0.8rem;
-                max-width: 280px;
-                margin: 0.25rem 0;
+                padding: 0.75rem 1rem;
+                max-width: 300px;
+                margin: 0.5rem auto;
             }
             
             .education-badge .degree {
-                font-size: 0.85rem;
+                font-size: 0.9rem;
             }
             
             .education-badge .university {
-                font-size: 0.75rem;
+                font-size: 0.8rem;
             }
             
             .cta-buttons {
@@ -1819,12 +1843,16 @@ footer {
                 flex-direction: column;
                 align-items: center;
                 width: 100%;
+                gap: 1rem;
+                margin-top: 1.5rem;
             }
             
             .btn {
                 width: 100%;
-                max-width: 250px;
+                max-width: 280px;
                 justify-content: center;
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
             }
             
             .section-title {
@@ -1944,6 +1972,74 @@ footer {
             }
         }
 
+        /* iPhone 14 and smaller screens specific optimizations */
+        @media (max-width: 430px) {
+            .theme-toggle {
+                top: 0.5rem;
+                right: 3rem;
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+            
+            .theme-icon {
+                width: 14px;
+                height: 14px;
+            }
+            
+            .mobile-menu-btn {
+                font-size: 1.2rem;
+                padding: 0.25rem;
+                margin-right: 0.2rem;
+            }
+            
+            .hero {
+                min-height: 650px;
+                padding: 1.5rem 0;
+            }
+            
+            .hero-container {
+                gap: 1.5rem;
+                padding: 0 0.75rem;
+            }
+            
+            .profile-photo {
+                width: 160px;
+                height: 160px;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .hero .description {
+                font-size: 0.85rem;
+                margin-bottom: 1rem;
+            }
+            
+            .cta-buttons {
+                gap: 0.75rem;
+                margin-top: 1rem;
+            }
+            
+            .btn {
+                max-width: 260px;
+                padding: 0.7rem 1.25rem;
+                font-size: 0.85rem;
+            }
+            
+            .education-badge {
+                padding: 0.6rem 0.8rem;
+                max-width: 280px;
+            }
+        }
+
         /* Animation for fade-in elements */
         .fade-in {
             opacity: 0;
@@ -1980,6 +2076,7 @@ footer {
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#experience">Experience</a></li>
                 <li><a href="#publications">Publications</a></li>
+                <li><a href="#blogs">Blogs</a></li>
                 <li><a href="#skills">Skills</a></li>
 
                 <li><a href="#contact">Contact</a></li>
@@ -1992,9 +2089,10 @@ footer {
                 <!-- <li><a href="#about" onclick="closeMobileMenu()">About</a></li> -->
                 <li><a href="#projects" onclick="closeMobileMenu()">Projects</a></li>
                 <li><a href="#experience" onclick="closeMobileMenu()">Experience</a></li>
+                <li><a href="#publications" onclick="closeMobileMenu()">Publications</a></li>
+                <li><a href="#blogs" onclick="closeMobileMenu()">Blogs</a></li>
                 <li><a href="#skills" onclick="closeMobileMenu()">Skills</a></li>
 
-                <li><a href="#publications" onclick="closeMobileMenu()">Publications</a></li>
                 <li><a href="#contact" onclick="closeMobileMenu()">Contact</a></li>
             </ul>
         </div>
@@ -2100,7 +2198,7 @@ footer {
                         <div class="project-buttons">
                             <a href="https://pubs.aip.org/avs/jva/article-abstract/43/3/032708/3345804/AI-guided-frame-prediction-techniques-to-model?redirectedFrom=fulltext" target="_blank" class="project-btn video-btn">
                                 <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
-                                    <path d="M8 5v14l11-7z"/>
+                                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                                 </svg>
                                 Project Link
                             </a>
@@ -2123,7 +2221,7 @@ footer {
                         <div class="project-buttons">
                             <a href="https://icaleo.org/program/44th-annual-icaleo/aimodelingmonitoring-track/aimodelingmonitoring-tbd/19330" target="_blank" class="project-btn video-btn">
                                 <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
-                                    <path d="M8 5v14l11-7z"/>
+                                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                                 </svg>
                                 Project Link
                             </a>
@@ -2290,8 +2388,16 @@ footer {
                 <h2 class="section-title">Publications</h2>
             </div>
             <div class="publications-grid fade-in">
+                <div class="publication-card" onclick="window.open('https://link.springer.com/article/10.1007/s10846-017-0707-2', '_blank')">
+                    <div class="publication-title">Theoretical and Experimental Investigations on the Effect of Overlap and Offset on the Design of a Novel Quadrotor Configuration, VOOPS</div>
+                    <div class="publication-authors">G. Nandakumar, A. Srinivasan, and A. Thondiyath</div>
+                    <div class="publication-venue">
+                        🔗 Journal of Intelligent & Robotic Systems, 92, 615-628, 2018
+                    </div>
+                </div>
+
                 <div class="publication-card" onclick="window.open('https://ieeexplore.ieee.org/abstract/document/9561983', '_blank')">
-                    <div class="publication-title">Can a robot trust you?: A drl-based approach to trust-driven human-guided navigation</div>
+                    <div class="publication-title">Can a Robot Trust You?: A DRL-Based Approach to Trust-Driven Human-Guided Navigation</div>
                     <div class="publication-authors">V. S. Dorbala, A. Srinivasan, and A. Bera</div>
                     <div class="publication-venue">
                         🔗 2021 IEEE International Conference on Robotics and Automation (ICRA), 2021, pp. 3538–3545
@@ -2299,31 +2405,58 @@ footer {
                 </div>
 
                 <div class="publication-card" onclick="window.open('https://arxiv.org/abs/2404.07306', '_blank')">
-                    <div class="publication-title">AI-guided frame prediction techniques to model single crystal diamond growth</div>
-                    <div class="publication-authors">Mekala, R. R., Srinivasan, A., Muehle, M., Garratt, E., Porter, A., & Lindvall, M.</div>
-                    <div class="publication-venue">
-                        🔗 Journal of Vacuum Science & Technology A, 43(3), 2025
-                    </div>
-                </div>
-
-                <div class="publication-card" onclick="window.open('https://www.scientific.net/KEM.993.67', '_blank')">
                     <div class="publication-title">AI-Guided Defect Detection Techniques to Model Single Crystal Diamond Growth</div>
-                    <div class="publication-authors">Mekala, R. R., Garratt, E., Muehle, M., Srinivasan, A., Porter, A., & Lindvall, M.</div>
+                    <div class="publication-authors">R. R. Mekala, E. Garratt, M. Muehle, A. Srinivasan, A. Porter, and M. Lindvall</div>
                     <div class="publication-venue">
                         🔗 arXiv preprint arXiv:2404.07306, 2024
                     </div>
                 </div>
 
-                <div class="publication-card" onclick="window.open('https://pubs.aip.org/avs/jva/article/43/3/032708/3345804', '_blank')">
+                <div class="publication-card" onclick="window.open('https://www.scientific.net/KEM.993.67', '_blank')">
                     <div class="publication-title">AI-Guided Feature Segmentation Techniques to Model Features from Single Crystal Diamond Growth</div>
-                    <div class="publication-authors">Mekala, R. R., Garratt, E., Muehle, M., Srinivasan, A., Porter, A., & Lindvall, M.</div>
+                    <div class="publication-authors">R. R. Mekala, E. Garratt, M. Muehle, A. Srinivasan, A. Porter, and M. Lindvall</div>
                     <div class="publication-venue">
                         🔗 Key Engineering Materials, 993, 67-74, 2024
+                    </div>
+                </div>
+
+                <div class="publication-card" onclick="window.open('https://pubs.aip.org/avs/jva/article-abstract/43/3/032708/3345804/AI-guided-frame-prediction-techniques-to-model?redirectedFrom=fulltext', '_blank')">
+                    <div class="publication-title">AI-Guided Frame Prediction Techniques to Model Single Crystal Diamond Growth</div>
+                    <div class="publication-authors">R. R. Mekala, E. Garratt, M. Muehle, A. Srinivasan, A. Porter, and M. Lindvall</div>
+                    <div class="publication-venue">
+                        🔗 Journal of Vacuum Science & Technology A, 43(3), 032708, 2025
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Blog Section -->
+    <section id="blogs">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Blog Posts</h2>
+            </div>
+            <div class="publications-grid fade-in">
+                <div class="publication-card" onclick="window.open('https://medium.com/@arjunsrinivasan.a/demystifying-pytorch-distributed-data-parallel-ddp-an-inside-look-6d0d42a645ff', '_blank')">
+                    <div class="publication-title">Demystifying PyTorch Distributed Data Parallel (DDP): An Inside Look</div>
+                    <div class="publication-authors">Arjun Srinivasan</div>
+                    <div class="publication-venue">
+                        🔗 Medium - Technical Deep Dive
+                    </div>
+                </div>
+
+                <div class="publication-card" onclick="window.open('https://medium.com/@arjunsrinivasan.a/interaction-and-decision-making-in-autonomous-driving-workshop-rss-2020-a-summary-b25d77f59584', '_blank')">
+                    <div class="publication-title">Interaction and Decision Making in Autonomous Driving Workshop - RSS 2020 a Summary</div>
+                    <div class="publication-authors">Arjun Srinivasan</div>
+                    <div class="publication-venue">
+                        🔗 Medium - Conference Summary
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Enhanced Skills Section -->
     <section id="skills" class="skills">
         <div class="container">
