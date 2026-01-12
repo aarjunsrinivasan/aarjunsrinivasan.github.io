@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is PCA Just SVD? Understanding the Relationship from ML to DL | Arjun Srinivasan</title>
+    
+    <!-- MathJax for LaTeX rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    
+    <style>
+        :root {
+            --primary-color: #5a67d8;
+            --secondary-color: #6b46c1;
+            --accent-color: #d53f8c;
+            --dark-color: #2d3748;
+            --light-color: #ffffff;
+            --text-color: #2d3748;
+            --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --gradient-bg: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            
+            --dark-primary-color: #8b5cf6;
+            --dark-secondary-color: #a78bfa;
+            --dark-accent-color: #ec4899;
+            --dark-dark-color: #f9fafb;
+            --dark-light-color: #1a202c;
+            --dark-text-color: #e2e8f0;
+            --dark-card-bg: #2d3748;
+            --dark-card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            --dark-gradient-bg: linear-gradient(135deg, var(--dark-primary-color) 0%, var(--dark-secondary-color) 100%);
+            --dark-nav-bg: rgba(23, 25, 35, 0.95);
+            --dark-border: #4a5568;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.8;
+            color: var(--text-color);
+            background-color: var(--light-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: var(--dark-primary-color);
+            --secondary-color: var(--dark-secondary-color);
+            --accent-color: var(--dark-accent-color);
+            --dark-color: var(--dark-dark-color);
+            --light-color: var(--dark-light-color);
+            --text-color: var(--dark-text-color);
+            --card-shadow: var(--dark-card-shadow);
+            --gradient-bg: var(--dark-gradient-bg);
+        }
+
+        [data-theme="dark"] body {
+            background-color: var(--dark-light-color);
+            color: var(--dark-text-color);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] nav {
+            background: var(--dark-nav-bg);
+            border-bottom: 1px solid var(--dark-border);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-bg);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .theme-toggle {
+            background: var(--light-color);
+            border: 2px solid var(--primary-color);
+            padding: 0.4rem;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--primary-color);
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        [data-theme="dark"] .theme-toggle {
+            background: var(--dark-card-bg);
+            color: var(--dark-primary-color);
+            border-color: var(--dark-primary-color);
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px) scale(1.1);
+        }
+
+        /* Blog Content */
+        .blog-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 120px 2rem 4rem;
+        }
+
+        .blog-header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] .blog-header {
+            border-bottom: 2px solid var(--dark-border);
+        }
+
+        .blog-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient-bg);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .blog-meta {
+            display: flex;
+            gap: 1.5rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            font-size: 0.95rem;
+            flex-wrap: wrap;
+        }
+
+        .blog-content {
+            font-size: 1.1rem;
+            line-height: 1.9;
+        }
+
+        .blog-content h2 {
+            font-size: 2rem;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .blog-content h3 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .blog-content p {
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }
+
+        .blog-content ul, .blog-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .blog-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .blog-content code {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        [data-theme="dark"] .blog-content code {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .blog-content pre {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        [data-theme="dark"] .blog-content pre {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .blog-content pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(90, 103, 216, 0.1) 0%, rgba(107, 70, 193, 0.1) 100%);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }
+
+        [data-theme="dark"] .highlight-box {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(167, 139, 250, 0.15) 100%);
+            border-left-color: var(--dark-primary-color);
+        }
+
+        .math-display {
+            margin: 2rem 0;
+            text-align: center;
+            overflow-x: auto;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+            color: var(--secondary-color);
+        }
+
+        /* MathJax styling */
+        .MathJax {
+            font-size: 1.1em !important;
+        }
+
+        .MathJax_Display {
+            margin: 1.5rem 0 !important;
+        }
+
+        @media (max-width: 768px) {
+            .blog-title {
+                font-size: 2rem;
+            }
+
+            .blog-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .blog-content h3 {
+                font-size: 1.25rem;
+            }
+
+            .blog-container {
+                padding: 100px 1rem 2rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="../index.html" class="logo">Arjun Srinivasan</a>
+            <ul class="nav-links">
+                <li><a href="../index.html#home">Home</a></li>
+                <li><a href="../index.html#blogs">Blogs</a></li>
+                <li><button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                    <span class="theme-icon">🌓</span>
+                </button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Blog Content -->
+    <div class="blog-container">
+        <a href="../index.html#blogs" class="back-link">
+            ← Back to Blogs
+        </a>
+
+        <div class="blog-header">
+            <h1 class="blog-title">Is PCA Just SVD? Understanding the Relationship from ML to DL</h1>
+            <div class="blog-meta">
+                <span>📅 Published: January 2025</span>
+                <span>⏱️ Reading Time: 15 min</span>
+                <span>🏷️ Topics: Machine Learning, Deep Learning, Linear Algebra</span>
+            </div>
+        </div>
+
+        <div class="blog-content">
+            <p>
+                Principal Component Analysis (PCA) and Singular Value Decomposition (SVD) are two fundamental 
+                techniques in machine learning and data science. While they are closely related, the question 
+                "Is PCA just SVD?" reveals a nuanced relationship that spans from classical machine learning 
+                to modern deep learning applications. In this post, we'll explore their mathematical foundations, 
+                their relationship, and their evolving roles in the ML/DL landscape.
+            </p>
+
+            <h2>1. Understanding PCA: The Intuition</h2>
+            
+            <p>
+                Principal Component Analysis is a dimensionality reduction technique that seeks to find the 
+                directions of maximum variance in high-dimensional data. The goal is to transform the data 
+                into a lower-dimensional space while preserving as much information as possible.
+            </p>
+
+            <p>
+                Given a data matrix $X \in \mathbb{R}^{n \times d}$ where $n$ is the number of samples and 
+                $d$ is the number of features, PCA finds the principal components by solving an eigenvalue 
+                problem. The key steps are:
+            </p>
+
+            <ol>
+                <li><strong>Center the data:</strong> Subtract the mean from each feature
+                    $$X_{centered} = X - \bar{X}$$
+                </li>
+                <li><strong>Compute the covariance matrix:</strong>
+                    $$C = \frac{1}{n-1} X_{centered}^T X_{centered}$$
+                </li>
+                <li><strong>Find eigenvalues and eigenvectors:</strong> Solve $C\mathbf{v} = \lambda\mathbf{v}$</li>
+                <li><strong>Select top $k$ components:</strong> Choose eigenvectors corresponding to largest eigenvalues</li>
+                <li><strong>Project data:</strong> $Y = X_{centered} V_k$ where $V_k$ contains top $k$ eigenvectors</li>
+            </ol>
+
+            <div class="highlight-box">
+                <strong>Key Insight:</strong> The principal components are the eigenvectors of the covariance matrix, 
+                ordered by their corresponding eigenvalues (which represent the variance explained).
+            </div>
+
+            <h2>2. Understanding SVD: The Mathematical Foundation</h2>
+
+            <p>
+                Singular Value Decomposition is a more general matrix factorization technique. For any matrix 
+                $X \in \mathbb{R}^{n \times d}$, SVD decomposes it as:
+            </p>
+
+            <div class="math-display">
+                $$X = U \Sigma V^T$$
+            </div>
+
+            <p>where:</p>
+            <ul>
+                <li>$U \in \mathbb{R}^{n \times n}$ is an orthogonal matrix (left singular vectors)</li>
+                <li>$\Sigma \in \mathbb{R}^{n \times d}$ is a diagonal matrix with singular values $\sigma_1 \geq \sigma_2 \geq \ldots \geq \sigma_r \geq 0$</li>
+                <li>$V \in \mathbb{R}^{d \times d}$ is an orthogonal matrix (right singular vectors)</li>
+                <li>$r = \min(n, d)$ is the rank of the matrix</li>
+            </ul>
+
+            <p>
+                The singular values $\sigma_i$ are the square roots of the eigenvalues of both $X^T X$ and $X X^T$:
+            </p>
+
+            <div class="math-display">
+                $$\sigma_i^2 = \lambda_i(X^T X) = \lambda_i(X X^T)$$
+            </div>
+
+            <h2>3. The Connection: Is PCA Just SVD?</h2>
+
+            <p>
+                <strong>The short answer: Yes, for centered data, PCA is essentially SVD.</strong> Here's why:
+            </p>
+
+            <p>
+                When we perform PCA on centered data $X_{centered}$, the covariance matrix is:
+            </p>
+
+            <div class="math-display">
+                $$C = \frac{1}{n-1} X_{centered}^T X_{centered}$$
+            </div>
+
+            <p>
+                If we apply SVD to $X_{centered}$:
+            </p>
+
+            <div class="math-display">
+                $$X_{centered} = U \Sigma V^T$$
+            </div>
+
+            <p>
+                Then the covariance matrix becomes:
+            </p>
+
+            <div class="math-display">
+                $$C = \frac{1}{n-1} X_{centered}^T X_{centered} = \frac{1}{n-1} (U \Sigma V^T)^T (U \Sigma V^T) = \frac{1}{n-1} V \Sigma^2 V^T$$
+            </div>
+
+            <p>
+                This shows that:
+            </p>
+            <ul>
+                <li>The <strong>right singular vectors</strong> $V$ are the <strong>principal components</strong> (eigenvectors of $C$)</li>
+                <li>The <strong>singular values</strong> $\sigma_i$ relate to eigenvalues: $\lambda_i = \frac{\sigma_i^2}{n-1}$</li>
+                <li>The <strong>left singular vectors</strong> $U$ represent the projections of data onto principal components</li>
+            </ul>
+
+            <div class="highlight-box">
+                <strong>Mathematical Equivalence:</strong> For centered data, PCA and SVD are mathematically equivalent. 
+                The principal components from PCA are exactly the right singular vectors from SVD, and the eigenvalues 
+                are proportional to the squares of singular values.
+            </div>
+
+            <h3>3.1 Why Use SVD for PCA?</h3>
+
+            <p>
+                In practice, SVD is often preferred for computing PCA because:
+            </p>
+
+            <ol>
+                <li><strong>Numerical Stability:</strong> SVD algorithms (like those in LAPACK) are more numerically 
+                    stable than directly computing eigenvalues of the covariance matrix, especially when $d \gg n$ or $n \gg d$.</li>
+                <li><strong>Efficiency:</strong> For large matrices, SVD can be more efficient, especially when we only 
+                    need the top $k$ components (truncated SVD).</li>
+                <li><strong>Memory Efficiency:</strong> When $d$ is very large, computing $C \in \mathbb{R}^{d \times d}$ 
+                    may be infeasible, but SVD can work directly on $X$.</li>
+                <li><strong>Handling Missing Data:</strong> SVD-based approaches can be adapted for incomplete matrices.</li>
+            </ol>
+
+            <h2>4. PCA/SVD in Classical Machine Learning</h2>
+
+            <p>
+                In traditional ML pipelines, PCA serves several critical roles:
+            </p>
+
+            <h3>4.1 Dimensionality Reduction</h3>
+            <p>
+                The most common application is reducing feature dimensions to combat the curse of dimensionality:
+            </p>
+
+            <div class="math-display">
+                $$Y = X_{centered} V_k \in \mathbb{R}^{n \times k}$$
+            </div>
+
+            <p>
+                where $k \ll d$, preserving most variance while reducing computational complexity.
+            </p>
+
+            <h3>4.2 Noise Reduction</h3>
+            <p>
+                By keeping only the top $k$ components, PCA effectively filters out noise:
+            </p>
+
+            <div class="math-display">
+                $$X_{reconstructed} = U_k \Sigma_k V_k^T$$
+            </div>
+
+            <p>
+                The reconstruction error is minimized in the Frobenius norm sense.
+            </p>
+
+            <h3>4.3 Feature Extraction</h3>
+            <p>
+                PCA transforms correlated features into uncorrelated principal components, which can improve 
+                the performance of downstream algorithms (e.g., linear regression, naive Bayes).
+            </p>
+
+            <h3>4.4 Visualization</h3>
+            <p>
+                Projecting high-dimensional data to 2D or 3D using the first 2-3 principal components enables 
+                data visualization and exploratory analysis.
+            </p>
+
+            <h2>5. PCA/SVD in Deep Learning</h2>
+
+            <p>
+                While deep learning has shifted focus from linear methods, PCA and SVD remain relevant in several ways:
+            </p>
+
+            <h3>5.1 Initialization and Pretraining</h3>
+            <p>
+                In the early days of deep learning, PCA was used for:
+            </p>
+            <ul>
+                <li><strong>Autoencoder Pretraining:</strong> Stacked autoencoders were often pretrained using PCA 
+                    to initialize weights, providing a good starting point for gradient descent.</li>
+                <li><strong>Weight Initialization:</strong> PCA-based initialization schemes helped with training stability.</li>
+            </ul>
+
+            <h3>5.2 Data Preprocessing</h3>
+            <p>
+                Even in deep learning, PCA is used for:
+            </p>
+            <ul>
+                <li><strong>Input Normalization:</strong> Whitening transformations (PCA + scaling) can improve 
+                    convergence rates.</li>
+                <li><strong>Feature Engineering:</strong> In domains like computer vision, PCA on image patches 
+                    was historically important (e.g., eigenfaces).</li>
+            </ul>
+
+            <h3>5.3 Model Compression and Analysis</h3>
+            <p>
+                SVD plays a crucial role in modern deep learning for model compression:
+            </p>
+
+            <div class="math-display">
+                $$W = U \Sigma V^T \approx U_k \Sigma_k V_k^T$$
+            </div>
+
+            <p>
+                For a weight matrix $W \in \mathbb{R}^{m \times n}$, low-rank approximation via SVD can reduce 
+                parameters from $mn$ to $k(m+n)$ where $k \ll \min(m,n)$. This is used in:
+            </p>
+            <ul>
+                <li><strong>Pruning and Compression:</strong> Reducing model size for deployment</li>
+                <li><strong>Efficient Inference:</strong> Faster matrix multiplications with low-rank matrices</li>
+                <li><strong>Knowledge Distillation:</strong> Compressing teacher models</li>
+            </ul>
+
+            <h3>5.4 Attention Mechanisms and Transformers</h3>
+            <p>
+                SVD has interesting connections to attention mechanisms in transformers. The attention matrix 
+                $A = \text{softmax}(QK^T / \sqrt{d})$ can be analyzed using SVD:
+            </p>
+
+            <div class="math-display">
+                $$A = U \Sigma V^T$$
+            </div>
+
+            <p>
+                Recent research has explored:
+            </p>
+            <ul>
+                <li>Low-rank approximations of attention matrices for efficiency</li>
+                <li>Understanding attention patterns through SVD analysis</li>
+                <li>Compressing transformer models using SVD-based techniques</li>
+            </ul>
+
+            <h3>5.5 Representation Learning Analysis</h3>
+            <p>
+                SVD is used to analyze learned representations:
+            </p>
+            <ul>
+                <li><strong>Feature Analysis:</strong> Understanding what features neural networks learn</li>
+                <li><strong>Representation Quality:</strong> Measuring the effective dimensionality of learned representations</li>
+                <li><strong>Transfer Learning:</strong> Analyzing how representations transfer across tasks</li>
+            </ul>
+
+            <h2>6. When PCA and SVD Differ</h2>
+
+            <p>
+                While PCA and SVD are equivalent for centered data, there are important distinctions:
+            </p>
+
+            <h3>6.1 Uncentered Data</h3>
+            <p>
+                If data is not centered, PCA and SVD give different results. PCA explicitly centers the data, 
+                while SVD operates on the raw matrix. This is why centering is crucial in PCA.
+            </p>
+
+            <h3>6.2 Generalization</h3>
+            <p>
+                SVD is more general:
+            </p>
+            <ul>
+                <li>SVD works on any matrix (not just covariance-like structures)</li>
+                <li>SVD can handle rectangular matrices directly</li>
+                <li>SVD doesn't require the matrix to be positive semi-definite</li>
+            </ul>
+
+            <h3>6.3 Interpretability</h3>
+            <p>
+                PCA has a clear statistical interpretation (variance maximization), while SVD is a pure 
+                linear algebra operation. This makes PCA more interpretable in data analysis contexts.
+            </p>
+
+            <h2>7. Practical Considerations</h2>
+
+            <h3>7.1 Implementation</h3>
+            <p>
+                In Python, both approaches are available:
+            </p>
+
+            <pre><code># Using sklearn (PCA via SVD internally)
+from sklearn.decomposition import PCA
+pca = PCA(n_components=k)
+X_reduced = pca.fit_transform(X)
+
+# Direct SVD approach
+from numpy.linalg import svd
+U, s, Vt = svd(X_centered, full_matrices=False)
+X_reduced = U[:, :k] @ np.diag(s[:k])</code></pre>
+
+            <h3>7.2 Computational Complexity</h3>
+            <p>
+                For a matrix $X \in \mathbb{R}^{n \times d}$:
+            </p>
+            <ul>
+                <li><strong>Full SVD:</strong> $O(\min(n^2d, nd^2))$</li>
+                <li><strong>Truncated SVD (top $k$):</strong> $O(knd)$ using iterative methods</li>
+                <li><strong>PCA via Covariance:</strong> $O(nd^2 + d^3)$ (computing $C$ + eigendecomposition)</li>
+            </ul>
+
+            <p>
+                For large-scale problems, truncated SVD is often preferred.
+            </p>
+
+            <h3>7.3 Choosing the Number of Components</h3>
+            <p>
+                Common approaches:
+            </p>
+            <ul>
+                <li><strong>Variance Explained:</strong> Choose $k$ such that 
+                    $\frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^d \lambda_i} \geq 0.95$ (95% variance)</li>
+                <li><strong>Scree Plot:</strong> Look for the "elbow" in eigenvalues</li>
+                <li><strong>Cross-validation:</strong> Optimize $k$ based on downstream task performance</li>
+            </ul>
+
+            <h2>8. Modern Extensions and Variants</h2>
+
+            <p>
+                The PCA/SVD framework has inspired many modern techniques:
+            </p>
+
+            <h3>8.1 Kernel PCA</h3>
+            <p>
+                Non-linear extension using the kernel trick, enabling PCA in high-dimensional feature spaces.
+            </p>
+
+            <h3>8.2 Sparse PCA</h3>
+            <p>
+                Adds sparsity constraints to principal components for interpretability.
+            </p>
+
+            <h3>8.3 Robust PCA</h3>
+            <p>
+                Decomposes matrix into low-rank and sparse components: $X = L + S$, useful for outlier detection.
+            </p>
+
+            <h3>8.4 Randomized SVD</h3>
+            <p>
+                Uses randomization for faster approximate SVD on large matrices, crucial for big data applications.
+            </p>
+
+            <h2>9. Conclusion</h2>
+
+            <p>
+                To answer the question "Is PCA just SVD?": <strong>Yes, for centered data, PCA is mathematically 
+                equivalent to SVD.</strong> However, this relationship reveals deeper insights:
+            </p>
+
+            <ul>
+                <li>PCA provides a <strong>statistical interpretation</strong> (variance maximization) while SVD 
+                    provides a <strong>geometric interpretation</strong> (optimal low-rank approximation)</li>
+                <li>In practice, SVD is often the preferred computational method for PCA</li>
+                <li>Both techniques remain relevant from classical ML (dimensionality reduction, feature extraction) 
+                    to modern DL (model compression, attention analysis, representation learning)</li>
+                <li>Understanding their relationship helps in choosing the right tool for the right problem</li>
+            </ul>
+
+            <p>
+                As machine learning evolves, the fundamental linear algebra tools like PCA and SVD continue to 
+                find new applications, proving that a solid mathematical foundation remains essential in the age 
+                of deep learning.
+            </p>
+
+            <div class="highlight-box">
+                <strong>Key Takeaway:</strong> PCA and SVD are two sides of the same coin—PCA is the statistical 
+                framework, SVD is the computational engine. Their synergy continues to drive innovations from 
+                classical dimensionality reduction to modern neural network compression and analysis.
+            </div>
+
+            <h2>References and Further Reading</h2>
+            <ul>
+                <li>Jolliffe, I. T., & Cadima, J. (2016). Principal component analysis: a review and recent developments. <em>Philosophical Transactions of the Royal Society A</em>.</li>
+                <li>Golub, G. H., & Van Loan, C. F. (2013). <em>Matrix Computations</em>. JHU Press.</li>
+                <li>Murphy, K. P. (2022). <em>Probabilistic Machine Learning: An Introduction</em>. MIT Press.</li>
+                <li>Goodfellow, I., Bengio, Y., & Courville, A. (2016). <em>Deep Learning</em>. MIT Press.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        });
+
+        // Update theme icon
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.querySelector('.theme-toggle');
+            const updateIcon = () => {
+                const theme = document.documentElement.getAttribute('data-theme');
+                themeToggle.querySelector('.theme-icon').textContent = theme === 'dark' ? '☀️' : '🌙';
+            };
+            updateIcon();
+            themeToggle.addEventListener('click', () => {
+                setTimeout(updateIcon, 100);
+            });
+        });
+    </script>
+</body>
+</html>
