@@ -257,15 +257,18 @@
             overflow-x: auto;
             margin-bottom: 1.5rem;
             border-left: 4px solid var(--primary-color);
+            color: var(--text-color);
         }
 
         [data-theme="dark"] .blog-content pre {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--dark-text-color);
         }
 
         .blog-content pre code {
             background: none;
             padding: 0;
+            color: inherit;
         }
 
         .highlight-box {
@@ -363,6 +366,18 @@
         .code-block pre {
             margin-top: 0;
             border-radius: 0 0 8px 8px;
+            background: #1e1e1e !important;
+            color: #d4d4d4 !important;
+        }
+
+        [data-theme="dark"] .code-block pre {
+            background: #0d1117 !important;
+            color: #c9d1d9 !important;
+        }
+
+        .code-block pre code {
+            color: inherit !important;
+            background: none !important;
         }
 
         /* Interactive visualization container */
@@ -481,7 +496,7 @@
         </a>
 
         <div class="blog-header">
-            <h1 class="blog-title">Is PCA Just SVD? Understanding the Relationship from ML to DL</h1>
+            <h1 class="blog-title">Is PCA Just SVD? Its Applications in Deep Learning</h1>
             <div class="blog-meta">
                 <span>📅 Published: January 2025</span>
                 <span>⏱️ Reading Time: 15 min</span>
@@ -526,21 +541,17 @@
                 <li>$U \in \mathbb{R}^{m \times m}$ — orthonormal columns (left singular vectors)</li>
                 <li>$\Sigma \in \mathbb{R}^{m \times n}$ — diagonal matrix with non-negative singular values $\sigma_1 \geq \sigma_2 \geq \ldots \geq \sigma_r \geq 0$</li>
                 <li>$V \in \mathbb{R}^{n \times n}$ — orthonormal columns (right singular vectors)</li>
-                <li>$r = \min(m, n)$ is the rank of the matrix</li>
             </ul>
 
             <p>
                 The singular values $\sigma_i$ are the square roots of the eigenvalues of both $A^T A$ and $A A^T$:
             </p>
 
-            <div class="math-display">
-                $$\sigma_i^2 = \lambda_i(A^T A) = \lambda_i(A A^T)$$
-            </div>
+
 
             <p>
                 SVD is a <strong>general matrix decomposition</strong>—it exists for any matrix (real or complex, square or rectangular) 
-                and provides the optimal low-rank approximation via the <a href="https://ccrma.stanford.edu/~dattorro/eckart&young.1936.pdf" target="_blank">Eckart-Young theorem (1936)</a>. 
-                It's a pure linear algebra tool with no statistical assumptions.
+                which can be proved based on spectral theorem. It's a pure linear algebra tool with no statistical assumptions.
             </p>
 
             <h2>2. What Is PCA Really?</h2>
@@ -610,8 +621,10 @@
             </ul>
 
             <p>
-                More formally, consider the variance along a direction $\mathbf{w}$ for uncentered data. The variance 
-                of projections $z_i = \mathbf{x}_i^T \mathbf{w}$ is:
+                More formally, let's derive why centering is necessary. Consider we want to find a direction 
+                $\mathbf{w}$ (a unit vector) along which to project our data to maximize variance. Even if we start 
+                with uncentered data, when we compute variance properly, we must subtract the mean. The variance 
+                of the projections $z_i = \mathbf{x}_i^T \mathbf{w}$ along direction $\mathbf{w}$ is:
             </p>
 
             <div class="math-display">
@@ -619,7 +632,9 @@
             </div>
 
             <p>
-                This equals:
+                Notice that even though we started with uncentered data $\mathbf{x}_i$, the variance formula 
+                automatically subtracts the mean of the projections ($\bar{z} = \boldsymbol{\mu}^T \mathbf{w}$). 
+                This can be rewritten as:
             </p>
 
             <div class="math-display">
@@ -627,16 +642,20 @@
             </div>
 
             <p>
-                where $\Sigma_x$ is the covariance matrix of <strong>centered</strong> data. Without centering, 
-                we'd be optimizing a different objective that mixes variance with the mean location.
+                This shows that the variance along direction $\mathbf{w}$ depends on the covariance matrix 
+                $\Sigma_x$ of <strong>centered</strong> data $(\mathbf{x}_i - \boldsymbol{\mu})$. The key insight 
+                is that variance is always computed relative to the mean—this is built into the definition of variance. 
+                Therefore, to maximize variance along direction $\mathbf{w}$, we must work with centered data. 
+                Without centering, we'd be optimizing a different objective that mixes variance with the mean location, 
+                and the first principal component would point toward the mean rather than the direction of maximum variance.
             </p>
 
-            <div class="figure-container">
+            <!-- <div class="figure-container">
                 <div class="viz-container">
                     <div id="centering-viz" style="width: 100%; height: 400px;"></div>
                     <p class="figure-caption">Figure 1: Effect of centering on PCA. Left: Uncentered data - first PC points toward mean. Right: Centered data - first PC captures maximum variance.</p>
                 </div>
-            </div>
+            </div> -->
 
             <h2>3. Objective: What Are We Maximizing?</h2>
 
@@ -746,10 +765,7 @@
                 $$\boxed{ \max_{\mathbf{w}} \quad \mathbf{w}^\top \Sigma_x \mathbf{w} \quad \text{subject to} \quad \mathbf{w}^\top \mathbf{w} = 1 }$$
             </div>
 
-            <p>
-                This is a <strong>Rayleigh quotient maximization problem</strong>, a classic optimization problem 
-                in linear algebra with a well-known solution.
-            </p>
+
 
             <h2>4. Solution via Lagrange Multipliers</h2>
 
@@ -884,21 +900,263 @@
             </div>
 
             <p>
-                Then the covariance matrix becomes:
+                where $U \in \mathbb{R}^{m \times m}$ has orthonormal columns, $\Sigma \in \mathbb{R}^{m \times n}$ is diagonal 
+                with singular values, and $V \in \mathbb{R}^{n \times n}$ has orthonormal columns.
+            </p>
+
+            <p>
+                Now, let's compute $\tilde{X}^\top \tilde{X}$ using the SVD decomposition:
             </p>
 
             <div class="math-display">
-                $$\Sigma_x = \frac{1}{m} \tilde{X}^\top \tilde{X} = \frac{1}{m} (U \Sigma V^\top)^\top (U \Sigma V^\top) = \frac{1}{m} V \Sigma^\top U^\top U \Sigma V^\top = \frac{1}{m} V \Sigma^2 V^\top$$
+                $$\tilde{X}^\top \tilde{X} = (U \Sigma V^\top)^\top (U \Sigma V^\top)$$
             </div>
 
             <p>
-                This shows that:
+                Using the property $(AB)^\top = B^\top A^\top$, we get:
+            </p>
+
+            <div class="math-display">
+                $$\tilde{X}^\top \tilde{X} = (V \Sigma^\top U^\top) (U \Sigma V^\top)$$
+            </div>
+
+            <p>
+                Since $U$ has orthonormal columns, $U^\top U = I_m$ (the $m \times m$ identity matrix). Also, 
+                $\Sigma^\top \Sigma = \Sigma^2$ (since $\Sigma$ is diagonal). Therefore:
+            </p>
+
+            <div class="math-display">
+                $$\tilde{X}^\top \tilde{X} = V \Sigma^\top U^\top U \Sigma V^\top = V \Sigma^\top \Sigma V^\top = V \Sigma^2 V^\top$$
+            </div>
+
+            <p>
+                where $\Sigma^2$ is a diagonal matrix with entries $\sigma_i^2$ (the squares of singular values).
+            </p>
+
+            <p>
+                Now, the covariance matrix becomes:
+            </p>
+
+            <div class="math-display">
+                $$\Sigma_x = \frac{1}{m} \tilde{X}^\top \tilde{X} = \frac{1}{m} V \Sigma^2 V^\top$$
+            </div>
+
+            <p>
+                <strong>Key observation:</strong> This is an eigendecomposition!
+            </p>
+
+            <p>
+                Multiplying both sides by $V$ from the right and using $V V^\top = I_n$:
+            </p>
+
+            <div class="math-display">
+                $$\Sigma_x V = V \left(\frac{1}{m} \Sigma^2\right)$$
+            </div>
+
+            <p>
+                This shows that $\Sigma_x V = V \Lambda$, where $\Lambda = \frac{1}{m} \Sigma^2$ is a diagonal matrix. 
+                This is exactly the eigenvalue equation! Let's visualize what this means.
+            </p>
+
+            <p>
+                The matrix $V$ contains the eigenvectors as <strong>columns</strong>:
+            </p>
+
+            <div class="math-display">
+                $$V = \begin{bmatrix} \mathbf{v}_1 & \mathbf{v}_2 & \cdots & \mathbf{v}_n \end{bmatrix} = \begin{bmatrix}
+                v_{11} & v_{12} & \cdots & v_{1n} \\
+                v_{21} & v_{22} & \cdots & v_{2n} \\
+                \vdots & \vdots & \ddots & \vdots \\
+                v_{n1} & v_{n2} & \cdots & v_{nn}
+                \end{bmatrix}$$
+            </div>
+
+            <p>
+                And $\Lambda$ is a diagonal matrix of eigenvalues:
+            </p>
+
+            <div class="math-display">
+                $$\Lambda = \frac{1}{m} \Sigma^2 = \begin{bmatrix}
+                \lambda_1 & 0 & \cdots & 0 \\
+                0 & \lambda_2 & \cdots & 0 \\
+                \vdots & \vdots & \ddots & \vdots \\
+                0 & 0 & \cdots & \lambda_n
+                \end{bmatrix} = \begin{bmatrix}
+                \frac{\sigma_1^2}{m} & 0 & \cdots & 0 \\
+                0 & \frac{\sigma_2^2}{m} & \cdots & 0 \\
+                \vdots & \vdots & \ddots & \vdots \\
+                0 & 0 & \cdots & \frac{\sigma_n^2}{m}
+                \end{bmatrix}$$
+            </div>
+
+            <p>
+                The eigenvalue equation $\Sigma_x V = V \Lambda$ means that each column $\mathbf{v}_i$ of $V$ satisfies:
+            </p>
+
+            <div class="math-display">
+                $$\Sigma_x \mathbf{v}_i = \lambda_i \mathbf{v}_i$$
+            </div>
+
+            <p>
+                Therefore:
             </p>
             <ul>
-                <li>The <strong>right singular vectors</strong> $V$ are the <strong>principal components</strong> (eigenvectors of $\Sigma_x$)</li>
-                <li>The <strong>singular values</strong> $\sigma_i$ relate to eigenvalues: $\lambda_i = \frac{\sigma_i^2}{m}$</li>
-                <li>The <strong>left singular vectors</strong> $U$ represent the projections of data onto principal components</li>
+                <li>The <strong>columns of $V$</strong> (right singular vectors $\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_n$) 
+                    are the <strong>eigenvectors of $\Sigma_x$</strong>, which are exactly the <strong>principal components</strong></li>
+                <li>The <strong>eigenvalues</strong> are $\lambda_i = \frac{\sigma_i^2}{m}$, where $\sigma_i$ are the singular values</li>
+                <li>The first principal component is $\mathbf{v}_1$ (corresponding to the largest eigenvalue $\lambda_1$)</li>
             </ul>
+
+            <h3>6.1 Projecting Data onto Principal Directions</h3>
+
+            <p>
+                Now that we have found the principal directions (the columns of $V$), the next step is to project our 
+                data onto these directions. This is where the left singular vectors $U$ come into play.
+            </p>
+
+            <p>
+                For a data point $\tilde{\mathbf{x}}_i$ (a row of $\tilde{X}$) and principal component $\mathbf{v}_j$ 
+                (a column of $V$), the projection is:
+            </p>
+
+            <div class="math-display">
+                $$z_{ij} = \tilde{\mathbf{x}}_i^\top \mathbf{v}_j$$
+            </div>
+
+            <p>
+                This gives the coordinate of data point $i$ along principal component $j$. When we project <strong>all</strong> 
+                data points onto principal component $\mathbf{v}_j$, we get a vector containing the projections of all 
+                $m$ data points:
+            </p>
+
+            <div class="math-display">
+                $$\tilde{X} \mathbf{v}_j = \begin{bmatrix} \tilde{\mathbf{x}}_1^\top \\ \tilde{\mathbf{x}}_2^\top \\ \vdots \\ \tilde{\mathbf{x}}_m^\top \end{bmatrix} \mathbf{v}_j = \begin{bmatrix} \tilde{\mathbf{x}}_1^\top \mathbf{v}_j \\ \tilde{\mathbf{x}}_2^\top \mathbf{v}_j \\ \vdots \\ \tilde{\mathbf{x}}_m^\top \mathbf{v}_j \end{bmatrix}$$
+            </div>
+
+            <p>
+                This vector $\tilde{X} \mathbf{v}_j \in \mathbb{R}^m$ contains the projections of all $m$ data points 
+                onto the $j$-th principal component. Now, let's see how this relates to the SVD and the matrix $U$.
+            </p>
+
+            <h3>6.2 What Are the Left Singular Vectors $U$?</h3>
+
+            <p>
+                From the SVD decomposition $\tilde{X} = U \Sigma V^\top$, we can express the projection $\tilde{X} \mathbf{v}_j$ as:
+            </p>
+
+            <p>
+                Now, from the SVD $\tilde{X} = U \Sigma V^\top$, we can write:
+            </p>
+
+            <div class="math-display">
+                $$\tilde{X} \mathbf{v}_j = U \Sigma V^\top \mathbf{v}_j$$
+            </div>
+
+            <p>
+                Since $V$ has orthonormal columns, $V^\top \mathbf{v}_j$ is the $j$-th standard basis vector $\mathbf{e}_j$ 
+                (a vector with 1 in position $j$ and 0 elsewhere). Therefore:
+            </p>
+
+            <div class="math-display">
+                $$\tilde{X} \mathbf{v}_j = U \Sigma \mathbf{e}_j = U \begin{bmatrix} 0 \\ \vdots \\ \sigma_j \\ \vdots \\ 0 \end{bmatrix} = \sigma_j \mathbf{u}_j$$
+            </div>
+
+            <p>
+                where $\mathbf{u}_j$ is the $j$-th column of $U$. This shows that:
+            </p>
+
+            <div class="math-display">
+                $$\tilde{X} \mathbf{v}_j = \sigma_j \mathbf{u}_j$$
+            </div>
+
+            <p>
+                In other words, <strong>projecting all data points onto principal component $\mathbf{v}_j$ gives $\sigma_j \mathbf{u}_j$</strong>, 
+                where $\mathbf{u}_j$ is the $j$-th left singular vector (normalized projection vector).
+            </p>
+
+            <p>
+                More generally, when we project all data onto all principal components, we get:
+            </p>
+
+            <div class="math-display">
+                $$\tilde{X} V = U \Sigma V^\top V = U \Sigma$$
+            </div>
+
+            <p>
+                since $V^\top V = I_n$. The matrix $\tilde{X} V$ contains all projections: the $(i,j)$-th element is 
+                the projection of data point $i$ onto principal component $j$. This equals $U \Sigma$, which means:
+            </p>
+
+            <div class="math-display">
+                $$U \Sigma = \begin{bmatrix} \mathbf{u}_1 & \mathbf{u}_2 & \cdots & \mathbf{u}_m \end{bmatrix} \begin{bmatrix}
+                \sigma_1 & 0 & \cdots & 0 \\
+                0 & \sigma_2 & \cdots & 0 \\
+                \vdots & \vdots & \ddots & \vdots \\
+                0 & 0 & \cdots & \sigma_r
+                \end{bmatrix} = \begin{bmatrix}
+                \sigma_1 \mathbf{u}_1 & \sigma_2 \mathbf{u}_2 & \cdots & \sigma_r \mathbf{u}_r
+                \end{bmatrix}$$
+            </div>
+
+            <p>
+                Visualizing $U$ as columns:
+            </p>
+
+            <div class="math-display">
+                $$U = \begin{bmatrix} \mathbf{u}_1 & \mathbf{u}_2 & \cdots & \mathbf{u}_m \end{bmatrix} = \begin{bmatrix}
+                u_{11} & u_{12} & \cdots & u_{1m} \\
+                u_{21} & u_{22} & \cdots & u_{2m} \\
+                \vdots & \vdots & \ddots & \vdots \\
+                u_{m1} & u_{m2} & \cdots & u_{mm}
+                \end{bmatrix}$$
+            </div>
+
+            <p>
+                We can also derive the relationship for $U$ by computing $\tilde{X} \tilde{X}^\top$:
+            </p>
+
+            <div class="math-display">
+                $$\tilde{X} \tilde{X}^\top = (U \Sigma V^\top) (U \Sigma V^\top)^\top = U \Sigma V^\top V \Sigma^\top U^\top = U \Sigma \Sigma^\top U^\top = U \Sigma^2 U^\top$$
+            </div>
+
+            <p>
+                where we used $V^\top V = I_n$ and $\Sigma \Sigma^\top = \Sigma^2$ (since $\Sigma$ is diagonal). 
+                This shows:
+            </p>
+
+            <div class="math-display">
+                $$\tilde{X} \tilde{X}^\top = U \Lambda' U^\top$$
+            </div>
+
+            <p>
+                where $\Lambda' = \Sigma^2$ is a diagonal matrix. This is also an eigendecomposition, so:
+            </p>
+
+            <div class="math-display">
+                $$(\tilde{X} \tilde{X}^\top) \mathbf{u}_j = \sigma_j^2 \mathbf{u}_j$$
+            </div>
+
+            <p>
+                <strong>Summary of what $U$ represents:</strong>
+            </p>
+            <ul>
+                <li>The <strong>columns of $U$</strong> (left singular vectors) are the <strong>eigenvectors of $\tilde{X} \tilde{X}^\top$</strong></li>
+                <li>The <strong>$j$-th column $\mathbf{u}_j$</strong> is the <strong>normalized projection vector</strong>: when we project 
+                    all data points onto principal component $\mathbf{v}_j$, we get $\sigma_j \mathbf{u}_j$</li>
+                <li>The <strong>$i$-th row of $U$</strong> contains the normalized coordinates of data point $i$ in the 
+                    principal component space</li>
+                <li>The <strong>actual projections</strong> of data onto principal components are given by $U \Sigma$ (the 
+                    $i$-th row, $j$-th column element is $\sigma_j u_{ij}$, the projection of point $i$ onto component $j$)</li>
+            </ul>
+
+            <div class="highlight-box">
+                <strong>Summary:</strong> For centered data $\tilde{X} = U \Sigma V^\top$:
+                <ul style="margin-top: 0.5rem;">
+                    <li>$V$ contains eigenvectors of $\tilde{X}^\top \tilde{X}$ (and of covariance matrix $\Sigma_x$)</li>
+                    <li>$U$ contains eigenvectors of $\tilde{X} \tilde{X}^\top$</li>
+                    <li>Eigenvalues: $\lambda_i = \frac{\sigma_i^2}{m}$ where $\sigma_i$ are singular values</li>
+                </ul>
+            </div>
 
             <div class="highlight-box">
                 <strong>When They Meet:</strong> For centered data, PCA and SVD produce the same result. The principal 
@@ -921,7 +1179,6 @@
                     need the top $k$ components (truncated SVD).</li>
                 <li><strong>Memory Efficiency:</strong> When $n$ is very large, computing $\Sigma_x \in \mathbb{R}^{n \times n}$ 
                     may be infeasible, but SVD can work directly on $\tilde{X}$.</li>
-                <li><strong>Handling Missing Data:</strong> SVD-based approaches can be adapted for incomplete matrices.</li>
             </ol>
 
             <p>
@@ -929,229 +1186,11 @@
                 computational approach, even though PCA itself is a statistical technique.
             </p>
 
-            <h2>4. PCA/SVD in Classical Machine Learning</h2>
 
-            <p>
-                In traditional ML pipelines, PCA serves several critical roles:
-            </p>
 
-            <h3>4.1 Dimensionality Reduction</h3>
-            <p>
-                The most common application is reducing feature dimensions to combat the curse of dimensionality:
-            </p>
+            <h2>7. Practical Considerations</h2>
 
-            <div class="math-display">
-                $$Y = X_{centered} V_k \in \mathbb{R}^{n \times k}$$
-            </div>
-
-            <p>
-                where $k \ll d$, preserving most variance while reducing computational complexity.
-            </p>
-
-            <h3>4.2 Noise Reduction</h3>
-            <p>
-                By keeping only the top $k$ components, PCA effectively filters out noise:
-            </p>
-
-            <div class="math-display">
-                $$X_{reconstructed} = U_k \Sigma_k V_k^T$$
-            </div>
-
-            <p>
-                The reconstruction error is minimized in the Frobenius norm sense.
-            </p>
-
-            <h3>4.3 Feature Extraction</h3>
-            <p>
-                PCA transforms correlated features into uncorrelated principal components, which can improve 
-                the performance of downstream algorithms (e.g., linear regression, naive Bayes).
-            </p>
-
-            <h3>4.4 Visualization</h3>
-            <p>
-                Projecting high-dimensional data to 2D or 3D using the first 2-3 principal components enables 
-                data visualization and exploratory analysis.
-            </p>
-
-            <h2>5. PCA/SVD in Deep Learning</h2>
-
-            <p>
-                While deep learning has shifted focus from linear methods, PCA and SVD remain relevant in several ways:
-            </p>
-
-            <h3>5.1 Initialization and Pretraining</h3>
-            <p>
-                In the early days of deep learning, PCA was used for:
-            </p>
-            <ul>
-                <li><strong>Autoencoder Pretraining:</strong> Stacked autoencoders were often pretrained using PCA 
-                    to initialize weights, providing a good starting point for gradient descent.</li>
-                <li><strong>Weight Initialization:</strong> PCA-based initialization schemes helped with training stability.</li>
-            </ul>
-
-            <h3>5.2 Data Preprocessing</h3>
-            <p>
-                Even in deep learning, PCA is used for:
-            </p>
-            <ul>
-                <li><strong>Input Normalization:</strong> Whitening transformations (PCA + scaling) can improve 
-                    convergence rates.</li>
-                <li><strong>Feature Engineering:</strong> In domains like computer vision, PCA on image patches 
-                    was historically important (e.g., eigenfaces).</li>
-            </ul>
-
-            <h3>5.3 Model Compression and Analysis</h3>
-            <p>
-                SVD plays a crucial role in modern deep learning for model compression:
-            </p>
-
-            <div class="math-display">
-                $$W = U \Sigma V^T \approx U_k \Sigma_k V_k^T$$
-            </div>
-
-            <p>
-                For a weight matrix $W \in \mathbb{R}^{m \times n}$, low-rank approximation via SVD can reduce 
-                parameters from $mn$ to $k(m+n)$ where $k \ll \min(m,n)$. This is used in:
-            </p>
-            <ul>
-                <li><strong>Pruning and Compression:</strong> Reducing model size for deployment</li>
-                <li><strong>Efficient Inference:</strong> Faster matrix multiplications with low-rank matrices</li>
-                <li><strong>Knowledge Distillation:</strong> Compressing teacher models</li>
-            </ul>
-
-            <h3>5.4 Attention Mechanisms and Transformers</h3>
-            <p>
-                SVD has interesting connections to attention mechanisms in transformers. The attention matrix 
-                $A = \text{softmax}(QK^T / \sqrt{d})$ can be analyzed using SVD:
-            </p>
-
-            <div class="math-display">
-                $$A = U \Sigma V^T$$
-            </div>
-
-            <p>
-                Recent research has explored:
-            </p>
-            <ul>
-                <li>Low-rank approximations of attention matrices for efficiency</li>
-                <li>Understanding attention patterns through SVD analysis</li>
-                <li>Compressing transformer models using SVD-based techniques</li>
-            </ul>
-
-            <h3>5.5 Representation Learning Analysis</h3>
-            <p>
-                SVD is used to analyze learned representations:
-            </p>
-            <ul>
-                <li><strong>Feature Analysis:</strong> Understanding what features neural networks learn</li>
-                <li><strong>Representation Quality:</strong> Measuring the effective dimensionality of learned representations</li>
-                <li><strong>Transfer Learning:</strong> Analyzing how representations transfer across tasks</li>
-            </ul>
-
-            <h2>7. When PCA and SVD Differ</h2>
-
-            <p>
-                While PCA and SVD produce the same result for centered data, they are fundamentally different:
-            </p>
-
-            <h3>7.1 Conceptual Difference</h3>
-            <p>
-                <strong>PCA</strong> is a statistical optimization problem: maximize variance of projected data.
-            </p>
-            <p>
-                <strong>SVD</strong> is a matrix factorization: decompose any matrix into three components.
-            </p>
-            <p>
-                They solve different problems, but for centered data, the solutions coincide.
-            </p>
-
-            <h3>7.2 Uncentered Data</h3>
-            <p>
-                If data is not centered, PCA and SVD give different results. PCA explicitly centers the data 
-                as part of its statistical framework, while SVD operates on whatever matrix you give it. 
-                This is why centering is crucial in PCA—it's not optional, it's fundamental to the statistical 
-                definition of variance.
-            </p>
-
-            <h3>7.3 Generalization</h3>
-            <p>
-                SVD is more general:
-            </p>
-            <ul>
-                <li>SVD works on <em>any</em> matrix (not just covariance-like structures)</li>
-                <li>SVD can handle rectangular matrices directly</li>
-                <li>SVD doesn't require the matrix to be positive semi-definite</li>
-                <li>SVD has no statistical assumptions—it's pure linear algebra</li>
-            </ul>
-
-            <h3>7.4 Interpretability</h3>
-            <p>
-                PCA has a clear statistical interpretation (variance maximization), while SVD is a pure 
-                linear algebra operation. This makes PCA more interpretable in data analysis contexts where 
-                you care about understanding variance structure.
-            </p>
-
-            <h3>7.5 The Eckart-Young Foundation</h3>
-            <p>
-                SVD's theoretical foundation comes from the <a href="https://ccrma.stanford.edu/~dattorro/eckart&young.1936.pdf" target="_blank">Eckart-Young theorem (1936)</a>, 
-                which establishes that SVD provides the optimal low-rank approximation in the Frobenius norm. 
-                This is a matrix-theoretic result with no statistical content. PCA, on the other hand, is 
-                motivated by statistical variance maximization.
-            </p>
-
-            <div class="figure-container">
-                <table class="comparison-table">
-                    <thead>
-                        <tr>
-                            <th>Aspect</th>
-                            <th>PCA</th>
-                            <th>SVD</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Nature</strong></td>
-                            <td>Statistical optimization problem</td>
-                            <td>Matrix factorization tool</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Objective</strong></td>
-                            <td>Maximize variance of projected data</td>
-                            <td>Optimal low-rank approximation (Frobenius norm)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Requires Centering</strong></td>
-                            <td>Yes (fundamental to variance)</td>
-                            <td>No (works on any matrix)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Input</strong></td>
-                            <td>Data matrix (statistical context)</td>
-                            <td>Any matrix (no assumptions)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Interpretation</strong></td>
-                            <td>Principal directions of variance</td>
-                            <td>Singular vectors and values</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Foundation</strong></td>
-                            <td>Statistics (variance maximization)</td>
-                            <td>Linear algebra (Eckart-Young theorem)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>For Centered Data</strong></td>
-                            <td>Eigenvectors of covariance matrix</td>
-                            <td>Right singular vectors</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p class="figure-caption">Table 1: Key differences between PCA and SVD</p>
-            </div>
-
-            <h2>8. Practical Considerations</h2>
-
-            <h3>8.1 Implementation</h3>
+            <h3>7.1 Implementation</h3>
             <p>
                 In Python, both approaches are available. Here's a complete example showing the relationship:
             </p>
@@ -1212,7 +1251,7 @@ print("They match:", np.allclose(s[:k]**2, eigenvals[:k] * (m-1)))</code></pre>
                 framework is still statistical (variance maximization).
             </p>
 
-            <h3>8.2 Computational Complexity</h3>
+            <h3>7.2 Computational Complexity</h3>
             <p>
                 For a matrix $X \in \mathbb{R}^{n \times d}$:
             </p>
@@ -1226,94 +1265,12 @@ print("They match:", np.allclose(s[:k]**2, eigenvals[:k] * (m-1)))</code></pre>
                 For large-scale problems, truncated SVD is often preferred.
             </p>
 
-            <h3>8.3 Choosing the Number of Components</h3>
-            <p>
-                Common approaches:
-            </p>
-            <ul>
-                <li><strong>Variance Explained:</strong> Choose $k$ such that 
-                    $\frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^d \lambda_i} \geq 0.95$ (95% variance)</li>
-                <li><strong>Scree Plot:</strong> Look for the "elbow" in eigenvalues</li>
-                <li><strong>Cross-validation:</strong> Optimize $k$ based on downstream task performance</li>
-            </ul>
+     
 
-            <div class="figure-container">
-                <div class="viz-container">
-                    <div id="scree-viz" style="width: 100%; height: 400px;"></div>
-                    <p class="figure-caption">Figure 3: Scree plot showing eigenvalues and cumulative variance explained. The "elbow" helps determine the optimal number of components.</p>
-                </div>
-            </div>
 
-            <h2>9. Modern Extensions and Variants</h2>
+   
 
-            <p>
-                The PCA/SVD framework has inspired many modern techniques:
-            </p>
 
-            <h3>9.1 Kernel PCA</h3>
-            <p>
-                Non-linear extension using the kernel trick, enabling PCA in high-dimensional feature spaces.
-            </p>
-
-            <h3>9.2 Sparse PCA</h3>
-            <p>
-                Adds sparsity constraints to principal components for interpretability.
-            </p>
-
-            <h3>9.3 Robust PCA</h3>
-            <p>
-                Decomposes matrix into low-rank and sparse components: $X = L + S$, useful for outlier detection.
-            </p>
-
-            <h3>9.4 Randomized SVD</h3>
-            <p>
-                Uses randomization for faster approximate SVD on large matrices, crucial for big data applications.
-            </p>
-
-            <h2>10. Conclusion</h2>
-
-            <p>
-                To answer the question "Is PCA just SVD?": <strong>No.</strong> PCA is a statistical objective; 
-                SVD is a numerical linear algebra tool. They meet—but they are not the same thing.
-            </p>
-
-            <p>
-                However, this relationship reveals important insights:
-            </p>
-
-            <ul>
-                <li>PCA provides a <strong>statistical interpretation</strong> (variance maximization) while SVD 
-                    provides a <strong>matrix-theoretic interpretation</strong> (optimal low-rank approximation via Eckart-Young)</li>
-                <li>For centered data, they produce the same result, but they solve different problems</li>
-                <li>In practice, SVD is often the preferred computational method for PCA due to numerical stability</li>
-                <li>Both techniques remain relevant from classical ML (dimensionality reduction, feature extraction) 
-                    to modern DL (model compression, attention analysis, representation learning)</li>
-                <li>Understanding their relationship—that they are different things that happen to coincide—helps in 
-                    choosing the right tool for the right problem</li>
-            </ul>
-
-            <p>
-                As machine learning evolves, the fundamental linear algebra tools like PCA and SVD continue to 
-                find new applications, proving that a solid mathematical foundation remains essential in the age 
-                of deep learning.
-            </p>
-
-            <div class="highlight-box">
-                <strong>Key Takeaway:</strong> PCA and SVD are conceptually different—PCA is a statistical optimization 
-                problem (maximize variance), while SVD is a matrix factorization tool (optimal low-rank approximation). 
-                They produce the same result for centered data, but understanding this distinction is crucial for 
-                proper application and interpretation. Their synergy continues to drive innovations from classical 
-                dimensionality reduction to modern neural network compression and analysis.
-            </div>
-
-            <h2>References and Further Reading</h2>
-            <ul>
-                <li>Eckart, C., & Young, G. (1936). The approximation of one matrix by another of lower rank. <em>Psychometrika</em>, 1(3), 211-218. <a href="https://ccrma.stanford.edu/~dattorro/eckart&young.1936.pdf" target="_blank">[PDF]</a></li>
-                <li>Jolliffe, I. T., & Cadima, J. (2016). Principal component analysis: a review and recent developments. <em>Philosophical Transactions of the Royal Society A</em>.</li>
-                <li>Golub, G. H., & Van Loan, C. F. (2013). <em>Matrix Computations</em>. JHU Press.</li>
-                <li>Murphy, K. P. (2022). <em>Probabilistic Machine Learning: An Introduction</em>. MIT Press.</li>
-                <li>Goodfellow, I., Bengio, Y., & Courville, A. (2016). <em>Deep Learning</em>. MIT Press.</li>
-            </ul>
         </div>
     </div>
 
@@ -1354,114 +1311,184 @@ print("They match:", np.allclose(s[:k]**2, eigenvals[:k] * (m-1)))</code></pre>
             const primaryColor = isDark ? '#8b5cf6' : '#5a67d8';
             const secondaryColor = isDark ? '#a78bfa' : '#6b46c1';
 
-            // Visualization 1: Effect of Centering
-            if (document.getElementById('centering-viz')) {
-                // Seeded random number generator
-                function seededRandom(seed) {
-                    let value = seed;
-                    return function() {
-                        value = (value * 9301 + 49297) % 233280;
-                        return value / 233280;
-                    };
-                }
+            // // Visualization 1: Effect of Centering with Different Scales
+            // if (document.getElementById('centering-viz')) {
+            //     // Seeded random number generator
+            //     function seededRandom(seed) {
+            //         let value = seed;
+            //         return function() {
+            //             value = (value * 9301 + 49297) % 233280;
+            //             return value / 233280;
+            //         };
+            //     }
                 
-                const rng = seededRandom(42);
-                const n = 50;
-                const data = [];
-                for (let i = 0; i < n; i++) {
-                    const x = rng() * 4 - 2;
-                    const y = 0.5 * x + 0.3 * (rng() - 0.5);
-                    data.push([x, y]);
-                }
+            //     const rng = seededRandom(42);
+            //     const n = 50;
                 
-                const meanX = data.reduce((s, p) => s + p[0], 0) / n;
-                const meanY = data.reduce((s, p) => s + p[1], 0) / n;
+            //     // Generate data with very different scales
+            //     // X: 0-2 meters (small range)
+            //     // Y: 1000-3000 (large range, e.g., weight in grams or price)
+            //     const data = [];
+            //     for (let i = 0; i < n; i++) {
+            //         const x = rng() * 2; // 0 to 2 meters
+            //         const y = 1000 + x * 500 + (rng() - 0.5) * 200; // Correlated with x, range ~1000-3000
+            //         data.push([x, y]);
+            //     }
                 
-                const centeredData = data.map(p => [p[0] - meanX, p[1] - meanY]);
+            //     const meanX = data.reduce((s, p) => s + p[0], 0) / n;
+            //     const meanY = data.reduce((s, p) => s + p[1], 0) / n;
                 
-                // Compute PCA for centered data
-                const cov = [[0, 0], [0, 0]];
-                centeredData.forEach(p => {
-                    cov[0][0] += p[0] * p[0];
-                    cov[0][1] += p[0] * p[1];
-                    cov[1][0] += p[1] * p[0];
-                    cov[1][1] += p[1] * p[1];
-                });
-                cov[0][0] /= (n - 1);
-                cov[0][1] /= (n - 1);
-                cov[1][0] /= (n - 1);
-                cov[1][1] /= (n - 1);
+            //     const centeredData = data.map(p => [p[0] - meanX, p[1] - meanY]);
                 
-                // Simple eigenvalue computation for 2x2
-                const trace = cov[0][0] + cov[1][1];
-                const det = cov[0][0] * cov[1][1] - cov[0][1] * cov[1][0];
-                const lambda1 = trace / 2 + Math.sqrt(trace * trace / 4 - det);
-                const lambda2 = trace / 2 - Math.sqrt(trace * trace / 4 - det);
+            //     // Compute PCA for centered data
+            //     const cov = [[0, 0], [0, 0]];
+            //     centeredData.forEach(p => {
+            //         cov[0][0] += p[0] * p[0];
+            //         cov[0][1] += p[0] * p[1];
+            //         cov[1][0] += p[1] * p[0];
+            //         cov[1][1] += p[1] * p[1];
+            //     });
+            //     cov[0][0] /= (n - 1);
+            //     cov[0][1] /= (n - 1);
+            //     cov[1][0] /= (n - 1);
+            //     cov[1][1] /= (n - 1);
                 
-                const pc1 = [cov[0][1], lambda1 - cov[0][0]];
-                const pc1Norm = Math.sqrt(pc1[0] * pc1[0] + pc1[1] * pc1[1]);
-                pc1[0] /= pc1Norm;
-                pc1[1] /= pc1Norm;
+            //     // Simple eigenvalue computation for 2x2
+            //     const trace = cov[0][0] + cov[1][1];
+            //     const det = cov[0][0] * cov[1][1] - cov[0][1] * cov[1][0];
+            //     const lambda1 = trace / 2 + Math.sqrt(trace * trace / 4 - det);
+            //     const lambda2 = trace / 2 - Math.sqrt(trace * trace / 4 - det);
                 
-                const scale = 2;
+            //     const pc1 = [cov[0][1], lambda1 - cov[0][0]];
+            //     const pc1Norm = Math.sqrt(pc1[0] * pc1[0] + pc1[1] * pc1[1]);
+            //     pc1[0] /= pc1Norm;
+            //     pc1[1] /= pc1Norm;
                 
-                const trace1Uncentered = {
-                    x: data.map(p => p[0]),
-                    y: data.map(p => p[1]),
-                    mode: 'markers',
-                    type: 'scatter',
-                    name: 'Uncentered Data',
-                    marker: { size: 6, color: primaryColor, opacity: 0.7 }
-                };
+            //     // For uncentered data, compute PC (this will be biased toward mean)
+            //     const dataCov = [[0, 0], [0, 0]];
+            //     data.forEach(p => {
+            //         dataCov[0][0] += p[0] * p[0];
+            //         dataCov[0][1] += p[0] * p[1];
+            //         dataCov[1][0] += p[1] * p[0];
+            //         dataCov[1][1] += p[1] * p[1];
+            //     });
+            //     dataCov[0][0] /= (n - 1);
+            //     dataCov[0][1] /= (n - 1);
+            //     dataCov[1][0] /= (n - 1);
+            //     dataCov[1][1] /= (n - 1);
                 
-                const trace1Centered = {
-                    x: centeredData.map(p => p[0]),
-                    y: centeredData.map(p => p[1]),
-                    mode: 'markers',
-                    type: 'scatter',
-                    name: 'Centered Data',
-                    marker: { size: 6, color: secondaryColor, opacity: 0.7 },
-                    xaxis: 'x2',
-                    yaxis: 'y2'
-                };
+            //     const traceUncentered = dataCov[0][0] + dataCov[1][1];
+            //     const detUncentered = dataCov[0][0] * dataCov[1][1] - dataCov[0][1] * dataCov[1][0];
+            //     const lambda1Uncentered = traceUncentered / 2 + Math.sqrt(traceUncentered * traceUncentered / 4 - detUncentered);
+            //     const pc1Uncentered = [dataCov[0][1], lambda1Uncentered - dataCov[0][0]];
+            //     const pc1UncenteredNorm = Math.sqrt(pc1Uncentered[0] * pc1Uncentered[0] + pc1Uncentered[1] * pc1Uncentered[1]);
+            //     pc1Uncentered[0] /= pc1UncenteredNorm;
+            //     pc1Uncentered[1] /= pc1UncenteredNorm;
                 
-                const pc1TraceUncentered = {
-                    x: [meanX, meanX + pc1[0] * scale],
-                    y: [meanY, meanY + pc1[1] * scale],
-                    mode: 'lines',
-                    type: 'scatter',
-                    name: 'First PC',
-                    line: { width: 3, color: '#d53f8c' }
-                };
+            //     const scale = 1.5;
                 
-                const pc1TraceCentered = {
-                    x: [0, pc1[0] * scale],
-                    y: [0, pc1[1] * scale],
-                    mode: 'lines',
-                    type: 'scatter',
-                    name: 'First PC',
-                    line: { width: 3, color: '#d53f8c' },
-                    xaxis: 'x2',
-                    yaxis: 'y2',
-                    showlegend: false
-                };
+            //     const trace1Uncentered = {
+            //         x: data.map(p => p[0]),
+            //         y: data.map(p => p[1]),
+            //         mode: 'markers',
+            //         type: 'scatter',
+            //         name: 'Uncentered Data',
+            //         marker: { size: 6, color: primaryColor, opacity: 0.7 }
+            //     };
                 
-                Plotly.newPlot('centering-viz', 
-                    [trace1Uncentered, pc1TraceUncentered, trace1Centered, pc1TraceCentered], 
-                    {
-                        title: 'Effect of Centering on PCA',
-                        xaxis: { title: 'Feature 1', domain: [0, 0.48], gridcolor: gridColor },
-                        yaxis: { title: 'Feature 2', gridcolor: gridColor },
-                        xaxis2: { title: 'Feature 1', domain: [0.52, 1], gridcolor: gridColor },
-                        yaxis2: { title: 'Feature 2', anchor: 'x2', gridcolor: gridColor },
-                        plot_bgcolor: bgColor,
-                        paper_bgcolor: bgColor,
-                        font: { color: textColor },
-                        showlegend: true
-                    }, 
-                    { responsive: true }
-                );
-            }
+            //     const trace1Centered = {
+            //         x: centeredData.map(p => p[0]),
+            //         y: centeredData.map(p => p[1]),
+            //         mode: 'markers',
+            //         type: 'scatter',
+            //         name: 'Centered Data',
+            //         marker: { size: 6, color: secondaryColor, opacity: 0.7 },
+            //         xaxis: 'x2',
+            //         yaxis: 'y2'
+            //     };
+                
+            //     // PC for uncentered (biased)
+            //     const pc1TraceUncentered = {
+            //         x: [meanX, meanX + pc1Uncentered[0] * scale],
+            //         y: [meanY, meanY + pc1Uncentered[1] * scale],
+            //         mode: 'lines',
+            //         type: 'scatter',
+            //         name: 'First PC (biased)',
+            //         line: { width: 3, color: '#d53f8c', dash: 'dash' }
+            //     };
+                
+            //     // PC for centered (correct)
+            //     const pc1TraceCentered = {
+            //         x: [0, pc1[0] * scale],
+            //         y: [0, pc1[1] * scale],
+            //         mode: 'lines',
+            //         type: 'scatter',
+            //         name: 'First PC',
+            //         line: { width: 3, color: '#d53f8c' },
+            //         xaxis: 'x2',
+            //         yaxis: 'y2',
+            //         showlegend: false
+            //     };
+                
+            //     Plotly.newPlot('centering-viz', 
+            //         [trace1Uncentered, pc1TraceUncentered, trace1Centered, pc1TraceCentered], 
+            //         {
+            //             title: 'Effect of Centering: Different Feature Scales',
+            //             xaxis: { 
+            //                 title: 'Feature 1 (meters, 0-2)', 
+            //                 domain: [0, 0.48], 
+            //                 gridcolor: gridColor,
+            //                 range: [-0.5, 2.5]
+            //             },
+            //             yaxis: { 
+            //                 title: 'Feature 2 (e.g., weight in grams, 1000-3000)', 
+            //                 gridcolor: gridColor,
+            //                 range: [500, 3500]
+            //             },
+            //             xaxis2: { 
+            //                 title: 'Feature 1 (centered)', 
+            //                 domain: [0.52, 1], 
+            //                 gridcolor: gridColor 
+            //             },
+            //             yaxis2: { 
+            //                 title: 'Feature 2 (centered)', 
+            //                 anchor: 'x2', 
+            //                 gridcolor: gridColor 
+            //             },
+            //             plot_bgcolor: bgColor,
+            //             paper_bgcolor: bgColor,
+            //             font: { color: textColor },
+            //             showlegend: true,
+            //             annotations: [
+            //                 {
+            //                     x: 0.24,
+            //                     y: 0.95,
+            //                     xref: 'paper',
+            //                     yref: 'paper',
+            //                     text: 'Before Centering<br>Different scales dominate',
+            //                     showarrow: false,
+            //                     font: { size: 12, color: textColor },
+            //                     bgcolor: bgColor,
+            //                     bordercolor: gridColor,
+            //                     borderwidth: 1
+            //                 },
+            //                 {
+            //                     x: 0.76,
+            //                     y: 0.95,
+            //                     xref: 'paper',
+            //                     yref: 'paper',
+            //                     text: 'After Centering<br>True variance structure',
+            //                     showarrow: false,
+            //                     font: { size: 12, color: textColor },
+            //                     bgcolor: bgColor,
+            //                     bordercolor: gridColor,
+            //                     borderwidth: 1
+            //                 }
+            //             ]
+            //         }, 
+            //         { responsive: true }
+            //     );
+            // }
 
             // Visualization 2: Projection Viewpoint
             if (document.getElementById('projection-viz')) {
@@ -1474,15 +1501,23 @@ print("They match:", np.allclose(s[:k]**2, eigenvals[:k] * (m-1)))</code></pre>
                     };
                 }
                 
-                // Generate 2D data with clear principal direction
+                // Generate 2D data with clear principal direction (elongated ellipse)
+                // This creates data with much more variance along one axis
                 const rng2 = seededRandom2(123);
-                const n2 = 60;
-                const angle = Math.PI / 6;
+                const n2 = 80;
+                const angle = Math.PI / 4; // 45 degrees
                 const data2 = [];
+                
+                // Create an elliptical distribution with clear principal direction
+                // Major axis: 4 units, Minor axis: 0.8 units
                 for (let i = 0; i < n2; i++) {
-                    const t = (rng2() - 0.5) * 3;
-                    const x = t * Math.cos(angle) + 0.2 * (rng2() - 0.5);
-                    const y = t * Math.sin(angle) + 0.2 * (rng2() - 0.5);
+                    // Generate along major axis (more spread)
+                    const t = (rng2() - 0.5) * 4;
+                    // Generate along minor axis (less spread)
+                    const s = (rng2() - 0.5) * 0.8;
+                    // Rotate to create clear principal direction
+                    const x = t * Math.cos(angle) - s * Math.sin(angle);
+                    const y = t * Math.sin(angle) + s * Math.cos(angle);
                     data2.push([x, y]);
                 }
                 
@@ -1526,9 +1561,16 @@ print("They match:", np.allclose(s[:k]**2, eigenvals[:k] * (m-1)))</code></pre>
                     marker: { size: 6, color: primaryColor, opacity: 0.6 }
                 };
                 
+                // Scale PC line to span the data range
+                const dataRange = Math.max(
+                    ...centeredData2.map(p => Math.abs(p[0])),
+                    ...centeredData2.map(p => Math.abs(p[1]))
+                );
+                const pcScale = dataRange * 1.2;
+                
                 const pcTrace = {
-                    x: [-3 * pc1_2[0], 3 * pc1_2[0]],
-                    y: [-3 * pc1_2[1], 3 * pc1_2[1]],
+                    x: [-pcScale * pc1_2[0], pcScale * pc1_2[0]],
+                    y: [-pcScale * pc1_2[1], pcScale * pc1_2[1]],
                     mode: 'lines',
                     type: 'scatter',
                     name: 'Principal Component 1',
