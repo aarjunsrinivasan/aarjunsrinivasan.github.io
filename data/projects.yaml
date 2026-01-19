@@ -1,0 +1,61 @@
+projects:
+  - title: "AI-Driven CVD Diamond Manufacturing"
+    date: "NSF-Funded Project"
+    description: "Developed hybrid CNN-LSTM models for crystal growth prediction"
+    highlights:
+      - "Developed hybrid CNN-LSTM models for crystal growth prediction"
+      - "Achieved ~99% accuracy in forecasting growth trajectories"
+      - "Enabled anomaly detection up to 6 hours in advance"
+      - "Implemented human-in-the-loop annotation system"
+    links:
+      - name: "Project Link"
+        url: "https://pubs.aip.org/avs/jva/article-abstract/43/3/032708/3345804/AI-guided-frame-prediction-techniques-to-model?redirectedFrom=fulltext"
+        icon: "external-link"
+  
+  - title: "AI-Assisted Laser Welding System"
+    date: "Manufacturing AI"
+    description: "Built real-time inference pipeline with 3ms latency"
+    highlights:
+      - "Built real-time inference pipeline with 3ms latency"
+      - "Integrated multi-sensor fusion (camera, microphone, 3D scanner)"
+      - "Reduced weld defects by 30% using ensemble deep learning"
+      - "Deployed via Triton Inference Server for production"
+    links:
+      - name: "Project Link"
+        url: "https://icaleo.org/program/44th-annual-icaleo/aimodelingmonitoring-track/aimodelingmonitoring-tbd/19330"
+        icon: "external-link"
+  
+  - title: "Trust-Aware Robot Navigation"
+    date: "University of Maryland"
+    description: "Developed socially intelligent navigation using reinforcement learning"
+    highlights:
+      - "Developed socially intelligent navigation using reinforcement learning"
+      - "Integrated natural language instructions and human intent signals"
+      - "Implemented PPO algorithm in PyTorch for policy optimization"
+      - "Published findings at IEEE ICRA conference"
+    links:
+      - name: "Codebase"
+        url: "https://github.com/vdorbala/DRL-Robot-Trust"
+        icon: "github"
+  
+  - title: "Adversarial Reinforcement Learning for Autonomous Driving"
+    date: "Fraunhofer CMA"
+    description: "Engineered a learning-based adversarial framework to generate failure scenarios"
+    highlights:
+      - "Engineered a learning-based adversarial framework to generate failure scenarios for rule-based autonomous driving agents"
+      - "Formulated adversarial rewards to degrade ego-agent performance (by ~30% reduction in cumulative reward)"
+      - "Designed a defense pipeline to improve ego-agent resilience against adversarial attacks"
+      - "Extended Highway-Env simulator for multi-agent adversarial training with kinematic observation"
+    links:
+      - name: "Codebase"
+        url: "https://github.com/aarjunsrinivasan/RAL-MARL"
+        icon: "github"
+  
+  - title: "BERT User Requirement Classification"
+    date: "Jan 2022"
+    description: "Fine-tuned BERT for automatic user feedback categorization"
+    highlights:
+      - "Fine-tuned BERT for automatic user feedback categorization"
+      - "Achieved 87% overall accuracy on classification tasks"
+      - "Leveraged transfer learning for small dataset optimization"
+      - "Achieved 91+ precision and recall with minimal training data"

@@ -1,0 +1,45 @@
+experience:
+  - company: "Fraunhofer USA Center Mid-Atlantic CMA"
+    position: "Research Data Scientist"
+    duration: "October 2020 - Present"
+    location: "Riverdale, MD"
+    description: "AI research and development projects focused on real-time defect detection, predictive modeling, and model robustness testing in manufacturing and imaging systems. Collaborating with U.S. government-funded programs (NSF, DoD) to deliver deployable, high-impact AI solutions."
+    highlights:
+      - "Engineered hybrid CNN-LSTM models and efficient data pipelines for synthetic diamond manufacturing"
+      - "Led cross-functional AI engineering teams building real-time inference pipelines (3ms latency)"
+      - "Unsupervised synthetic data generation using Diffusion and GANs for manufacturing and Geospatial domains"
+      - "Published 3 peer-reviewed papers in top-tier conferences and journals"
+      - "Mentored junior engineers and interns in sprint planning and deployment best practices"
+  
+  - company: "University of Maryland, College Park"
+    position: "Research Assistant"
+    duration: "June 2020 - October 2020"
+    location: "College Park, MD"
+    description: "Developed socially intelligent navigation policy for robots using reinforcement learning, integrating natural language instructions and human intent signals for effective human-robot collaboration."
+    highlights:
+      - "Designed trust-aware policy architecture using Proximal Policy Optimization (PPO)"
+      - "Collected and curated dataset of 200+ natural language instructions"
+      - "Simulated robot navigation in 3D environments using Unity3D and ROS"
+      - "Published findings at IEEE ICRA conference"
+  
+  - company: "SimInsights"
+    position: "Machine Learning Intern"
+    duration: "May 2020 - June 2020"
+    location: "Irvine, CA"
+    description: "Built synthetic data pipeline using simulation to accelerate training and deployment of object detection models for industrial tools on edge devices."
+    highlights:
+      - "Created large-scale synthetic datasets using NVIDIA Isaac Sim with domain randomization"
+      - "Automated simulation scenes via Unity3D and Python scripting"
+      - "Trained YOLOv3 models using NVIDIA Transfer Learning Toolkit"
+      - "Applied TensorRT optimization for real-time inference on Jetson Nano"
+  
+  - company: "Fiat Chrysler Automobiles"
+    position: "Research and Development Engineer"
+    duration: "July 2017 - July 2019"
+    location: "Chennai, India"
+    description: "Designed and implemented AI-driven system to optimize in-cabin climate control in passenger vehicles using vision-based occupant detection and pose estimation."
+    highlights:
+      - "Developed computer vision system using TensorFlow for passenger detection"
+      - "Integrated real-time inference with Raspberry Pi and motor controllers"
+      - "Collected and annotated facial orientation data across varying conditions"
+      - "Conducted field validation testing for thermal comfort optimization"

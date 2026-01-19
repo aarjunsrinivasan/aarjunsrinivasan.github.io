@@ -1,0 +1,30 @@
+publications:
+  - title: "Theoretical and Experimental Investigations on the Effect of Overlap and Offset on the Design of a Novel Quadrotor Configuration, VOOPS"
+    authors: "G. Nandakumar, A. Srinivasan, and A. Thondiyath"
+    venue: "Journal of Intelligent & Robotic Systems, 92, 615-628, 2018"
+    url: "https://link.springer.com/article/10.1007/s10846-017-0707-2"
+    type: "journal"
+  
+  - title: "Can a Robot Trust You?: A DRL-Based Approach to Trust-Driven Human-Guided Navigation"
+    authors: "V. S. Dorbala, A. Srinivasan, and A. Bera"
+    venue: "2021 IEEE International Conference on Robotics and Automation (ICRA), 2021, pp. 3538–3545"
+    url: "https://ieeexplore.ieee.org/abstract/document/9561983"
+    type: "conference"
+  
+  - title: "AI-Guided Defect Detection Techniques to Model Single Crystal Diamond Growth"
+    authors: "R. R. Mekala, E. Garratt, M. Muehle, A. Srinivasan, A. Porter, and M. Lindvall"
+    venue: "arXiv preprint arXiv:2404.07306, 2024"
+    url: "https://arxiv.org/abs/2404.07306"
+    type: "preprint"
+  
+  - title: "AI-Guided Feature Segmentation Techniques to Model Features from Single Crystal Diamond Growth"
+    authors: "R. R. Mekala, E. Garratt, M. Muehle, A. Srinivasan, A. Porter, and M. Lindvall"
+    venue: "Key Engineering Materials, 993, 67-74, 2024"
+    url: "https://www.scientific.net/KEM.993.67"
+    type: "journal"
+  
+  - title: "AI-Guided Frame Prediction Techniques to Model Single Crystal Diamond Growth"
+    authors: "R. R. Mekala, E. Garratt, M. Muehle, A. Srinivasan, A. Porter, and M. Lindvall"
+    venue: "Journal of Vacuum Science & Technology A, 43(3), 032708, 2025"
+    url: "https://pubs.aip.org/avs/jva/article-abstract/43/3/032708/3345804/AI-guided-frame-prediction-techniques-to-model?redirectedFrom=fulltext"
+    type: "journal"
