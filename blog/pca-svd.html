@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Is PCA Just SVD? Understanding the Relationship from ML to DL | Arjun Srinivasan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     
     <!-- MathJax for LaTeX rendering -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -32,26 +35,22 @@
     
     <style>
         :root {
-            --primary-color: #5a67d8;
-            --secondary-color: #6b46c1;
-            --accent-color: #d53f8c;
-            --dark-color: #2d3748;
-            --light-color: #ffffff;
-            --text-color: #2d3748;
-            --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            --gradient-bg: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            
-            --dark-primary-color: #8b5cf6;
-            --dark-secondary-color: #a78bfa;
-            --dark-accent-color: #ec4899;
-            --dark-dark-color: #f9fafb;
-            --dark-light-color: #1a202c;
-            --dark-text-color: #e2e8f0;
-            --dark-card-bg: #2d3748;
-            --dark-card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-            --dark-gradient-bg: linear-gradient(135deg, var(--dark-primary-color) 0%, var(--dark-secondary-color) 100%);
-            --dark-nav-bg: rgba(23, 25, 35, 0.95);
-            --dark-border: #4a5568;
+            --bg: #fafaf9;
+            --text: #292524;
+            --text-muted: #57534e;
+            --accent: #b45309;
+            --accent-hover: #92400e;
+            --border: #e7e5e4;
+            --card-bg: #ffffff;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            --dark-bg: #1c1917;
+            --dark-text: #fafaf9;
+            --dark-text-muted: #a8a29e;
+            --dark-accent: #d97706;
+            --dark-accent-hover: #f59e0b;
+            --dark-border: #44403c;
+            --dark-card-bg: #292524;
+            --dark-nav-bg: rgba(28, 25, 23, 0.96);
         }
 
         * {
@@ -61,27 +60,16 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.8;
-            color: var(--text-color);
-            background-color: var(--light-color);
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        [data-theme="dark"] {
-            --primary-color: var(--dark-primary-color);
-            --secondary-color: var(--dark-secondary-color);
-            --accent-color: var(--dark-accent-color);
-            --dark-color: var(--dark-dark-color);
-            --light-color: var(--dark-light-color);
-            --text-color: var(--dark-text-color);
-            --card-shadow: var(--dark-card-shadow);
-            --gradient-bg: var(--dark-gradient-bg);
+            color: var(--text);
+            background-color: var(--bg);
+            transition: background-color 0.2s ease, color 0.2s ease;
         }
 
         [data-theme="dark"] body {
-            background-color: var(--dark-light-color);
-            color: var(--dark-text-color);
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
         }
 
         /* Navigation */
@@ -89,12 +77,12 @@
             position: fixed;
             top: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
             z-index: 1000;
-            transition: all 0.3s ease;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: background 0.2s ease, border-color 0.2s ease;
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--card-shadow);
         }
 
         [data-theme="dark"] nav {
@@ -112,13 +100,16 @@
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: var(--gradient-bg);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 1.4375rem;
+            font-weight: 600;
+            font-family: 'Source Serif 4', Georgia, serif;
+            color: var(--text);
             text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        [data-theme="dark"] .logo {
+            color: var(--dark-text);
         }
 
         .nav-links {
@@ -130,25 +121,34 @@
 
         .nav-links a {
             text-decoration: none;
-            color: var(--text-color);
+            color: var(--text);
             font-weight: 500;
-            transition: all 0.3s ease;
+            font-size: 0.9375rem;
+            transition: color 0.2s ease;
+        }
+
+        [data-theme="dark"] .nav-links a {
+            color: var(--dark-text);
         }
 
         .nav-links a:hover {
-            color: var(--primary-color);
+            color: var(--accent);
+        }
+
+        [data-theme="dark"] .nav-links a:hover {
+            color: var(--dark-accent);
         }
 
         .theme-toggle {
-            background: var(--light-color);
-            border: 2px solid var(--primary-color);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
             padding: 0.4rem;
             border-radius: 50%;
             cursor: pointer;
             font-size: 1rem;
-            color: var(--primary-color);
+            color: var(--accent);
             box-shadow: var(--card-shadow);
-            transition: all 0.3s ease;
+            transition: color 0.2s ease, border-color 0.2s ease;
             width: 42px;
             height: 42px;
             display: flex;
@@ -158,12 +158,13 @@
 
         [data-theme="dark"] .theme-toggle {
             background: var(--dark-card-bg);
-            color: var(--dark-primary-color);
-            border-color: var(--dark-primary-color);
+            color: var(--dark-accent);
+            border-color: var(--dark-border);
         }
 
         .theme-toggle:hover {
-            transform: translateY(-2px) scale(1.1);
+            border-color: var(--accent);
+            color: var(--accent-hover);
         }
 
         /* Blog Content */
@@ -176,31 +177,37 @@
         .blog-header {
             margin-bottom: 3rem;
             padding-bottom: 2rem;
-            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid var(--border);
         }
 
         [data-theme="dark"] .blog-header {
-            border-bottom: 2px solid var(--dark-border);
+            border-bottom: 1px solid var(--dark-border);
         }
 
         .blog-title {
-            font-size: 3rem;
-            font-weight: 800;
+            font-size: 2.5rem;
+            font-weight: 600;
+            font-family: 'Source Serif 4', Georgia, serif;
             margin-bottom: 1rem;
-            background: var(--gradient-bg);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.2;
+            color: var(--text);
+            line-height: 1.25;
+            letter-spacing: -0.02em;
+        }
+
+        [data-theme="dark"] .blog-title {
+            color: var(--dark-text);
         }
 
         .blog-meta {
             display: flex;
             gap: 1.5rem;
-            color: var(--text-color);
-            opacity: 0.7;
+            color: var(--text-muted);
             font-size: 0.95rem;
             flex-wrap: wrap;
+        }
+
+        [data-theme="dark"] .blog-meta {
+            color: var(--dark-text-muted);
         }
 
         .blog-content {
@@ -209,19 +216,28 @@
         }
 
         .blog-content h2 {
-            font-size: 2rem;
+            font-size: 1.75rem;
+            font-family: 'Source Serif 4', Georgia, serif;
             margin-top: 3rem;
-            margin-bottom: 1.5rem;
-            color: var(--primary-color);
-            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        [data-theme="dark"] .blog-content h2 {
+            color: var(--dark-text);
         }
 
         .blog-content h3 {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             margin-top: 2rem;
-            margin-bottom: 1rem;
-            color: var(--secondary-color);
+            margin-bottom: 0.75rem;
+            color: var(--text);
             font-weight: 600;
+        }
+
+        [data-theme="dark"] .blog-content h3 {
+            color: var(--dark-text);
         }
 
         .blog-content p {
@@ -239,7 +255,7 @@
         }
 
         .blog-content code {
-            background: rgba(0, 0, 0, 0.05);
+            background: var(--border);
             padding: 0.2rem 0.4rem;
             border-radius: 4px;
             font-family: 'Courier New', monospace;
@@ -247,22 +263,25 @@
         }
 
         [data-theme="dark"] .blog-content code {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--dark-border);
         }
 
         .blog-content pre {
-            background: rgba(0, 0, 0, 0.05);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
             padding: 1.5rem;
             border-radius: 8px;
             overflow-x: auto;
             margin-bottom: 1.5rem;
-            border-left: 4px solid var(--primary-color);
-            color: var(--text-color);
+            border-left: 3px solid var(--accent);
+            color: var(--text);
         }
 
         [data-theme="dark"] .blog-content pre {
-            background: rgba(0, 0, 0, 0.3);
-            color: var(--dark-text-color);
+            background: var(--dark-card-bg);
+            border-color: var(--dark-border);
+            border-left-color: var(--dark-accent);
+            color: var(--dark-text);
         }
 
         .blog-content pre code {
@@ -272,16 +291,26 @@
         }
 
         .highlight-box {
-            background: linear-gradient(135deg, rgba(90, 103, 216, 0.1) 0%, rgba(107, 70, 193, 0.1) 100%);
-            border-left: 4px solid var(--primary-color);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
             padding: 1.5rem;
             margin: 2rem 0;
             border-radius: 8px;
         }
 
         [data-theme="dark"] .highlight-box {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(167, 139, 250, 0.15) 100%);
-            border-left-color: var(--dark-primary-color);
+            background: var(--dark-card-bg);
+            border-color: var(--dark-border);
+            border-left-color: var(--dark-accent);
+        }
+
+        .highlight-box h3 {
+            color: var(--accent);
+        }
+
+        [data-theme="dark"] .highlight-box h3 {
+            color: var(--dark-accent);
         }
 
         .math-display {
@@ -294,16 +323,23 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            color: var(--primary-color);
+            color: var(--accent);
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 500;
             margin-bottom: 2rem;
-            transition: all 0.3s ease;
+            transition: color 0.2s ease;
         }
 
         .back-link:hover {
-            transform: translateX(-5px);
-            color: var(--secondary-color);
+            color: var(--accent-hover);
+        }
+
+        [data-theme="dark"] .back-link {
+            color: var(--dark-accent);
+        }
+
+        [data-theme="dark"] .back-link:hover {
+            color: var(--dark-accent-hover);
         }
 
         /* MathJax styling */
@@ -332,13 +368,12 @@
         .figure-caption {
             margin-top: 0.75rem;
             font-size: 0.9rem;
-            color: var(--text-color);
-            opacity: 0.7;
+            color: var(--text-muted);
             font-style: italic;
         }
 
         [data-theme="dark"] .figure-caption {
-            opacity: 0.6;
+            color: var(--dark-text-muted);
         }
 
         /* Code block enhancements */
@@ -348,8 +383,8 @@
         }
 
         .code-header {
-            background: var(--primary-color);
-            color: white;
+            background: var(--accent);
+            color: #fff;
             padding: 0.5rem 1rem;
             border-radius: 8px 8px 0 0;
             font-size: 0.85rem;
@@ -360,7 +395,7 @@
         }
 
         [data-theme="dark"] .code-header {
-            background: var(--dark-primary-color);
+            background: var(--dark-accent);
         }
 
         .code-block pre {
@@ -382,16 +417,16 @@
 
         /* Interactive visualization container */
         .viz-container {
-            background: rgba(0, 0, 0, 0.02);
-            border: 2px solid rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
             padding: 2rem;
             margin: 2.5rem 0;
             text-align: center;
         }
 
         [data-theme="dark"] .viz-container {
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--dark-card-bg);
             border-color: var(--dark-border);
         }
 
@@ -412,20 +447,20 @@
         }
 
         .comparison-table th {
-            background: var(--gradient-bg);
-            color: white;
+            background: var(--accent);
+            color: #fff;
             padding: 1rem;
             text-align: left;
             font-weight: 600;
         }
 
         [data-theme="dark"] .comparison-table th {
-            background: var(--dark-gradient-bg);
+            background: var(--dark-accent);
         }
 
         .comparison-table td {
             padding: 1rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid var(--border);
         }
 
         [data-theme="dark"] .comparison-table td {
@@ -512,7 +547,7 @@
             </p>
 
             <div class="highlight-box" style="border-left-width: 6px; padding: 2rem; margin: 2rem 0;">
-                <h3 style="margin-top: 0; color: var(--primary-color);">The Answer</h3>
+                <h3 style="margin-top: 0; color: var(--accent);">The Answer</h3>
                 <p style="font-size: 1.2rem; margin-bottom: 0.5rem;"><strong>Short answer: No.</strong></p>
                 <p style="margin-bottom: 0;"><strong>Long answer:</strong> PCA is a statistical objective; SVD is a numerical linear algebra tool. 
                 They meet—but they are not the same thing.</p>
@@ -1305,11 +1340,11 @@ print("They match:", np.allclose(s[:k]**2, eigenvals[:k] * (m-1)))</code></pre>
         // Interactive Visualizations
         document.addEventListener('DOMContentLoaded', () => {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            const bgColor = isDark ? '#1a202c' : '#ffffff';
-            const textColor = isDark ? '#e2e8f0' : '#2d3748';
-            const gridColor = isDark ? '#4a5568' : '#e2e8f0';
-            const primaryColor = isDark ? '#8b5cf6' : '#5a67d8';
-            const secondaryColor = isDark ? '#a78bfa' : '#6b46c1';
+            const bgColor = isDark ? '#1c1917' : '#fafaf9';
+            const textColor = isDark ? '#fafaf9' : '#292524';
+            const gridColor = isDark ? '#44403c' : '#e7e5e4';
+            const primaryColor = isDark ? '#d97706' : '#b45309';
+            const secondaryColor = isDark ? '#f59e0b' : '#92400e';
 
             // // Visualization 1: Effect of Centering with Different Scales
             // if (document.getElementById('centering-viz')) {
@@ -1574,7 +1609,7 @@ print("They match:", np.allclose(s[:k]**2, eigenvals[:k] * (m-1)))</code></pre>
                     mode: 'lines',
                     type: 'scatter',
                     name: 'Principal Component 1',
-                    line: { width: 4, color: '#d53f8c' }
+                    line: { width: 4, color: primaryColor }
                 };
                 
                 const projTrace = {
