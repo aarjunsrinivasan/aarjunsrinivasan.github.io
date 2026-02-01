@@ -97,7 +97,6 @@
 }
 
 [data-theme="dark"] .stat-item,
-[data-theme="dark"] .skill-category,
 [data-theme="dark"] .project-card,
 [data-theme="dark"] .experience-item,
 [data-theme="dark"] .publication-card,
@@ -110,8 +109,6 @@
 }
 
 [data-theme="dark"] .project-content,
-
-[data-theme="dark"] .skill-category h3,
 [data-theme="dark"] .publication-title,
 [data-theme="dark"] .company-name,
 
@@ -761,193 +758,6 @@ nav.scrolled {
             background-clip: text;
         }
 
-        /* Enhanced Skills Section */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .skill-category {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: var(--card-shadow);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .skill-category:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-        }
-
-        .skill-category h3 {
-            color: var(--dark-color);
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.3rem;
-            font-weight: 700;
-        }
-
-        .skill-category h3::before {
-            content: attr(data-icon);
-            font-size: 1.8rem;
-        }
-
-        .skill-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .skill-tag {
-            color: white;
-            padding: 1.5rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0.8rem;
-            transition: all 0.3s ease;
-            min-width: 80px;
-            min-height: 80px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .skill-tag:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .skill-icon {
-            width: 32px;
-            height: 32px;
-            filter: brightness(0) invert(1); /* White icons */
-        }
-
-        /* Individual brand colors */
-        .skill-tag.python {
-            background: linear-gradient(135deg, #3776ab, #ffd43b);
-        }
-
-        .skill-tag.cpp {
-            background: linear-gradient(135deg, #00599c, #004482);
-        }
-
-        .skill-tag.c {
-            background: linear-gradient(135deg, #a8b9cc, #283593);
-        }
-
-        .skill-tag.sql {
-            background: linear-gradient(135deg, #336791, #4479a1);
-        }
-
-        .skill-tag.bash {
-            background: linear-gradient(135deg, #4eaa25, #89e051);
-        }
-
-        .skill-tag.javascript {
-            background: linear-gradient(135deg, #f0db4f, #f7df1e);
-            color: black; /* Black text for better contrast on yellow */
-        }
-
-        /* Machine Learning & AI */
-        .skill-tag.pytorch {
-            background: linear-gradient(135deg, #ee4c2c, #ff6b35);
-        }
-
-        .skill-tag.tensorflow {
-            background: linear-gradient(135deg, #ff6f00, #ff8f00);
-        }
-
-        .skill-tag.transformers {
-            background: linear-gradient(135deg, #ff9d00, #ffb347);
-        }
-
-        .skill-tag.vllm {
-            background: linear-gradient(135deg, #4a90e2, #357abd);
-        }
-
-        .skill-tag.lightning {
-            background: linear-gradient(135deg, #792ee5, #9146ff);
-        }
-
-        .skill-tag.spacy {
-            background: linear-gradient(135deg, #09a3d5, #1cb7e0);
-        }
-
-        .skill-tag.opencv {
-            background: linear-gradient(135deg, #5c3317, #8b4513);
-        }
-
-        /* Big Data & Cloud */
-        .skill-tag.aws {
-            background: linear-gradient(135deg, #ff9900, #ffb84d);
-        }
-
-        .skill-tag.gcp {
-            background: linear-gradient(135deg, #4285f4, #34a853);
-        }
-
-        .skill-tag.airflow {
-            background: linear-gradient(135deg, #017cee, #0288d1);
-        }
-
-        .skill-tag.mlflow {
-            background: linear-gradient(135deg, #0194e2, #0288d1);
-        }
-
-        .skill-tag.dvc {
-            background: linear-gradient(135deg, #945dd6, #b377f0);
-        }
-
-        .skill-tag.spark {
-            background: linear-gradient(135deg, #e25a1c, #f16537);
-        }
-
-        /* DevOps & Tools */
-        .skill-tag.docker {
-            background: linear-gradient(135deg, #2496ed, #0db7ed);
-        }
-
-        .skill-tag.linux {
-            background: linear-gradient(135deg, #fcc624, #fdd835);
-            color: black;
-        }
-
-        .skill-tag.git {
-            background: linear-gradient(135deg, #f03c2e, #e84d39);
-        }
-
-        .skill-tag.kubernetes {
-            background: linear-gradient(135deg, #326ce5, #4285f4);
-        }
-
-        .skill-tag.jira {
-            background: linear-gradient(135deg, #0052cc, #2684ff);
-        }
-
-        .skill-tag.vscode {
-            background: linear-gradient(135deg, #007acc, #0078d4);
-        }
-
-        /* Black icons for light backgrounds */
-        .skill-tag.linux .skill-icon {
-            filter: brightness(0);
-        }
-
-        /* Black icons for JavaScript due to yellow background */
-        .skill-tag.javascript .skill-icon {
-            filter: brightness(0); /* Black icons instead of white */
-        }
-
         /* Projects Section */
         .projects-grid {
             display: grid;
@@ -1492,10 +1302,6 @@ footer {
                 font-size: 2.2rem;
             }
             
-            .skills-grid {
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            }
-            
             .projects-grid {
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             }
@@ -1612,33 +1418,6 @@ footer {
             
             .stat-item {
                 padding: 1.5rem 1rem;
-            }
-            
-
-            
-            .skills-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .skill-category {
-                padding: 2rem;
-            }
-            
-            .skill-tags {
-                gap: 0.8rem;
-            }
-            
-            .skill-tag {
-                min-width: 70px;
-                min-height: 70px;
-                padding: 1.2rem;
-                font-size: 0.8rem;
-            }
-            
-            .skill-icon {
-                width: 28px;
-                height: 28px;
             }
             
             .projects-grid {
@@ -2185,26 +1964,6 @@ footer {
                 padding: 1.5rem;
             }
             
-            .skill-category {
-                padding: 1.5rem;
-            }
-            
-            .skill-category h3 {
-                font-size: 1.1rem;
-            }
-            
-            .skill-tag {
-                min-width: 60px;
-                min-height: 60px;
-                padding: 1rem;
-                font-size: 0.75rem;
-            }
-            
-            .skill-icon {
-                width: 24px;
-                height: 24px;
-            }
-            
             .project-header {
                 padding: 1.2rem;
             }
@@ -2268,17 +2027,6 @@ footer {
             
             .section-title {
                 font-size: 1.6rem;
-            }
-            
-            .skill-tag {
-                min-width: 55px;
-                min-height: 55px;
-                font-size: 0.7rem;
-            }
-            
-            .skill-icon {
-                width: 20px;
-                height: 20px;
             }
             
             .project-btn {
@@ -2397,12 +2145,10 @@ footer {
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <!-- <li><a href="#about">About</a></li> -->
-                <!-- <li><a href="#skills">Skills</a></li> -->
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#experience">Experience</a></li>
                 <li><a href="#publications">Publications</a></li>
                 <li><a href="#blogs">Blogs</a></li>
-                <li><a href="#skills">Skills</a></li>
 
                 <li><a href="#contact">Contact</a></li>
             </ul>
@@ -2416,7 +2162,6 @@ footer {
                 <li><a href="#experience" onclick="closeMobileMenu()">Experience</a></li>
                 <li><a href="#publications" onclick="closeMobileMenu()">Publications</a></li>
                 <li><a href="#blogs" onclick="closeMobileMenu()">Blogs</a></li>
-                <li><a href="#skills" onclick="closeMobileMenu()">Skills</a></li>
 
                 <li><a href="#contact" onclick="closeMobileMenu()">Contact</a></li>
             </ul>
@@ -2777,149 +2522,6 @@ footer {
             </div>
         </div>
     </section>
-
-    <!-- Enhanced Skills Section -->
-    <section id="skills" class="skills">
-        <div class="container">
-            <div class="section-header fade-in">
-                <h2 class="section-title">Technical Expertise</h2>
-            </div>
-            <div class="skills-grid fade-in">
-                <div class="skill-category" data-icon="💻">
-                    <h3>Programming & Scripting</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag python">
-                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" class="skill-icon">
-                            Python
-                        </span>
-                        <span class="skill-tag cpp">
-                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" alt="C++" class="skill-icon">
-                            C++
-                        </span>
-                        <span class="skill-tag c">
-                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg" alt="C" class="skill-icon">
-                            C
-                        </span>
-                        <span class="skill-tag sql">
-                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="SQL" class="skill-icon">
-                            SQL
-                        </span>
-                        <span class="skill-tag bash">
-                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg" alt="Bash" class="skill-icon">
-                            Bash
-                        </span>
-                        <!-- <span class="skill-tag javascript">
-                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" class="skill-icon">
-                            JavaScript
-                        </span> -->
-                    </div>
-                </div>
-            </div>
-            <div class="skill-category" data-icon="🧠">
-                <h3>Machine Learning & AI</h3>
-                <div class="skill-tags">
-                    <span class="skill-tag pytorch">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg" alt="PyTorch" class="skill-icon">
-                        PyTorch
-                    </span>
-                    <span class="skill-tag tensorflow">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg" alt="TensorFlow" class="skill-icon">
-                        TensorFlow
-                    </span>
-                    <span class="skill-tag transformers">
-                        <svg class="skill-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                        </svg>
-                        Transformers
-                    </span>
-                    <span class="skill-tag vllm">
-                        <svg class="skill-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
-                        </svg>
-                        VLLM
-                    </span>
-                    <span class="skill-tag lightning">
-                        <svg class="skill-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M13 0L4 14h6l-2 10 9-14h-6l2-10z"/>
-                        </svg>
-                        Lightning
-                    </span>
-                    <span class="skill-tag spacy">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/88/SpaCy_logo.svg" alt="spaCy" class="skill-icon">
-                        spaCy
-                    </span>
-                    <span class="skill-tag opencv">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg" alt="OpenCV" class="skill-icon">
-                        OpenCV
-                    </span>
-                </div>
-            </div>
-            
-            <div class="skill-category" data-icon="☁️">
-                <h3>Big Data & Cloud</h3>
-                <div class="skill-tags">
-                    <span class="skill-tag aws">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS" class="skill-icon">
-                        AWS
-                    </span>
-                    <span class="skill-tag gcp">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg" alt="GCP" class="skill-icon">
-                        GCP
-                    </span>
-                    <!-- <span class="skill-tag airflow">
-                        <svg class="skill-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2L2 7v10l10 5 10-5V7l-10-5zm8 13.5l-8 4-8-4v-7l8-4 8 4v7z"/>
-                        </svg>
-                        Airflow
-                    </span> -->
-                    <span class="skill-tag mlflow">
-                        <svg class="skill-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2L22 8.5v7L12 22 2 15.5v-7L12 2zm8 12.5L12 19l-8-4.5v-5L12 14l8-4.5v5z"/>
-                        </svg>
-                        MLflow
-                    </span>
-                    <span class="skill-tag dvc">
-                        <img src="https://dvc.org/img/dvc_icon-color--square_vector.svg" alt="DVC" class="skill-icon">
-                        DVC
-                    </span>
-                    <!-- <span class="skill-tag spark">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachespark/apachespark-original.svg" alt="Spark" class="skill-icon">
-                        Spark
-                    </span> -->
-                </div>
-            </div>
-        <div class="skill-category" data-icon="⚙️">
-                <h3>DevOps & Tools</h3>
-                <div class="skill-tags">
-                    <span class="skill-tag docker">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker" class="skill-icon">
-                        Docker
-                    </span>
-                    <span class="skill-tag linux">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" alt="Linux" class="skill-icon">
-                        Linux
-                    </span>
-                    <span class="skill-tag git">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git" class="skill-icon">
-                        Git
-                    </span>
-                    <span class="skill-tag kubernetes">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg" alt="Kubernetes" class="skill-icon">
-                        Kubernetes
-                    </span>
-                    <span class="skill-tag jira">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jira/jira-original.svg" alt="Jira" class="skill-icon">
-                        Jira
-                    </span>
-                    <span class="skill-tag vscode">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" alt="VS Code" class="skill-icon">
-                        VS Code
-                    </span>
-                </div>
-            </div>
-            </div>
-        </div>
-    </section>
     
      <!-- Contact Section -->
     <meta charset="UTF-8">
@@ -3257,7 +2859,6 @@ footer {
                     <h4>Quick Links</h4>
                     <ul>
                         <!-- <li><a href="#about">About Me</a></li> -->
-                        <li><a href="#skills">Technical Skills</a></li>
                         <li><a href="#projects">Featured Projects</a></li>
                         <li><a href="#experience">Experience</a></li>
                         <li><a href="#publications">Publications</a></li>
