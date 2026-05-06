@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arjun Srinivasan – Data Science Portfolio</title>
+    <title>Arjun Srinivasan – Research Engineer | Generative AI, Multimodal Systems, Efficient ML</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <!-- <li><a href="#about">About</a></li> -->
-                <li><a href="#projects">Projects</a></li>
+                <li><a href="#projects">Work</a></li>
                 <li><a href="#experience">Experience</a></li>
                 <li><a href="#publications">Publications</a></li>
                 <li><a href="#blogs">Blogs</a></li>
@@ -42,7 +42,7 @@
             <ul class="nav-links">
                 <li><a href="#home" onclick="closeMobileMenu()">Home</a></li>
                 <!-- <li><a href="#about" onclick="closeMobileMenu()">About</a></li> -->
-                <li><a href="#projects" onclick="closeMobileMenu()">Projects</a></li>
+                <li><a href="#projects" onclick="closeMobileMenu()">Work</a></li>
                 <li><a href="#experience" onclick="closeMobileMenu()">Experience</a></li>
                 <li><a href="#publications" onclick="closeMobileMenu()">Publications</a></li>
                 <li><a href="#blogs" onclick="closeMobileMenu()">Blogs</a></li>
@@ -60,10 +60,10 @@
             </div>
             <div class="hero-content">
                 <h1>Arjun Srinivasan </h1>
-                <p class="subtitle">Research Data Scientist & AI Engineer</p>
+                <p class="subtitle">Research Engineer for Generative AI, Multimodal Learning, and Scalable ML Systems</p>
                 <!-- <p class="description">Transforming complex data into intelligent solutions through cutting-edge machine learning, deep learning, and AI research. Specialized in computer vision, NLP, and predictive modeling.</p> -->
                 
-                <p>I’m a Research Data Scientist with 6+ years of experience in AI/ML R&D, specializing in generative AI, multimodal learning, and large-scale model optimization. My work spans NSF-funded research and industry collaborations, with publications in top venues such as ICRA, JINT, and JVST A. I’m passionate about bridging cutting-edge research with real-world impact, building reproducible pipelines, and deploying scalable AI systems across domains like manufacturing and geospatial AI.</p>
+                <p>I build research-grade ML systems that connect careful experimentation with deployable engineering. My work spans generative AI, multimodal learning, efficient training, and production inference, with experience across NSF- and DoD-funded research as well as real-world manufacturing and geospatial AI systems. I care most about reproducible experiments, strong empirical evidence, and turning good research ideas into reliable code.</p>
                 <!-- Education Info Added to Hero -->
                 <div class="hero-education">
                     <div class="education-badge">
@@ -82,19 +82,19 @@
                         <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
                             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                         </svg>
-                        Learn More
+                        Selected Work
+                    </a>
+                    <a href="#blogs" class="btn btn-secondary">
+                        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 12H7v-2h10v2zm0-4H7V9h10v2zm0-4H7V5h10v2z"/>
+                        </svg>
+                        Research Notes
                     </a>
                     <a href="#contact" class="btn btn-secondary">
                         <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
                             <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                         </svg>
                         Get In Touch
-                    </a>
-                    <a href="CV_portfolio.pdf" class="btn btn-outline" download>
-                        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
-                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                        </svg>
-                        Download CV
                     </a>
                 </div>
             </div>
@@ -105,29 +105,56 @@
     <section id="projects" style="background-color: var(--bg);">
         <div class="container">
             <div class="section-header fade-in">
-                <h2 class="section-title">Featured Projects</h2>
+                <h2 class="section-title">Selected Research & Engineering Work</h2>
             </div>
             <div class="projects-grid fade-in">
-
-
                 <div class="project-card">
                     <div class="project-header">
-                        <h3>AI-Driven CVD Diamond Manufacturing</h3>
-                        <div class="project-date">NSF-Funded Project</div>
+                        <h3>OpenAI Parameter Golf: GDN Hybrid Long-Context LM</h3>
+                        <div class="project-date">Efficient Long-Context Training</div>
                     </div>
                     <div class="project-content">
                         <ul>
-                            <li>Developed hybrid CNN-LSTM models for crystal growth prediction</li>
-                            <li>Achieved ~99% accuracy in forecasting growth trajectories</li>
-                            <li>Enabled anomaly detection up to 6 hours in advance</li>
-                            <li>Implemented human-in-the-loop annotation system</li>
+                            <li>Replaced 7 of 9 full-attention layers with Gated DeltaNet mixers while matching the parameter budget</li>
+                            <li>Showed a long-context crossover: hybrid loses at 8k, then wins at 16k and 32k under the same wall-clock budget</li>
+                            <li>Improved validation bpb from 1.7059 to 1.4709 at 32k with 1.62x faster steps</li>
+                            <li>Released configs, logs, scripts, and analysis for open-source review</li>
                         </ul>
                         <div class="project-buttons">
-                            <a href="https://pubs.aip.org/avs/jva/article-abstract/43/3/032708/3345804/AI-guided-frame-prediction-techniques-to-model?redirectedFrom=fulltext" target="_blank" class="project-btn video-btn">
+                            <a href="blog/hybrid_llm.md" class="project-btn codebase-btn">
                                 <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
                                     <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                                 </svg>
-                                Project Link
+                                Writeup
+                            </a>
+                            <a href="https://github.com/openai/parameter-golf/pulls?q=is%3Apr+olmo+is%3Aclosed" target="_blank" class="project-btn video-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                                </svg>
+                                PR
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3>Qwen3-1.7B Distributed Training Throughput Optimization</h3>
+                        <div class="project-date">Multi-GPU Systems Performance</div>
+                    </div>
+                    <div class="project-content">
+                        <ul>
+                            <li>Compared FSDP2, activation checkpointing, mixed precision, torch compile, and optimizer-state sharding on 2x RTX 3090s</li>
+                            <li>Reached roughly 50% estimated MFU after tuning batch size, sequence length, checkpointing, and kernel-level efficiency</li>
+                            <li>Profiled utilization, memory pressure, communication overhead, and step time to identify the highest-throughput setup</li>
+                            <li>Documented a practical recipe for constrained-GPU large-model experimentation</li>
+                        </ul>
+                        <div class="project-buttons">
+                            <a href="https://github.com/aarjunsrinivasan/constrained_gpu_training" target="_blank" class="project-btn codebase-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                                </svg>
+                                Codebase
                             </a>
                         </div>
                     </div>
@@ -136,19 +163,19 @@
                 <div class="project-card">
                     <div class="project-header">
                         <h3>AI-Assisted Laser Welding System</h3>
-                        <div class="project-date">Manufacturing AI</div>
+                        <div class="project-date">Real-Time Multimodal Inference</div>
                     </div>
                     <div class="project-content">
                         <ul>
-                            <li>Built real-time inference pipeline with 3ms latency</li>
-                            <li>Integrated multi-sensor fusion (camera, microphone, 3D scanner)</li>
+                            <li>Built a real-time inference pipeline with 3 ms latency for deployment-constrained industrial settings</li>
+                            <li>Integrated multi-sensor fusion across camera, microphone, and 3D scanning signals</li>
                             <li>Reduced weld defects by 30% using ensemble deep learning</li>
-                            <li>Deployed via Triton Inference Server for production</li>
+                            <li>Deployed inference services through Triton for production use</li>
                         </ul>
                         <div class="project-buttons">
-                            <a href="https://icaleo.org/program/44th-annual-icaleo/aimodelingmonitoring-track/aimodelingmonitoring-tbd/19330" target="_blank" class="project-btn video-btn">
+                            <a href="https://icaleo.org/program/44th-annual-icaleo/aimodelingmonitoring-track/monitoring-and-control/20683" target="_blank" class="project-btn video-btn">
                                 <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
-                                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                                 </svg>
                                 Project Link
                             </a>
@@ -156,18 +183,16 @@
                     </div>
                 </div>
 
-
-
                 <div class="project-card">
                     <div class="project-header">
                         <h3>Trust-Aware Robot Navigation</h3>
-                        <div class="project-date">University of Maryland</div>
+                        <div class="project-date">Embodied AI & Reinforcement Learning</div>
                     </div>
                     <div class="project-content">
                         <ul>
                             <li>Developed socially intelligent navigation using reinforcement learning</li>
-                            <li>Integrated natural language instructions and human intent signals</li>
-                            <li>Implemented PPO algorithm in PyTorch for policy optimization</li>
+                            <li>Integrated natural language instructions and human intent signals into the policy setup</li>
+                            <li>Implemented PPO in PyTorch for trust-aware policy optimization</li>
                             <li>Published findings at IEEE ICRA conference</li>
                         </ul>
                         <div class="project-buttons">
@@ -184,15 +209,14 @@
                 <div class="project-card">
                     <div class="project-header">
                         <h3>Adversarial Reinforcement Learning for Autonomous Driving</h3>
-                        <div class="project-date">Fraunhofer CMA</div>
+                        <div class="project-date">Robustness, Simulation, and Multi-Agent RL</div>
                     </div>
                     <div class="project-content">
                         <ul>
-                            <li>Engineered a learning-based adversarial framework to generate failure scenarios for rule-based autonomous driving agents</li>
-                            <li>Formulated adversarial rewards to degrade ego-agent performance (by ~30% reduction in cumulative reward).</li>
-                            <li>Designed a defense pipeline to improve ego-agent resilience against adversarial attacks.</li>
-                            <li>Extended Highway-Env simulator for multi-agent adversarial training with kinematic observation</li>
-
+                            <li>Engineered a learning-based adversarial framework to generate failure scenarios for rule-based driving agents</li>
+                            <li>Formulated adversarial rewards that reduced ego-agent cumulative reward by roughly 30%</li>
+                            <li>Designed a defense pipeline to improve resilience under adversarial conditions</li>
+                            <li>Extended Highway-Env for multi-agent adversarial training with kinematic observations</li>
                         </ul>
                         <div class="project-buttons">
                             <a href="https://github.com/aarjunsrinivasan/RAL-MARL" target="_blank" class="project-btn codebase-btn">
@@ -205,22 +229,30 @@
                     </div>
                 </div>
 
- 
-
                 <div class="project-card">
                     <div class="project-header">
-                        <h3>BERT User Requirement Classification</h3>
-                        <div class="project-date">Jan 2022</div>
+                        <h3>AI-Driven CVD Diamond Manufacturing</h3>
+                        <div class="project-date">NSF-Funded Applied ML Research</div>
                     </div>
                     <div class="project-content">
                         <ul>
-                            <li>Fine-tuned BERT for automatic user feedback categorization</li>
-                            <li>Achieved 87% overall accuracy on classification tasks</li>
-                            <li>Leveraged transfer learning for small dataset optimization</li>
-                            <li>Achieved 91+ precision and recall with minimal training data</li>
+                            <li>Developed hybrid CNN-LSTM models for crystal growth prediction</li>
+                            <li>Achieved roughly 99% accuracy in forecasting growth trajectories</li>
+                            <li>Enabled anomaly detection up to 6 hours in advance</li>
+                            <li>Supported published work on industrial prediction and monitoring</li>
                         </ul>
+                        <div class="project-buttons">
+                            <a href="https://pubs.aip.org/avs/jva/article-abstract/43/3/032708/3345804/AI-guided-frame-prediction-techniques-to-model?redirectedFrom=fulltext" target="_blank" class="project-btn video-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                                </svg>
+                                Paper
+                            </a>
+                        </div>
                     </div>
                 </div>
+
+ 
             </div>
         </div>
     </section>
@@ -238,12 +270,12 @@
                         <div class="position">Research Data Scientist</div>
                         <div class="duration">October 2020 - Present | Riverdale, MD</div>
                     </div>
-                    <p> AI research and development projects focused on real-time defect detection, predictive modeling, and model robustness testing in manufacturing and imaging systems. Collaborating with U.S. government-funded programs (NSF, DoD) to deliver deployable, high-impact AI solutions.</p>
+                    <p>Led applied ML systems work across training infrastructure, synthetic data, predictive modeling, and deployment for manufacturing and imaging systems. The work consistently emphasized reproducible experimentation, throughput-aware engineering, and production relevance.</p>
                     <ul>
-                        <li>Engineere hybrid CNN-LSTM models and efficient data pipelines for synthetic diamond manufacturing</li>
-                        <li>Led cross-functional AI engineering teams building real-time inference pipelines (3ms latency)</li>
-                        <li>Unsupervised synthetic data generation using Diffusion and GANs for manufacturing and Geospatial domains</li>
-                        <li>Published 3 peer-reviewed papers in top-tier conferences and journals</li>
+                        <li>Built PyTorch-based training and inference workflows with strong attention to reproducibility and operational reliability</li>
+                        <li>Led cross-functional engineering efforts building real-time inference pipelines with 3 ms latency</li>
+                        <li>Developed synthetic data workflows with diffusion models and GANs for manufacturing and geospatial domains</li>
+                        <li>Published peer-reviewed work spanning robotics, industrial AI, and scientific imaging</li>
                         <li>Mentored junior engineers and interns in sprint planning and deployment best practices</li>
                     </ul>
                 </div>
@@ -303,30 +335,6 @@
                 <h2 class="section-title">Publications</h2>
             </div>
             <div class="publications-grid fade-in">
-                <div class="publication-card" onclick="window.open('https://link.springer.com/article/10.1007/s10846-017-0707-2', '_blank')">
-                    <div class="publication-title">Theoretical and Experimental Investigations on the Effect of Overlap and Offset on the Design of a Novel Quadrotor Configuration, VOOPS</div>
-                    <div class="publication-authors">G. Nandakumar, A. Srinivasan, and A. Thondiyath</div>
-                    <div class="publication-venue">
-                        🔗 Journal of Intelligent & Robotic Systems, 92, 615-628, 2018
-                    </div>
-                </div>
-
-                <div class="publication-card" onclick="window.open('https://ieeexplore.ieee.org/abstract/document/9561983', '_blank')">
-                    <div class="publication-title">Can a Robot Trust You?: A DRL-Based Approach to Trust-Driven Human-Guided Navigation</div>
-                    <div class="publication-authors">V. S. Dorbala, A. Srinivasan, and A. Bera</div>
-                    <div class="publication-venue">
-                        🔗 2021 IEEE International Conference on Robotics and Automation (ICRA), 2021, pp. 3538–3545
-                    </div>
-                </div>
-
-                <div class="publication-card" onclick="window.open('https://arxiv.org/abs/2404.07306', '_blank')">
-                    <div class="publication-title">AI-Guided Defect Detection Techniques to Model Single Crystal Diamond Growth</div>
-                    <div class="publication-authors">R. R. Mekala, E. Garratt, M. Muehle, A. Srinivasan, A. Porter, and M. Lindvall</div>
-                    <div class="publication-venue">
-                        🔗 arXiv preprint arXiv:2404.07306, 2024
-                    </div>
-                </div>
-
                 <div class="publication-card" onclick="window.open('https://www.scientific.net/KEM.993.67', '_blank')">
                     <div class="publication-title">AI-Guided Feature Segmentation Techniques to Model Features from Single Crystal Diamond Growth</div>
                     <div class="publication-authors">R. R. Mekala, E. Garratt, M. Muehle, A. Srinivasan, A. Porter, and M. Lindvall</div>
@@ -342,6 +350,49 @@
                         🔗 Journal of Vacuum Science & Technology A, 43(3), 032708, 2025
                     </div>
                 </div>
+
+                <div class="publication-card" onclick="window.open('https://ieeexplore.ieee.org/abstract/document/9561983', '_blank')">
+                    <div class="publication-title">Can a Robot Trust You?: A DRL-Based Approach to Trust-Driven Human-Guided Navigation</div>
+                    <div class="publication-authors">V. S. Dorbala, A. Srinivasan, and A. Bera</div>
+                    <div class="publication-venue">
+                        🔗 2021 IEEE International Conference on Robotics and Automation (ICRA), 2021, pp. 3538–3545
+                    </div>
+                </div>
+
+                <div class="publication-card" onclick="window.open('https://link.springer.com/article/10.1007/s10846-017-0707-2', '_blank')">
+                    <div class="publication-title">Theoretical and Experimental Investigations on the Effect of Overlap and Offset on the Design of a Novel Quadrotor Configuration, VOOPS</div>
+                    <div class="publication-authors">G. Nandakumar, A. Srinivasan, and A. Thondiyath</div>
+                    <div class="publication-venue">
+                        🔗 Journal of Intelligent & Robotic Systems, 92, 615-628, 2018
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Focus Section -->
+    <section id="focus" style="background-color: var(--light-color);">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Technical Focus</h2>
+            </div>
+            <div class="stats fade-in">
+                <div class="stat-item">
+                    <div class="company-name">Training</div>
+                    <p>PyTorch, distributed training, mixed precision, checkpointing, throughput tuning.</p>
+                </div>
+                <div class="stat-item">
+                    <div class="company-name">Evaluation</div>
+                    <p>Benchmarks, ablations, reproducible experiments, and technical analysis.</p>
+                </div>
+                <div class="stat-item">
+                    <div class="company-name">Systems</div>
+                    <p>Docker, Triton, ONNX, experiment orchestration, and deployment pipelines.</p>
+                </div>
+                <div class="stat-item">
+                    <div class="company-name">Tooling</div>
+                    <p>Transformers, TRL, TorchTitan, vLLM, W&B, MLflow, Ray, DVC.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -350,9 +401,17 @@
     <section id="blogs">
         <div class="container">
             <div class="section-header fade-in">
-                <h2 class="section-title">Blog Posts</h2>
+                <h2 class="section-title">Writing & Research Notes</h2>
             </div>
             <div class="publications-grid fade-in">
+                <div class="publication-card" onclick="window.location.href='blog/hybrid_llm.md'">
+                    <div class="publication-title">When Does It Pay Off to Swap Attention for GDN? A 600-Second Experiment</div>
+                    <div class="publication-authors">Arjun Srinivasan</div>
+                    <div class="publication-venue">
+                        📝 Long-context LLMs, efficient training, and empirical analysis
+                    </div>
+                </div>
+
                 <div class="publication-card" onclick="window.location.href='blog/pca-svd.html'">
                     <div class="publication-title">Is PCA Just SVD? A Geometric and Optimization View from ML to Deep Learning</div>
                     <div class="publication-authors">Arjun Srinivasan</div>
@@ -369,13 +428,6 @@
                     </div>
                 </div>
 
-                <div class="publication-card" onclick="window.open('https://medium.com/@arjunsrinivasan.a/interaction-and-decision-making-in-autonomous-driving-workshop-rss-2020-a-summary-b25d77f59584', '_blank')">
-                    <div class="publication-title">Interaction and Decision Making in Autonomous Driving Workshop - RSS 2020 a Summary</div>
-                    <div class="publication-authors">Arjun Srinivasan</div>
-                    <div class="publication-venue">
-                        🔗 Medium - Conference Summary
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -399,17 +451,6 @@
                         <div class="contact-details">
                             <h4>Email</h4>
                             <a href="mailto:arjunsrinivasan.a@gmail.com">arjunsrinivasan.a@gmail.com</a>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
-                            </svg>
-                        </div>
-                        <div class="contact-details">
-                            <h4>Phone</h4>
-                            <a href="tel:+15714738938">+1 571-473-8938</a>
                         </div>
                     </div>
                     <div class="contact-item">
@@ -446,14 +487,13 @@
             <div class="footer-top">
                 <div class="footer-about">
                     <h3>Arjun Srinivasan </h3>
-            
-                    </p>I’m a Research Data Scientist with 6+ years of experience in AI/ML R&D, specializing in generative AI, multimodal learning, and large-scale model optimization. My work spans NSF-funded research and industry collaborations, with publications in top venues such as ICRA, JINT, and JVST A. I’m passionate about bridging cutting-edge research with real-world impact, building reproducible pipelines, and deploying scalable AI systems across domains like manufacturing and geospatial AI.</p>
+                    <p>Research engineer focused on generative AI, multimodal learning, efficient training, and production-grade ML systems.</p>
                 </div>
                 <div class="footer-links">
                     <h4>Quick Links</h4>
                     <ul>
                         <!-- <li><a href="#about">About Me</a></li> -->
-                        <li><a href="#projects">Featured Projects</a></li>
+                        <li><a href="#projects">Selected Work</a></li>
                         <li><a href="#experience">Experience</a></li>
                         <li><a href="#publications">Publications</a></li>
                     </ul>
@@ -461,7 +501,6 @@
                 <div class="footer-contact">
                     <h4>Get In Touch</h4>
                     <p><a href="mailto:arjunsrinivasan.a@gmail.com">arjunsrinivasan.a@gmail.com</a></p>
-                    <p><a href="tel:+15714738938">+1 571-473-8938</a></p>
                     <p>Maryland, USA</p>
                 </div>
             </div>
@@ -480,11 +519,6 @@
                 <a href="mailto:arjunsrinivasan.a@gmail.com" class="social-link" aria-label="Email">
                     <svg viewBox="0 0 24 24">
                         <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                    </svg>
-                </a>
-                <a href="tel:+15714738938" class="social-link" aria-label="Phone">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
                     </svg>
                 </a>
             </div>
