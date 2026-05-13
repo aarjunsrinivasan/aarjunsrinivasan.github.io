@@ -41,17 +41,6 @@ function toggleTheme() {
             }
         }
 
-        // Mobile menu functionality
-        function toggleMobileMenu() {
-            const mobileMenu = document.getElementById('mobileMenu');
-            mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block';
-        }
-
-        function closeMobileMenu() {
-            const mobileMenu = document.getElementById('mobileMenu');
-            mobileMenu.style.display = 'none';
-        }
-
         // Initialize theme when DOM is loaded
         document.addEventListener('DOMContentLoaded', initializeTheme);
 
@@ -111,31 +100,18 @@ function toggleTheme() {
             });
         });
 
-        // Navbar background change on scroll
+        // Navbar elevation on scroll
         document.addEventListener('DOMContentLoaded', () => {
     const navbar = document.getElementById('navbar');
-    let lastScrollTop = 0;
 
     window.addEventListener('scroll', () => {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
 
         if (scrollTop > 50) {
             navbar.classList.add('scrolled');
-            if (!isDarkTheme) {
-                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-                navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';
-            } else {
-                navbar.style.background = ''; // Let CSS handle dark theme
-                navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';
-            }
         } else {
             navbar.classList.remove('scrolled');
-            navbar.style.background = '';
-            navbar.style.boxShadow = 'none';
         }
-
-        lastScrollTop = scrollTop;
     });
 });
         
@@ -225,4 +201,3 @@ function toggleTheme() {
         if (statsSection) {
             statsObserver.observe(statsSection);
         }
-
