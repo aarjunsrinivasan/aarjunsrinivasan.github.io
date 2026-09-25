@@ -1,4 +1,4 @@
-# GDN Hybrid Attention Under a 16 MB Model Budget
+# Hybrid Attention Wins at 16k+ Context: GDN vs. Full Attention in a 17M-Param, 600-Second Budget
 
 *A Parameter Golf non-record submission accepted on 2026-04-04.*
 
