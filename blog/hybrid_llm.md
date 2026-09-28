@@ -1,4 +1,4 @@
-# Hybrid Attention Wins at 16k+ Context: GDN vs. Full Attention in a 17M-Param, 600-Second Budget
+# OpenAI Parameter Golf: Hybrid Attention Wins at 16k+ Context (GDN vs. Full Attention, 17M Params)
 
 *A Parameter Golf non-record submission accepted on 2026-04-04.*
 
@@ -16,7 +16,7 @@ Parameter Golf rewards models that do more with less: small parameter budgets, c
 
 The motivation came from OLMo Hybrid's use of Gated Delta Net (GDN) layers alongside full-attention layers. The obvious scaling argument says the hybrid should become cheaper at long sequence lengths, because most layers avoid `O(L^2)` attention. The less obvious question is whether that advantage still matters in a tiny model, after compression, with only 600 seconds of training.
 
-The contribution of this submission is not just adding a new mixer layer. It measures where the architectural trade-off changes sign under a fixed wall-clock and compressed-model objective.
+What I wanted to find was where the trade-off changes sign under a fixed wall-clock budget and a compressed-model objective.
 
 ## Model comparison
 
@@ -43,7 +43,7 @@ Each run used:
 
 The key fairness choice was schedule scaling. The hybrid did not receive a longer training budget. Step times were measured, the available optimizer-step budget was estimated for each model within 600 seconds, and warmup/warmdown schedules were rescaled to preserve similar training-phase ratios across contexts.
 
-This matters because the experiment is not only about per-step quality. It is about *quality reached within a fixed wall-clock budget*.
+So the comparison is *quality reached within a fixed wall-clock budget*, not per-step quality.
 
 ## Results
 
@@ -117,19 +117,9 @@ This submission is intentionally concrete, but it opens several clean next exper
 3. **Tune the 8k regime separately.** The hybrid had signs of better per-step loss at 8k but lost on wall-clock. A kernel-aware batch/token schedule might recover some of that.
 4. **Run more seeds at 16k.** The 32k result was very stable across two seeds. The 16k crossover is smaller and deserves more replication.
 
-## Why this is meaningful
+## The takeaway
 
-This is a small but useful systems-oriented result: it identifies a specific context-length crossover where a modern hybrid sequence mixer becomes worthwhile under a compressed, fixed-budget training objective.
-
-It also demonstrates several research-engineering habits that matter in model-development work:
-
-- faithful implementation of a recent architecture idea in a different codebase;
-- adaptation to a new constraint regime rather than assuming scale results transfer directly;
-- controls around wall-clock, parameter count, compression, and validation protocol;
-- reporting negative and conditional results, not only wins;
-- public code, scripts, logs, and submission metadata.
-
-The strongest part of the result is that it has a boundary. The hybrid did not simply "win"; it lost at 8k, crossed over around 16k, and became clearly better at 32k. That boundary makes the experiment more useful than a one-row benchmark, because it says something about when the architecture is worth its complexity.
+The result has a boundary: the hybrid lost at 8k, crossed over around 16k, and was clearly better at 32k. That tells me more than a single winning row would, because it says when the extra architecture is worth it, at least at 17M parameters and 600 seconds.
 
 ## Code and submission
 

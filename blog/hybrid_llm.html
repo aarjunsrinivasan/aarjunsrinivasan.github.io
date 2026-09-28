@@ -3,417 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hybrid Attention Wins at 16k+ Context: GDN vs. Full Attention in a 17M-Param, 600-Second Budget | Arjun Srinivasan</title>
+    <title>OpenAI Parameter Golf: Hybrid Attention Wins at 16k+ Context (GDN vs. Full Attention, 17M Params) | Arjun Srinivasan</title>
+    <meta name="description" content="Replacing 7 of 9 attention layers with Gated DeltaNet loses at 8k context but wins at 16k and 32k (1.4709 vs 1.7059 val_bpb) under the same 600-second H100 budget.">
+    <meta name="author" content="Arjun Srinivasan">
+    <link rel="canonical" href="https://aarjunsrinivasan.github.io/blog/hybrid_llm.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Arjun Srinivasan">
+    <meta property="og:title" content="OpenAI Parameter Golf: Hybrid Attention Wins at 16k+ Context (GDN vs. Full Attention, 17M Params)">
+    <meta property="og:description" content="Replacing 7 of 9 attention layers with Gated DeltaNet loses at 8k context but wins at 16k and 32k (1.4709 vs 1.7059 val_bpb) under the same 600-second H100 budget.">
+    <meta property="og:url" content="https://aarjunsrinivasan.github.io/blog/hybrid_llm.html">
+    <meta property="og:image" content="https://aarjunsrinivasan.github.io/mydp.jpg">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="OpenAI Parameter Golf: Hybrid Attention Wins at 16k+ Context (GDN vs. Full Attention, 17M Params)">
+    <meta name="twitter:description" content="Replacing 7 of 9 attention layers with Gated DeltaNet loses at 8k context but wins at 16k and 32k (1.4709 vs 1.7059 val_bpb) under the same 600-second H100 budget.">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "OpenAI Parameter Golf: Hybrid Attention Wins at 16k+ Context (GDN vs. Full Attention, 17M Params)", "description": "Replacing 7 of 9 attention layers with Gated DeltaNet loses at 8k context but wins at 16k and 32k (1.4709 vs 1.7059 val_bpb) under the same 600-second H100 budget.", "datePublished": "2026-04", "url": "https://aarjunsrinivasan.github.io/blog/hybrid_llm.html", "author": {"@type": "Person", "name": "Arjun Srinivasan", "url": "https://aarjunsrinivasan.github.io/"}}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #fafaf9;
-            --text: #292524;
-            --text-muted: #57534e;
-            --accent: #b45309;
-            --accent-hover: #92400e;
-            --border: #e7e5e4;
-            --card-bg: #ffffff;
-            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-            --dark-bg: #1c1917;
-            --dark-text: #fafaf9;
-            --dark-text-muted: #a8a29e;
-            --dark-accent: #d97706;
-            --dark-accent-hover: #f59e0b;
-            --dark-border: #44403c;
-            --dark-card-bg: #292524;
-            --dark-nav-bg: rgba(28, 25, 23, 0.96);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.8;
-            color: var(--text);
-            background-color: var(--bg);
-            transition: background-color 0.2s ease, color 0.2s ease;
-        }
-
-        [data-theme="dark"] body {
-            background-color: var(--dark-bg);
-            color: var(--dark-text);
-        }
-
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            border-bottom: 1px solid var(--border);
-            box-shadow: var(--card-shadow);
-        }
-
-        [data-theme="dark"] nav {
-            background: var(--dark-nav-bg);
-            border-bottom-color: var(--dark-border);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-        }
-
-        .logo {
-            font-size: 1.4375rem;
-            font-weight: 600;
-            font-family: 'Source Serif 4', Georgia, serif;
-            color: var(--text);
-            text-decoration: none;
-            letter-spacing: 0;
-        }
-
-        [data-theme="dark"] .logo {
-            color: var(--dark-text);
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text);
-            font-weight: 500;
-            font-size: 0.9375rem;
-            transition: color 0.2s ease;
-        }
-
-        [data-theme="dark"] .nav-links a {
-            color: var(--dark-text);
-        }
-
-        .nav-links a:hover {
-            color: var(--accent);
-        }
-
-        [data-theme="dark"] .nav-links a:hover {
-            color: var(--dark-accent);
-        }
-
-        .theme-toggle {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 0.4rem;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1rem;
-            color: var(--accent);
-            box-shadow: var(--card-shadow);
-            width: 42px;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        [data-theme="dark"] .theme-toggle {
-            background: var(--dark-card-bg);
-            color: var(--dark-accent);
-            border-color: var(--dark-border);
-        }
-
-        .blog-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 120px 2rem 4rem;
-        }
-
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 500;
-            margin-bottom: 2rem;
-            transition: color 0.2s ease;
-        }
-
-        .back-link:hover {
-            color: var(--accent-hover);
-        }
-
-        [data-theme="dark"] .back-link {
-            color: var(--dark-accent);
-        }
-
-        .blog-header {
-            margin-bottom: 3rem;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        [data-theme="dark"] .blog-header {
-            border-bottom-color: var(--dark-border);
-        }
-
-        .blog-title {
-            font-size: 2.5rem;
-            font-weight: 600;
-            font-family: 'Source Serif 4', Georgia, serif;
-            margin-bottom: 1rem;
-            color: var(--text);
-            line-height: 1.25;
-            letter-spacing: 0;
-        }
-
-        [data-theme="dark"] .blog-title {
-            color: var(--dark-text);
-        }
-
-        .blog-subtitle {
-            color: var(--text-muted);
-            font-style: italic;
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
-        }
-
-        [data-theme="dark"] .blog-subtitle {
-            color: var(--dark-text-muted);
-        }
-
-        .blog-meta {
-            display: flex;
-            gap: 1.5rem;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            flex-wrap: wrap;
-        }
-
-        [data-theme="dark"] .blog-meta {
-            color: var(--dark-text-muted);
-        }
-
-        .blog-content {
-            font-size: 1.1rem;
-            line-height: 1.9;
-        }
-
-        .blog-content h2 {
-            font-size: 1.75rem;
-            font-family: 'Source Serif 4', Georgia, serif;
-            margin-top: 3rem;
-            margin-bottom: 1rem;
-            color: var(--text);
-            font-weight: 600;
-        }
-
-        .blog-content h3 {
-            font-size: 1.25rem;
-            margin-top: 2rem;
-            margin-bottom: 0.75rem;
-            color: var(--text);
-            font-weight: 600;
-        }
-
-        [data-theme="dark"] .blog-content h2,
-        [data-theme="dark"] .blog-content h3 {
-            color: var(--dark-text);
-        }
-
-        .blog-content p {
-            margin-bottom: 1.5rem;
-        }
-
-        .blog-content ul,
-        .blog-content ol {
-            margin-left: 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .blog-content li {
-            margin-bottom: 0.5rem;
-        }
-
-        .blog-content a {
-            color: var(--accent);
-            text-decoration-thickness: 1px;
-            text-underline-offset: 3px;
-        }
-
-        [data-theme="dark"] .blog-content a {
-            color: var(--dark-accent);
-        }
-
-        .blog-content code {
-            background: var(--border);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-        }
-
-        [data-theme="dark"] .blog-content code {
-            background: var(--dark-border);
-        }
-
-        blockquote {
-            background: var(--card-bg);
-            border-left: 4px solid var(--accent);
-            margin: 2rem 0;
-            padding: 1.25rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: var(--card-shadow);
-            font-family: 'Source Serif 4', Georgia, serif;
-            font-size: 1.2rem;
-        }
-
-        [data-theme="dark"] blockquote {
-            background: var(--dark-card-bg);
-            border-left-color: var(--dark-accent);
-        }
-
-        .highlight-box {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-left: 4px solid var(--accent);
-            padding: 1.5rem;
-            margin: 2rem 0;
-            border-radius: 8px;
-            box-shadow: var(--card-shadow);
-        }
-
-        [data-theme="dark"] .highlight-box {
-            background: var(--dark-card-bg);
-            border-color: var(--dark-border);
-            border-left-color: var(--dark-accent);
-        }
-
-        .table-wrap {
-            overflow-x: auto;
-            margin: 2rem 0;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            box-shadow: var(--card-shadow);
-        }
-
-        [data-theme="dark"] .table-wrap {
-            border-color: var(--dark-border);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 640px;
-            background: var(--card-bg);
-        }
-
-        [data-theme="dark"] table {
-            background: var(--dark-card-bg);
-        }
-
-        th {
-            background: var(--accent);
-            color: #fff;
-            text-align: left;
-            font-weight: 600;
-            padding: 0.85rem 1rem;
-        }
-
-        [data-theme="dark"] th {
-            background: var(--dark-accent);
-            color: #1c1917;
-        }
-
-        td {
-            padding: 0.85rem 1rem;
-            border-bottom: 1px solid var(--border);
-            vertical-align: top;
-        }
-
-        [data-theme="dark"] td {
-            border-bottom-color: var(--dark-border);
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        .numeric {
-            text-align: right;
-            font-variant-numeric: tabular-nums;
-        }
-
-        @media (max-width: 768px) {
-            .blog-title {
-                font-size: 2rem;
-            }
-
-            .blog-content h2 {
-                font-size: 1.5rem;
-            }
-
-            .blog-container {
-                padding: 100px 1rem 2rem;
-            }
-
-            .nav-container {
-                padding: 1rem;
-            }
-
-            .nav-links {
-                gap: 1rem;
-                font-size: 0.9rem;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/post.css">
+    <script>
+        // Set theme before first paint to avoid a flash
+        (function () {
+            var t = null;
+            try { t = localStorage.getItem('theme'); } catch (e) {}
+            if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
 </head>
 <body>
-    <nav>
-        <div class="nav-container">
-            <a href="../index.html" class="logo">Arjun Srinivasan</a>
-            <ul class="nav-links">
-                <li><a href="../index.html#home">Home</a></li>
-                <li><a href="../index.html#blogs">Blogs</a></li>
-                <li><button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-                    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor">
-                        <path d="M12 2a10 10 0 1 0 0 20V2zm0 2.25v15.5a7.75 7.75 0 0 1 0-15.5z"/>
-                    </svg>
-                </button></li>
-            </ul>
-        </div>
-    </nav>
+    <a class="skip-link" href="#post">Skip to content</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light theme">
+        <svg class="theme-icon sun-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM2 13h2a1 1 0 0 0 0-2H2a1 1 0 0 0 0 2zm18 0h2a1 1 0 0 0 0-2h-2a1 1 0 0 0 0 2zM11 2v2a1 1 0 0 0 2 0V2a1 1 0 0 0-2 0zm0 18v2a1 1 0 0 0 2 0v-2a1 1 0 0 0-2 0zM5.990 4.580a1 1 0 0 0-1.410 1.410l1.060 1.060a1 1 0 0 0 1.410-1.410L5.990 4.580zm12.370 12.370a1 1 0 0 0-1.410 1.410l1.060 1.060a1 1 0 0 0 1.410-1.410l-1.060-1.060zm1.060-10.960a1 1 0 0 0-1.410-1.410l-1.060 1.060a1 1 0 0 0 1.410 1.410l1.060-1.060zM7.050 18.360a1 1 0 0 0-1.410-1.410l-1.060 1.060a1 1 0 0 0 1.410 1.410l1.060-1.060z"/>
+        </svg>
+        <svg class="theme-icon moon-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.1 2.1c-5 0-9 4-9 9s4 9 9 9c1.4 0 2.7-.3 3.9-.8-2.1-1.9-3.4-4.6-3.4-7.7s1.3-5.8 3.4-7.7c-1.2-.5-2.5-.8-3.9-.8z"/>
+        </svg>
+    </button>
 
     <main class="blog-container">
-        <a href="../index.html#blogs" class="back-link">Back to Blogs</a>
+        <a href="../index.html#blogs" class="site-link">← Arjun Srinivasan</a>
 
         <header class="blog-header">
-            <h1 class="blog-title">Hybrid Attention Wins at 16k+ Context: GDN vs. Full Attention in a 17M-Param, 600-Second Budget</h1>
-            <p class="blog-subtitle">A Parameter Golf non-record submission accepted on 2026-04-04.</p>
+            <h1 class="blog-title">OpenAI Parameter Golf: Hybrid Attention Wins at 16k+ Context (GDN vs. Full Attention, 17M Params)</h1>
+            <p class="blog-subtitle">Replacing 7 of 9 attention layers with Gated DeltaNet loses at 8k context, then wins at 16k and 32k under the same 600-second H100 budget. A Parameter Golf non-record submission, accepted 2026-04-04.</p>
             <div class="blog-meta">
-                <span>Published: April 2026</span>
-                <span>Reading Time: 8 min</span>
-                <span>Topics: Long-context LLMs, efficient training, hybrid sequence mixers</span>
+                <span>Apr 2026</span>
+                <span>8 min read</span>
+                <span>Long-context LLMs, efficient training, hybrid sequence mixers</span>
             </div>
         </header>
 
-        <article class="blog-content">
+        <article class="blog-content" id="post">
             <h2>One-line result</h2>
             <div class="highlight-box">
                 <p>This study tests whether the Gated Delta Net hybrid pattern from OLMo Hybrid helps a very small language model train at long context lengths. In this constrained setting, the answer was conditional but useful: full attention was better at 8k context, while the hybrid crossed over between 8k and 16k and was substantially better at 32k under the same 600-second single-H100 budget.</p>
                 <p>At 32k context, the hybrid reached a 2-seed mean <code>final_int8_zlib_roundtrip</code> score of <strong>1.4709 val_bpb</strong>, compared with <strong>1.7059 val_bpb</strong> for the full-attention baseline.</p>
             </div>
+
+            <h3>Results at a glance</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="numeric">Context</th>
+                            <th class="numeric">Baseline val_bpb</th>
+                            <th class="numeric">Hybrid val_bpb</th>
+                            <th class="numeric">Hybrid step speed</th>
+                            <th>Winner</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="numeric">8k</td>
+                            <td class="numeric">1.3507</td>
+                            <td class="numeric">1.3810</td>
+                            <td class="numeric">0.79x</td>
+                            <td>Baseline</td>
+                        </tr>
+                        <tr>
+                            <td class="numeric">16k</td>
+                            <td class="numeric">1.4353</td>
+                            <td class="numeric">1.3999</td>
+                            <td class="numeric">1.12x</td>
+                            <td>Hybrid</td>
+                        </tr>
+                        <tr>
+                            <td class="numeric"><strong>32k</strong></td>
+                            <td class="numeric">1.7059</td>
+                            <td class="numeric"><strong>1.4709</strong></td>
+                            <td class="numeric"><strong>1.62x</strong></td>
+                            <td><strong>Hybrid</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="glance-caption">Lower val_bpb is better. 1x H100 SXM, 600 s wall-clock per run; the 32k hybrid number is a 2-seed mean. Code, logs and configs: <a href="https://github.com/openai/parameter-golf/pull/1371" target="_blank" rel="noopener">PR #1371</a>.</p>
 
             <h2>Research question</h2>
             <p>Parameter Golf rewards models that do more with less: small parameter budgets, compressed submissions, and careful training choices. That makes it a useful testbed for a practical ML systems question:</p>
@@ -421,7 +107,7 @@
             <blockquote>When context length grows, should a small model spend its budget on full quadratic attention everywhere, or should most layers use a cheaper recurrent mixer while a few layers preserve full attention?</blockquote>
 
             <p>The motivation came from OLMo Hybrid's use of Gated Delta Net (GDN) layers alongside full-attention layers. The obvious scaling argument says the hybrid should become cheaper at long sequence lengths, because most layers avoid <code>O(L^2)</code> attention. The less obvious question is whether that advantage still matters in a tiny model, after compression, with only 600 seconds of training.</p>
-            <p>The contribution of this submission is not just adding a new mixer layer. It measures where the architectural trade-off changes sign under a fixed wall-clock and compressed-model objective.</p>
+            <p>What I wanted to find was where the trade-off changes sign under a fixed wall-clock budget and a compressed-model objective.</p>
 
             <h2>Model comparison</h2>
             <p>The experiment compares two 9-layer models with similar parameter counts:</p>
@@ -465,7 +151,7 @@
                 <li><strong>Primary score:</strong> validation bits per byte after int8 quantization, zlib compression, reload, and evaluation</li>
             </ul>
             <p>The key fairness choice was schedule scaling. The hybrid did not receive a longer training budget. Step times were measured, the available optimizer-step budget was estimated for each model within 600 seconds, and warmup/warmdown schedules were rescaled to preserve similar training-phase ratios across contexts.</p>
-            <p>This matters because the experiment is not only about per-step quality. It is about <em>quality reached within a fixed wall-clock budget</em>.</p>
+            <p>So the comparison is <em>quality reached within a fixed wall-clock budget</em>, not per-step quality.</p>
 
             <h2>Results</h2>
             <h3>Throughput</h3>
@@ -622,17 +308,8 @@
                 <li><strong>Run more seeds at 16k.</strong> The 32k result was very stable across two seeds. The 16k crossover is smaller and deserves more replication.</li>
             </ol>
 
-            <h2>Why this is meaningful</h2>
-            <p>This is a small but useful systems-oriented result: it identifies a specific context-length crossover where a modern hybrid sequence mixer becomes worthwhile under a compressed, fixed-budget training objective.</p>
-            <p>It also demonstrates several research-engineering habits that matter in model-development work:</p>
-            <ul>
-                <li>faithful implementation of a recent architecture idea in a different codebase;</li>
-                <li>adaptation to a new constraint regime rather than assuming scale results transfer directly;</li>
-                <li>controls around wall-clock, parameter count, compression, and validation protocol;</li>
-                <li>reporting negative and conditional results, not only wins;</li>
-                <li>public code, scripts, logs, and submission metadata.</li>
-            </ul>
-            <p>The strongest part of the result is that it has a boundary. The hybrid did not simply "win"; it lost at 8k, crossed over around 16k, and became clearly better at 32k. That boundary makes the experiment more useful than a one-row benchmark, because it says something about when the architecture is worth its complexity.</p>
+            <h2>The takeaway</h2>
+            <p>The result has a boundary: the hybrid lost at 8k, crossed over around 16k, and was clearly better at 32k. That tells me more than a single winning row would, because it says when the extra architecture is worth it, at least at 17M parameters and 600 seconds.</p>
 
             <h2>Code and submission</h2>
             <p>The full implementation and discussion are available in the Parameter Golf submission PR:</p>
@@ -641,23 +318,25 @@
                 <li><a href="https://github.com/aarjunsrinivasan/parameter-golf/tree/gdn_long_context" target="_blank" rel="noopener">Fork branch: <code>aarjunsrinivasan:gdn_long_context</code></a></li>
             </ul>
             <p>The branch includes the hybrid model implementation, baseline comparison, experiment notes, logs, and submission metadata. The PR conversation is the best place to see the experiment in its original competition context.</p>
+
+            <h2>References</h2>
+            <ol class="references">
+                <li>S. Yang, J. Kautz, A. Hatamizadeh. <a href="https://arxiv.org/abs/2412.06464" target="_blank" rel="noopener">Gated Delta Networks: Improving Mamba2 with Delta Rule</a>. arXiv:2412.06464, 2024.</li>
+                <li>W. Merrill, Y. Li, T. Romero, et al. <a href="https://arxiv.org/abs/2604.03444" target="_blank" rel="noopener">Olmo Hybrid</a>. arXiv:2604.03444, 2026.</li>
+                <li><a href="https://github.com/fla-org/flash-linear-attention" target="_blank" rel="noopener">flash-linear-attention</a>: Triton kernels for linear attention and delta-rule mixers, including <code>chunk_gated_delta_rule</code>.</li>
+                <li><a href="https://github.com/openai/parameter-golf" target="_blank" rel="noopener">OpenAI Parameter Golf</a>: competition rules, baseline, and evaluation protocol.</li>
+            </ol>
+            <footer class="post-footer">
+                <a href="../index.html#blogs">← All writing</a>
+                <a href="https://github.com/openai/parameter-golf/pull/1371" target="_blank" rel="noopener">Submission PR</a>
+                <a href="https://github.com/aarjunsrinivasan" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://linkedin.com/in/arjunsrinivasana/" target="_blank" rel="noopener">LinkedIn</a>
+                <a href="mailto:arjunsrinivasan.a@gmail.com">Email</a>
+            </footer>
         </article>
     </main>
 
-    <script>
-        function toggleTheme() {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('theme');
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            document.documentElement.setAttribute('data-theme', savedTheme || (systemPrefersDark ? 'dark' : 'light'));
-        });
-    </script>
+    <script src="../js/main.js"></script>
+    <script src="../js/post.js"></script>
 </body>
 </html>

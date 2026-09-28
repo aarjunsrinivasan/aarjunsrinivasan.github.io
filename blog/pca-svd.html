@@ -4,9 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Is PCA Just SVD? Variance, Eigenvectors, and When the Two Coincide | Arjun Srinivasan</title>
+    <meta name="description" content="PCA is a statistical objective and SVD is a factorization. A derivation of why they coincide on centered data, and why SVD is how PCA is computed in practice.">
+    <meta name="author" content="Arjun Srinivasan">
+    <link rel="canonical" href="https://aarjunsrinivasan.github.io/blog/pca-svd.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Arjun Srinivasan">
+    <meta property="og:title" content="Is PCA Just SVD? Variance, Eigenvectors, and When the Two Coincide">
+    <meta property="og:description" content="PCA is a statistical objective and SVD is a factorization. A derivation of why they coincide on centered data, and why SVD is how PCA is computed in practice.">
+    <meta property="og:url" content="https://aarjunsrinivasan.github.io/blog/pca-svd.html">
+    <meta property="og:image" content="https://aarjunsrinivasan.github.io/mydp.jpg">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Is PCA Just SVD? Variance, Eigenvectors, and When the Two Coincide">
+    <meta name="twitter:description" content="PCA is a statistical objective and SVD is a factorization. A derivation of why they coincide on centered data, and why SVD is how PCA is computed in practice.">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Is PCA Just SVD? Variance, Eigenvectors, and When the Two Coincide", "description": "PCA is a statistical objective and SVD is a factorization. A derivation of why they coincide on centered data, and why SVD is how PCA is computed in practice.", "datePublished": "2026-01", "url": "https://aarjunsrinivasan.github.io/blog/pca-svd.html", "author": {"@type": "Person", "name": "Arjun Srinivasan", "url": "https://aarjunsrinivasan.github.io/"}}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
     
     <!-- MathJax for LaTeX rendering -->
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -32,1208 +45,675 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
     
+    <link rel="stylesheet" href="../css/post.css">
     <style>
-        :root {
-            --bg: #fafaf9;
-            --text: #292524;
-            --text-muted: #57534e;
-            --accent: #b45309;
-            --accent-hover: #92400e;
-            --border: #e7e5e4;
-            --card-bg: #ffffff;
-            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-            --dark-bg: #1c1917;
-            --dark-text: #fafaf9;
-            --dark-text-muted: #a8a29e;
-            --dark-accent: #d97706;
-            --dark-accent-hover: #f59e0b;
-            --dark-border: #44403c;
-            --dark-card-bg: #292524;
-            --dark-nav-bg: rgba(28, 25, 23, 0.96);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.8;
-            color: var(--text);
-            background-color: var(--bg);
-            transition: background-color 0.2s ease, color 0.2s ease;
-        }
-
-        [data-theme="dark"] body {
-            background-color: var(--dark-bg);
-            color: var(--dark-text);
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            transition: background 0.2s ease, border-color 0.2s ease;
-            border-bottom: 1px solid var(--border);
-            box-shadow: var(--card-shadow);
-        }
-
-        [data-theme="dark"] nav {
-            background: var(--dark-nav-bg);
-            border-bottom: 1px solid var(--dark-border);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-        }
-
-        .logo {
-            font-size: 1.4375rem;
-            font-weight: 600;
-            font-family: 'Source Serif 4', Georgia, serif;
-            color: var(--text);
-            text-decoration: none;
-            letter-spacing: -0.02em;
-        }
-
-        [data-theme="dark"] .logo {
-            color: var(--dark-text);
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text);
-            font-weight: 500;
-            font-size: 0.9375rem;
-            transition: color 0.2s ease;
-        }
-
-        [data-theme="dark"] .nav-links a {
-            color: var(--dark-text);
-        }
-
-        .nav-links a:hover {
-            color: var(--accent);
-        }
-
-        [data-theme="dark"] .nav-links a:hover {
-            color: var(--dark-accent);
-        }
-
-        .theme-toggle {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 0.4rem;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1rem;
-            color: var(--accent);
-            box-shadow: var(--card-shadow);
-            transition: color 0.2s ease, border-color 0.2s ease;
-            width: 42px;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        [data-theme="dark"] .theme-toggle {
-            background: var(--dark-card-bg);
-            color: var(--dark-accent);
-            border-color: var(--dark-border);
-        }
-
-        .theme-toggle:hover {
-            border-color: var(--accent);
-            color: var(--accent-hover);
-        }
-
-        /* Blog Content */
-        .blog-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 120px 2rem 4rem;
-        }
-
-        .blog-header {
-            margin-bottom: 3rem;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        [data-theme="dark"] .blog-header {
-            border-bottom: 1px solid var(--dark-border);
-        }
-
-        .blog-title {
-            font-size: 2.5rem;
-            font-weight: 600;
-            font-family: 'Source Serif 4', Georgia, serif;
-            margin-bottom: 1rem;
-            color: var(--text);
-            line-height: 1.25;
-            letter-spacing: -0.02em;
-        }
-
-        [data-theme="dark"] .blog-title {
-            color: var(--dark-text);
-        }
-
-        .blog-meta {
-            display: flex;
-            gap: 1.5rem;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            flex-wrap: wrap;
-        }
-
-        [data-theme="dark"] .blog-meta {
-            color: var(--dark-text-muted);
-        }
-
-        .blog-content {
-            font-size: 1.1rem;
-            line-height: 1.9;
-        }
-
-        .blog-content h2 {
-            font-size: 1.75rem;
-            font-family: 'Source Serif 4', Georgia, serif;
-            margin-top: 3rem;
-            margin-bottom: 1rem;
-            color: var(--text);
-            font-weight: 600;
-        }
-
-        [data-theme="dark"] .blog-content h2 {
-            color: var(--dark-text);
-        }
-
-        .blog-content h3 {
-            font-size: 1.25rem;
-            margin-top: 2rem;
-            margin-bottom: 0.75rem;
-            color: var(--text);
-            font-weight: 600;
-        }
-
-        [data-theme="dark"] .blog-content h3 {
-            color: var(--dark-text);
-        }
-
-        .blog-content p {
-            margin-bottom: 1.5rem;
-            text-align: justify;
-        }
-
-        .blog-content ul, .blog-content ol {
-            margin-left: 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .blog-content li {
-            margin-bottom: 0.5rem;
-        }
-
-        .blog-content code {
-            background: var(--border);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-        }
-
-        [data-theme="dark"] .blog-content code {
-            background: var(--dark-border);
-        }
-
-        .blog-content pre {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin-bottom: 1.5rem;
-            border-left: 3px solid var(--accent);
-            color: var(--text);
-        }
-
-        [data-theme="dark"] .blog-content pre {
-            background: var(--dark-card-bg);
-            border-color: var(--dark-border);
-            border-left-color: var(--dark-accent);
-            color: var(--dark-text);
-        }
-
-        .blog-content pre code {
-            background: none;
-            padding: 0;
-            color: inherit;
-        }
-
-        .highlight-box {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-left: 4px solid var(--accent);
-            padding: 1.5rem;
-            margin: 2rem 0;
-            border-radius: 8px;
-        }
-
-        [data-theme="dark"] .highlight-box {
-            background: var(--dark-card-bg);
-            border-color: var(--dark-border);
-            border-left-color: var(--dark-accent);
-        }
-
-        .highlight-box h3 {
-            color: var(--accent);
-        }
-
-        [data-theme="dark"] .highlight-box h3 {
-            color: var(--dark-accent);
-        }
-
+        /* Components specific to this post; colours come from css/post.css tokens */
         .math-display {
-            margin: 2rem 0;
+            margin: 1.5rem 0;
             text-align: center;
             overflow-x: auto;
-        }
-
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 500;
-            margin-bottom: 2rem;
-            transition: color 0.2s ease;
-        }
-
-        .back-link:hover {
-            color: var(--accent-hover);
-        }
-
-        [data-theme="dark"] .back-link {
-            color: var(--dark-accent);
-        }
-
-        [data-theme="dark"] .back-link:hover {
-            color: var(--dark-accent-hover);
-        }
-
-        /* MathJax styling */
-        .MathJax {
-            font-size: 1.1em !important;
         }
 
         .MathJax_Display {
             margin: 1.5rem 0 !important;
         }
 
-        /* Figure and visualization styles */
         .figure-container {
             margin: 2.5rem 0;
-            text-align: center;
         }
 
-        .figure {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: var(--card-shadow);
-            margin: 1rem 0;
+        .viz-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
         }
 
         .figure-caption {
             margin-top: 0.75rem;
-            font-size: 0.9rem;
+            font-size: 0.93rem;
             color: var(--text-muted);
-            font-style: italic;
+            text-align: left;
         }
 
-        [data-theme="dark"] .figure-caption {
-            color: var(--dark-text-muted);
-        }
-
-        /* Code block enhancements */
+        /* Syntax-highlighted code keeps Prism's dark theme in both modes */
         .code-block {
-            position: relative;
             margin: 2rem 0;
         }
 
         .code-header {
-            background: var(--accent);
-            color: #fff;
-            padding: 0.5rem 1rem;
-            border-radius: 8px 8px 0 0;
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            background: #2d2d2d;
+            color: #d6d3d1;
+            padding: 0.45rem 1rem;
+            border-radius: 6px 6px 0 0;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
         }
 
-        [data-theme="dark"] .code-header {
-            background: var(--dark-accent);
+        .blog-content .code-block pre {
+            margin: 0;
+            border: 0;
+            border-radius: 0 0 6px 6px;
+            background: #1e1e1e;
+            color: #d4d4d4;
         }
 
-        .code-block pre {
-            margin-top: 0;
-            border-radius: 0 0 8px 8px;
-            background: #1e1e1e !important;
-            color: #d4d4d4 !important;
+        .blog-content ol.backbone {
+            list-style: none;
+            margin-left: 0;
+            counter-reset: step;
         }
 
-        [data-theme="dark"] .code-block pre {
-            background: #0d1117 !important;
-            color: #c9d1d9 !important;
+        .blog-content ol.backbone li {
+            counter-increment: step;
+            position: relative;
+            padding-left: 2.75rem;
+            margin-bottom: 1.1rem;
         }
 
-        .code-block pre code {
-            color: inherit !important;
-            background: none !important;
-        }
-
-        /* Interactive visualization container */
-        .viz-container {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 2rem;
-            margin: 2.5rem 0;
+        .blog-content ol.backbone li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0.15rem;
+            width: 1.75rem;
+            height: 1.75rem;
+            border-radius: 50%;
+            border: 1.5px solid var(--accent);
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.9rem;
+            line-height: 1.55rem;
             text-align: center;
         }
 
-        [data-theme="dark"] .viz-container {
-            background: var(--dark-card-bg);
-            border-color: var(--dark-border);
+        .step-link {
+            font-size: 0.9rem;
+            white-space: nowrap;
+            text-decoration: none;
         }
 
-        .viz-canvas {
-            max-width: 100%;
-            border-radius: 8px;
-            margin: 1rem 0;
-        }
-
-        /* Comparison table */
-        .comparison-table {
-            width: 100%;
-            border-collapse: collapse;
+        .flow {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.25rem 1.5rem;
             margin: 2rem 0;
-            box-shadow: var(--card-shadow);
-            border-radius: 8px;
-            overflow: hidden;
+            font-size: 0.95rem;
         }
 
-        .comparison-table th {
-            background: var(--accent);
-            color: #fff;
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
+        .flow-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.9rem;
         }
 
-        [data-theme="dark"] .comparison-table th {
-            background: var(--dark-accent);
+        .flow-label {
+            flex-basis: 100%;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-soft);
         }
 
-        .comparison-table td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border);
+        .flow-node {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.2rem 0.6rem;
+            background: var(--bg);
         }
 
-        [data-theme="dark"] .comparison-table td {
-            border-bottom-color: var(--dark-border);
+        .flow-arrow {
+            color: var(--accent);
+            font-weight: 700;
         }
 
-        .comparison-table tr:last-child td {
-            border-bottom: none;
+        .flow-result {
+            border-top: 1px solid var(--border);
+            padding-top: 0.75rem;
         }
 
-        /* Side-by-side code comparison */
-        .code-comparison {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
+        .blog-content p.step-recap {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            border-left: 3px solid var(--accent);
+            padding: 0.3rem 0 0.3rem 0.9rem;
+        }
+
+        details.aside {
+            border: 1px dashed var(--border);
+            border-radius: 6px;
+            padding: 0.9rem 1.25rem;
             margin: 2rem 0;
+        }
+
+        details.aside summary {
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        details.aside[open] summary {
+            margin-bottom: 1rem;
+        }
+
+        .notation-table td:first-child {
+            white-space: nowrap;
+        }
+
+        .blog-content table.notation-table {
+            min-width: 0;
+            margin: 1.5rem 0 2rem;
+        }
+
+        .answer-box p:first-of-type {
+            font-size: 1.15rem;
+            margin-bottom: 0.4rem;
         }
 
         @media (max-width: 768px) {
-            .code-comparison {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .blog-title {
-                font-size: 2rem;
+            .blog-content ol.backbone li {
+                padding-left: 2.5rem;
             }
 
-            .blog-content h2 {
-                font-size: 1.5rem;
-            }
-
-            .blog-content h3 {
-                font-size: 1.25rem;
-            }
-
-            .blog-container {
-                padding: 100px 1rem 2rem;
-            }
-
-            .nav-links {
-                gap: 1rem;
-                font-size: 0.9rem;
+            .flow {
+                padding: 1rem;
             }
         }
     </style>
+    <script>
+        // Set theme before first paint to avoid a flash
+        (function () {
+            var t = null;
+            try { t = localStorage.getItem('theme'); } catch (e) {}
+            if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <a href="../index.html" class="logo">Arjun Srinivasan</a>
-            <ul class="nav-links">
-                <li><a href="../index.html#home">Home</a></li>
-                <li><a href="../index.html#blogs">Blogs</a></li>
-                <li><button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-                    <span class="theme-icon">🌓</span>
-                </button></li>
-            </ul>
-        </div>
-    </nav>
+    <a class="skip-link" href="#post">Skip to content</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light theme">
+        <svg class="theme-icon sun-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM2 13h2a1 1 0 0 0 0-2H2a1 1 0 0 0 0 2zm18 0h2a1 1 0 0 0 0-2h-2a1 1 0 0 0 0 2zM11 2v2a1 1 0 0 0 2 0V2a1 1 0 0 0-2 0zm0 18v2a1 1 0 0 0 2 0v-2a1 1 0 0 0-2 0zM5.990 4.580a1 1 0 0 0-1.410 1.410l1.060 1.060a1 1 0 0 0 1.410-1.410L5.990 4.580zm12.370 12.370a1 1 0 0 0-1.410 1.410l1.060 1.060a1 1 0 0 0 1.410-1.410l-1.060-1.060zm1.060-10.960a1 1 0 0 0-1.410-1.410l-1.060 1.060a1 1 0 0 0 1.410 1.410l1.060-1.060zM7.050 18.360a1 1 0 0 0-1.410-1.410l-1.060 1.060a1 1 0 0 0 1.410 1.410l1.060-1.060z"/>
+        </svg>
+        <svg class="theme-icon moon-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.1 2.1c-5 0-9 4-9 9s4 9 9 9c1.4 0 2.7-.3 3.9-.8-2.1-1.9-3.4-4.6-3.4-7.7s1.3-5.8 3.4-7.7c-1.2-.5-2.5-.8-3.9-.8z"/>
+        </svg>
+    </button>
 
     <!-- Blog Content -->
     <div class="blog-container">
-        <a href="../index.html#blogs" class="back-link">
-            ← Back to Blogs
-        </a>
+        <a href="../index.html#blogs" class="site-link">← Arjun Srinivasan</a>
 
         <div class="blog-header">
             <h1 class="blog-title">Is PCA Just SVD? Variance, Eigenvectors, and When the Two Coincide</h1>
+            <p class="blog-subtitle">PCA is a statistical objective and SVD is a factorization. They coincide on centered data, and that is why SVD is how PCA gets computed.</p>
             <div class="blog-meta">
-                <span>Published: January 2026</span>
-                <span>Reading Time: 12 min</span>
-                <span>Topics: Machine Learning, Linear Algebra</span>
+                <span>Jan 2026</span>
+                <span>15 min read</span>
+                <span>Machine Learning, Linear Algebra</span>
             </div>
         </div>
 
-        <div class="blog-content">
+        <div class="blog-content" id="post">
             <p>
-                Principal Component Analysis (PCA) and Singular Value Decomposition (SVD) are two fundamental 
-                techniques in machine learning and data science. The question "Is PCA just SVD?" is often asked, 
+                Principal Component Analysis (PCA) and Singular Value Decomposition (SVD) are two fundamental
+                techniques in machine learning and data science. The question "Is PCA just SVD?" is often asked,
                 and the answer reveals an important distinction about their nature and relationship.
             </p>
 
-            <div class="highlight-box" style="border-left-width: 6px; padding: 2rem; margin: 2rem 0;">
-                <h3 style="margin-top: 0; color: var(--accent);">The Answer</h3>
-                <p style="font-size: 1.2rem; margin-bottom: 0.5rem;"><strong>Short answer: No.</strong></p>
-                <p style="margin-bottom: 0;"><strong>Long answer:</strong> PCA is a statistical objective; SVD is a numerical linear algebra tool. 
+            <div class="highlight-box answer-box">
+                <h3>The Answer</h3>
+                <p><strong>Short answer: No.</strong></p>
+                <p><strong>Long answer:</strong> PCA is a statistical objective; SVD is a numerical linear algebra tool.
                 They meet—but they are not the same thing.</p>
             </div>
 
             <p>
-                In this post, we'll explore their mathematical foundations, understand exactly why they coincide for centered data,
-                and see why SVD is the right way to compute PCA in practice.
+                The post is in two layers. Section 1 tells the whole story in five steps, with one equation each and
+                no proofs. If you only read that section, you have the argument. Section 2 is a short toolkit
+                for readers who want a refresher on the math. Sections 3–6 go back through the five steps and prove each one,
+                and Section 7 covers how PCA is computed in practice.
             </p>
 
-            <h2>1. Singular Value Decomposition (SVD)</h2>
+            <div class="toc" role="navigation" aria-label="Contents">
+                <p>Contents</p>
+                <ol>
+                    <li><a href="#backbone">The big picture: PCA in five steps</a></li>
+                    <li><a href="#toolkit">Toolkit: four ideas you need</a></li>
+                    <li><a href="#variance">Steps 1–2: projection and variance</a></li>
+                    <li><a href="#eigen">Step 3: maximizing variance gives eigenvectors</a></li>
+                    <li><a href="#svd">Step 4: where SVD comes in</a></li>
+                    <li><a href="#centering">Step 5: why centering matters</a></li>
+                    <li><a href="#practice">In practice: computing PCA with SVD</a></li>
+                </ol>
+            </div>
 
-            <h3>1.1 Definition</h3>
+            <h2 id="backbone">1. The Big Picture: PCA in Five Steps</h2>
 
             <p>
-                Singular Value Decomposition is a fundamental matrix factorization technique from numerical linear algebra. 
-                For any matrix $A \in \mathbb{R}^{m \times n}$, SVD decomposes it as:
+                Picture your dataset as a cloud of points, where each point is one sample and each axis is one feature.
+                Real data is rarely a round ball. It usually stretches much further in some directions than in others.
+                PCA looks for those directions, starting with the longest one.
+            </p>
+
+            <div class="figure-container">
+                <div class="viz-container">
+                    <div id="projection-viz" style="width: 100%; height: 450px;"></div>
+                    <p class="figure-caption">Figure 1: Each point is projected onto a line through the cloud (dashed lines show where each point lands). PCA picks the line where those landing spots are most spread out.</p>
+                </div>
+            </div>
+
+            <ol class="backbone">
+                <li>
+                    <strong>Pick a direction and project onto it.</strong> Choose a unit-length direction $\mathbf{w}$ and
+                    replace each point with its position along that line, $z_i = \tilde{\mathbf{x}}_i^\top \mathbf{w}$.
+                    Each point becomes a single number.
+                    <a class="step-link" href="#variance">details →</a>
+                </li>
+                <li>
+                    <strong>Measure the spread.</strong> The variance of those numbers turns out to be a simple formula in
+                    $\mathbf{w}$: $\;\text{Var}(z) = \mathbf{w}^\top C\, \mathbf{w}$. Here $C$, the covariance matrix,
+                    summarizes the shape of the cloud.
+                    <a class="step-link" href="#variance">details →</a>
+                </li>
+                <li>
+                    <strong>Maximize the spread.</strong> The best $\mathbf{w}$ must satisfy $\;C\mathbf{w} = \lambda \mathbf{w}$,
+                    which makes it an <em>eigenvector</em> of $C$. The variance it captures is exactly $\lambda$, so the first principal
+                    component is the eigenvector with the largest eigenvalue.
+                    <a class="step-link" href="#eigen">details →</a>
+                </li>
+                <li>
+                    <strong>Let SVD do the work.</strong> Factor the centered data as $\;\tilde{X} = U \Sigma V^\top$. The columns
+                    of $V$ are exactly those eigenvectors, and $\sigma_i^2 / m$ are the variances. You never have to build $C$ at all.
+                    <a class="step-link" href="#svd">details →</a>
+                </li>
+                <li>
+                    <strong>But center first.</strong> Step 4 only holds if you subtract the mean from the data. Run SVD on raw data
+                    and it answers a different question, with a first direction pulled toward the mean.
+                    <a class="step-link" href="#centering">details →</a>
+                </li>
+            </ol>
+
+            <div class="flow" aria-label="Two routes to the principal components">
+                <div class="flow-row">
+                    <span class="flow-label">PCA (statistics)</span>
+                    <span class="flow-node">data $X$</span><span class="flow-arrow">→</span>
+                    <span class="flow-node">center: $\tilde{X} = X - \boldsymbol{\mu}$</span><span class="flow-arrow">→</span>
+                    <span class="flow-node">covariance $C$</span><span class="flow-arrow">→</span>
+                    <span class="flow-node">eigenvectors of $C$</span>
+                </div>
+                <div class="flow-row">
+                    <span class="flow-label">SVD (linear algebra)</span>
+                    <span class="flow-node">data $X$</span><span class="flow-arrow">→</span>
+                    <span class="flow-node">center: $\tilde{X} = X - \boldsymbol{\mu}$</span><span class="flow-arrow">→</span>
+                    <span class="flow-node">$\tilde{X} = U\Sigma V^\top$</span><span class="flow-arrow">→</span>
+                    <span class="flow-node">columns of $V$</span>
+                </div>
+                <div class="flow-result">Both routes end at the same directions: the <strong>principal components</strong>.</div>
+            </div>
+
+            <p>
+                That is the whole argument. PCA is the question ("which directions have the most variance?"), and SVD is a fast,
+                stable way to get the answer once the data is centered. The rest of the post proves these five steps.
+            </p>
+
+            <h2 id="toolkit">2. Toolkit: Four Ideas You Need</h2>
+
+            <p>
+                If linear algebra is rusty, these four ideas are enough to follow every derivation below.
+                If it isn't, skip to <a href="#variance">Section 3</a>.
+            </p>
+
+            <h3>Projection: a point's shadow on a line</h3>
+            <p>
+                For a unit-length direction $\mathbf{w}$, the dot product $\mathbf{x}^\top \mathbf{w}$ tells you how far
+                along $\mathbf{w}$ the point $\mathbf{x}$ sits. Think of it as the length of the point's shadow on that line.
+                The point $(3, 4)$ has shadow $3$ on the $x$-axis $\mathbf{w} = (1, 0)$, and shadow
+                $3(0.6) + 4(0.8) = 5$ on the diagonal $\mathbf{w} = (0.6, 0.8)$, because that line points almost straight at it.
+            </p>
+
+            <h3>Variance: how spread out a list of numbers is</h3>
+            <p>
+                Variance is the average squared distance from the mean:
+                $\text{Var}(z) = \frac{1}{m}\sum_i (z_i - \bar{z})^2$. If the mean is already zero, it is just the average of
+                $z_i^2$. PCA measures the variance of shadows, so it asks how spread out the shadows are along a given line.
+            </p>
+
+            <h3>Covariance matrix: the shape of the cloud</h3>
+            <p>
+                The covariance matrix $C$ is an $n \times n$ table. Its diagonal holds the variance of each feature, and its
+                off-diagonal entries say how pairs of features move together. The property we need: for any unit direction
+                $\mathbf{w}$, the number $\mathbf{w}^\top C \mathbf{w}$ is the variance of the data along $\mathbf{w}$.
+                So $C$ works like a <em>variance calculator</em> that takes a direction and returns the spread along it.
+            </p>
+
+            <h3>Eigenvectors: directions a matrix only stretches</h3>
+            <p>
+                Multiplying a vector by a matrix usually both turns and stretches it. An <strong>eigenvector</strong> is a
+                direction that only gets stretched: $C\mathbf{v} = \lambda \mathbf{v}$, and the stretch factor $\lambda$ is its
+                <strong>eigenvalue</strong>. For example, with $C = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ (a cloud
+                stretched along the diagonal), $\mathbf{v} = (1, 1)$ gives $C\mathbf{v} = (3, 3) = 3\mathbf{v}$, and
+                $(1, -1)$ gives $C\mathbf{v} = (1, -1)$. The long axis has eigenvalue $3$ and the short axis has eigenvalue $1$.
+                A covariance matrix is symmetric, so its eigenvectors are always perpendicular to each other.
+            </p>
+
+            <h3>Notation</h3>
+            <table class="comparison-table notation-table">
+                <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+                <tbody>
+                    <tr><td>$X \in \mathbb{R}^{m \times n}$</td><td>Data matrix: $m$ samples (rows) × $n$ features (columns)</td></tr>
+                    <tr><td>$\boldsymbol{\mu}$</td><td>Mean of all samples (a vector of $n$ feature means)</td></tr>
+                    <tr><td>$\tilde{X}$, $\tilde{\mathbf{x}}_i$</td><td>Centered data $X - \boldsymbol{\mu}$, and its $i$-th row</td></tr>
+                    <tr><td>$\mathbf{w}$</td><td>A candidate direction, with $\|\mathbf{w}\| = 1$</td></tr>
+                    <tr><td>$C$</td><td>Covariance matrix, $\frac{1}{m}\tilde{X}^\top \tilde{X}$</td></tr>
+                    <tr><td>$\lambda_i$</td><td>Eigenvalues of $C$: the variance along each principal component</td></tr>
+                    <tr><td>$U, \Sigma, V$</td><td>SVD factors of $\tilde{X}$. $\Sigma$ holds the singular values $\sigma_i$ (it is <em>not</em> the covariance)</td></tr>
+                </tbody>
+            </table>
+
+            <h2 id="variance">3. Steps 1–2: Projection and Variance</h2>
+
+            <p class="step-recap">Step 1–2 of 5 · The variance along a direction $\mathbf{w}$ is $\mathbf{w}^\top C \mathbf{w}$.</p>
+
+            <p>
+                Stack the $m$ samples as rows of a data matrix $X \in \mathbb{R}^{m \times n}$, and subtract the mean
+                $\boldsymbol{\mu} = \frac{1}{m}\sum_i \mathbf{x}_i$ from every row to get the centered data $\tilde{X}$.
+                (<a href="#centering">Section 6</a> explains why this matters.) Project every centered point onto a unit direction $\mathbf{w}$:
+            </p>
+
+            <div class="math-display">
+                $$z_i = \tilde{\mathbf{x}}_i^\top \mathbf{w}$$
+            </div>
+
+            <p>
+                Because the data is centered, the projections also have mean zero. Variance is then just the average squared projection
+                ($\text{Var}(z) = \mathbb{E}[z^2] - \mathbb{E}[z]^2$, and the second term is zero). Written in matrix form:
+            </p>
+
+            <div class="math-display">
+                $$\text{Var}(z) = \frac{1}{m} \sum_{i=1}^{m} (\tilde{\mathbf{x}}_i^\top \mathbf{w})^2 = \frac{1}{m}\|\tilde{X}\mathbf{w}\|^2 = \mathbf{w}^\top \underbrace{\left(\frac{1}{m} \tilde{X}^\top \tilde{X}\right)}_{C} \mathbf{w}$$
+            </div>
+
+            <p>
+                The matrix in the middle is the sample covariance $C = \frac{1}{m}\tilde{X}^\top \tilde{X}$. That is Step 2: the spread
+                along any direction is $\mathbf{w}^\top C \mathbf{w}$. We use $\frac{1}{m}$ throughout. The unbiased $\frac{1}{m-1}$
+                rescales every eigenvalue by the same constant, so it leaves the principal directions unchanged.
+            </p>
+
+            <h2 id="eigen">4. Step 3: Maximizing Variance Gives Eigenvectors</h2>
+
+            <p class="step-recap">Step 3 of 5 · The best direction satisfies $C\mathbf{w} = \lambda\mathbf{w}$, so it is the top eigenvector of $C$.</p>
+
+            <h3>4.1 The optimization problem</h3>
+
+            <p>
+                We want the $\mathbf{w}$ that maximizes $\mathbf{w}^\top C \mathbf{w}$. Without a constraint this is meaningless,
+                because doubling $\mathbf{w}$ quadruples the objective. We are choosing a <em>direction</em>, not a length, so we
+                require $\mathbf{w}$ to be unit length:
+            </p>
+
+            <div class="math-display">
+                $$\boxed{ \max_{\mathbf{w}} \quad \mathbf{w}^\top C \mathbf{w} \quad \text{subject to} \quad \mathbf{w}^\top \mathbf{w} = 1 }$$
+            </div>
+
+            <h3>4.2 The intuition</h3>
+
+            <p>
+                Picture every allowed $\mathbf{w}$ as a point on a sphere of radius 1, with the objective as the height of a
+                landscape over that sphere. At the highest point, you can't go uphill by moving along the sphere. So the uphill direction
+                (the gradient, $2C\mathbf{w}$) must point straight out of the sphere. On a sphere, "straight out" at $\mathbf{w}$ is the
+                direction $\mathbf{w}$ itself. The gradient is therefore parallel to $\mathbf{w}$:
+            </p>
+
+            <div class="math-display">
+                $$C\mathbf{w} = \lambda \mathbf{w}$$
+            </div>
+
+            <p>
+                That is the definition of an eigenvector. The method of Lagrange multipliers is the formal version of this argument.
+            </p>
+
+            <h3>4.3 The formal derivation (Lagrange multipliers)</h3>
+
+            <p>
+                Fold the constraint into the objective with a multiplier $\lambda$, take the gradient with respect to $\mathbf{w}$,
+                and set it to zero:
+            </p>
+
+            <div class="math-display">
+                $$\begin{aligned}
+                \mathcal{L}(\mathbf{w}, \lambda) &= \mathbf{w}^\top C \mathbf{w} - \lambda(\mathbf{w}^\top \mathbf{w} - 1) \\
+                \nabla_{\mathbf{w}} \mathcal{L} &= 2C\mathbf{w} - 2\lambda \mathbf{w} = 0 \\
+                \Longrightarrow \quad C\mathbf{w} &= \lambda \mathbf{w}
+                \end{aligned}$$
+            </div>
+
+            <div class="highlight-box">
+                <strong>Key Result:</strong> The PCA directions are eigenvectors of the covariance matrix $C$.
+                The Lagrange multiplier $\lambda$ is the corresponding eigenvalue.
+            </div>
+
+            <h3>4.4 Which eigenvector?</h3>
+
+            <p>
+                $C$ has $n$ eigenvectors, and every one of them satisfies the condition above. To find the best one, plug the
+                eigenvector equation back into the objective:
+            </p>
+
+            <div class="math-display">
+                $$\mathbf{w}^\top C \mathbf{w} = \mathbf{w}^\top (\lambda \mathbf{w}) = \lambda \mathbf{w}^\top \mathbf{w} = \lambda$$
+            </div>
+
+            <p>
+                The variance captured by an eigenvector is its eigenvalue, so <strong>maximizing variance means picking the largest eigenvalue</strong>:
+            </p>
+            <ul>
+                <li><strong>First principal component</strong> = eigenvector with the largest eigenvalue</li>
+                <li><strong>Second principal component</strong> = eigenvector with the second largest eigenvalue (orthogonal to the first)</li>
+                <li><strong>Remaining components</strong> = the next largest eigenvalues (all mutually orthogonal)</li>
+            </ul>
+
+            <p>
+                Why the second eigenvector? Maximize $\mathbf{w}^\top C \mathbf{w}$ again, now with the extra
+                constraint $\mathbf{w} \perp \mathbf{v}_1$. Because $C$ is symmetric, it maps the subspace
+                $\mathbf{v}_1^\perp$ to itself, so the same argument restricted to that subspace returns its top
+                eigenvector, $\mathbf{v}_2$. Repeating this gives every remaining component.
+            </p>
+
+            <details class="aside">
+                <summary>Aside: maximum variance is the same as minimum reconstruction error</summary>
+                <p>
+                    PCA has a second, equivalent definition: find the direction whose projection loses the least information.
+                    For a centered point $\tilde{\mathbf{x}}_i$ and unit $\mathbf{w}$, split the point into its projection
+                    and a residual. Pythagoras gives:
+                </p>
+
+                <div class="math-display">
+                    $$\|\tilde{\mathbf{x}}_i\|^2 = \underbrace{(\tilde{\mathbf{x}}_i^\top \mathbf{w})^2}_{\text{kept}} + \underbrace{\|\tilde{\mathbf{x}}_i - (\tilde{\mathbf{x}}_i^\top \mathbf{w})\mathbf{w}\|^2}_{\text{reconstruction error}}$$
+                </div>
+
+                <p>
+                    The left-hand side does not depend on $\mathbf{w}$. Averaged over all points, the first term is the
+                    projected variance $\mathbf{w}^\top C \mathbf{w}$, so making it larger makes the reconstruction error smaller.
+                    Keeping the first $k$ components therefore gives the best $k$-dimensional subspace in the least-squares sense.
+                    This is also where SVD comes in naturally: by the <strong>Eckart–Young theorem</strong>, truncating the SVD
+                    to its top $k$ singular values gives the best rank-$k$ approximation of $\tilde{X}$. The next section shows
+                    that this is the same subspace PCA finds.
+                </p>
+            </details>
+
+            <h2 id="svd">5. Step 4: Where SVD Comes In</h2>
+
+            <p class="step-recap">Step 4 of 5 · For centered data $\tilde{X} = U\Sigma V^\top$, the columns of $V$ are the principal components and $\lambda_i = \sigma_i^2/m$.</p>
+
+            <h3>5.1 What SVD is</h3>
+
+            <p>
+                Singular Value Decomposition says that <em>any</em> matrix $A \in \mathbb{R}^{m \times n}$ can be written as
             </p>
 
             <div class="math-display">
                 $$A = U \Sigma V^\top$$
             </div>
 
-            <p>where:</p>
             <ul>
-                <li>$U \in \mathbb{R}^{m \times m}$ — orthonormal columns (left singular vectors)</li>
-                <li>$\Sigma \in \mathbb{R}^{m \times n}$ — diagonal matrix with non-negative singular values $\sigma_1 \geq \sigma_2 \geq \ldots \geq \sigma_r \geq 0$</li>
-                <li>$V \in \mathbb{R}^{n \times n}$ — orthonormal columns (right singular vectors)</li>
+                <li>$V \in \mathbb{R}^{n \times n}$: orthonormal columns (right singular vectors). $V^\top$ is a rotation.</li>
+                <li>$\Sigma \in \mathbb{R}^{m \times n}$: diagonal, with singular values $\sigma_1 \geq \sigma_2 \geq \ldots \geq 0$. It stretches each axis.</li>
+                <li>$U \in \mathbb{R}^{m \times m}$: orthonormal columns (left singular vectors). Another rotation.</li>
             </ul>
 
             <p>
-                The nonzero singular values $\sigma_i$ are the square roots of the nonzero eigenvalues of both $A^\top A$ and $A A^\top$:
+                In words, every matrix acts as <strong>rotate, stretch along the axes, rotate again</strong>. SVD exists for every
+                matrix and makes no statistical assumptions. It is a factorization, not an objective. The question is why
+                it hands us the answer to PCA's statistical question.
+            </p>
+
+            <h3>5.2 The connection: $V$ holds the principal components</h3>
+
+            <p>
+                Apply SVD to the centered data, $\tilde{X} = U \Sigma V^\top$, and compute $\tilde{X}^\top \tilde{X}$, the matrix
+                inside $C$. The middle cancels because $U$ has orthonormal columns ($U^\top U = I$):
             </p>
 
             <div class="math-display">
-                $$A^\top A = V (\Sigma^\top \Sigma) V^\top, \qquad A A^\top = U (\Sigma \Sigma^\top) U^\top$$
+                $$\tilde{X}^\top \tilde{X} = (V \Sigma^\top U^\top)(U \Sigma V^\top) = V \Sigma^\top \Sigma V^\top = V \Sigma^2 V^\top$$
             </div>
 
             <p>
-                SVD is a <strong>general matrix decomposition</strong>—it exists for any matrix (real or complex, square or rectangular),
-                which follows from the spectral theorem applied to $A^\top A$. It's a pure linear algebra tool with no statistical assumptions.
+                where $\Sigma^2$ is diagonal with entries $\sigma_i^2$. Divide by $m$ and multiply both sides on the right by $V$
+                (using $V^\top V = I$):
             </p>
 
-            <h2>2. What Is PCA Really?</h2>
-
-            <h3>2.1 PCA Is a Statistical Problem</h3>
+            <div class="math-display">
+                $$C = V \left(\frac{\Sigma^2}{m}\right) V^\top \quad\Longrightarrow\quad C\,V = V \left(\frac{\Sigma^2}{m}\right)
+                \quad\Longrightarrow\quad C\,\mathbf{v}_i = \frac{\sigma_i^2}{m}\,\mathbf{v}_i$$
+            </div>
 
             <p>
-                Unlike SVD, Principal Component Analysis is fundamentally a <strong>statistical technique</strong>. 
-                PCA is defined as:
+                This is Step 3's equation, $C\mathbf{w} = \lambda\mathbf{w}$, solved for every column at once.
+                So the <strong>columns of $V$ are the eigenvectors of $C$</strong>, which makes them the principal components, and
+                the variance along each one is $\lambda_i = \sigma_i^2 / m$. SVD sorts singular values from largest to smallest,
+                so $\mathbf{v}_1$ is already the first principal component.
+            </p>
+
+            <h3>5.3 $U\Sigma$ holds the projected data</h3>
+
+            <p>
+                Once you have the directions, you usually want each point's coordinates along them (its "scores").
+                Projecting all the data onto all the components is $\tilde{X} V$, and SVD gives it for free:
+            </p>
+
+            <div class="math-display">
+                $$\tilde{X} V = U \Sigma V^\top V = U \Sigma \qquad\text{column by column:}\quad \tilde{X}\mathbf{v}_j = \sigma_j \mathbf{u}_j$$
+            </div>
+
+            <p>
+                Row $i$ of $U\Sigma$ gives the coordinates of point $i$ in the new axes. Each column $\mathbf{u}_j$ is the list of
+                every point's projection onto $\mathbf{v}_j$, rescaled to unit length. Its length before rescaling,
+                $\sigma_j$, measures how much the data spreads along that direction.
+            </p>
+
+            <details class="aside">
+                <summary>Going further: what $U$ means on its own</summary>
+                <p>
+                    The same trick applied to $\tilde{X}\tilde{X}^\top$ (an $m \times m$ matrix comparing samples, not features) cancels $V$ instead:
+                </p>
+
+                <div class="math-display">
+                    $$\tilde{X} \tilde{X}^\top = U \Sigma V^\top V \Sigma^\top U^\top = U \Sigma \Sigma^\top U^\top \quad\Longrightarrow\quad (\tilde{X} \tilde{X}^\top) \mathbf{u}_j = \sigma_j^2 \mathbf{u}_j$$
+                </div>
+
+                <ul>
+                    <li>The <strong>columns of $U$</strong> are the eigenvectors of $\tilde{X}\tilde{X}^\top$, the sample-by-sample similarity (Gram) matrix.</li>
+                    <li>The <strong>$j$-th column $\mathbf{u}_j$</strong> is the normalized projection of all points onto $\mathbf{v}_j$.</li>
+                    <li>The <strong>$i$-th row of $U$</strong> gives point $i$'s coordinates in principal-component space, with every axis rescaled to the same variance (this is "whitening").</li>
+                    <li>When $n \gg m$ (more features than samples), eigendecomposing the small $m \times m$ matrix $\tilde{X}\tilde{X}^\top$ and recovering $V$ via $\mathbf{v}_j = \tilde{X}^\top \mathbf{u}_j / \sigma_j$ is the classic "eigenfaces" trick.</li>
+                </ul>
+            </details>
+
+            <div class="highlight-box">
+                <strong>When they meet:</strong> for centered data $\tilde{X} = U \Sigma V^\top$,
+                <ul style="margin-top: 0.5rem;">
+                    <li>the columns of $V$ are the eigenvectors of $C$, which are the principal components,</li>
+                    <li>$\lambda_i = \sigma_i^2 / m$ is the variance along component $i$,</li>
+                    <li>$U\Sigma$ holds the projected coordinates.</li>
+                </ul>
+                <p style="margin-bottom: 0;">
+                    The answers agree up to the sign of each component (and up to rotation within any repeated eigenvalue).
+                    They are still <em>different things</em>: PCA solves a statistical optimization problem, while SVD performs
+                    a matrix factorization. They coincide on centered data.
+                </p>
+            </div>
+
+            <h2 id="centering">6. Step 5: Why Centering Matters</h2>
+
+            <p class="step-recap">Step 5 of 5 · SVD knows nothing about means. On raw data it maximizes $\mathbf{w}^\top(C + \boldsymbol{\mu}\boldsymbol{\mu}^\top)\mathbf{w}$, not the variance.</p>
+
+            <p>
+                Variance is always measured around the mean, so the PCA objective only ever sees $\mathbf{x}_i - \boldsymbol{\mu}$.
+                A matrix factorization has no idea what a mean is. It measures everything from the origin. If we skip centering
+                and run SVD on the <strong>raw</strong> $X$, its top right singular vector maximizes the average squared
+                projection measured from the origin, which is the <em>second moment</em>. Writing each point as
+                $\mathbf{x}_i = (\mathbf{x}_i - \boldsymbol{\mu}) + \boldsymbol{\mu}$ shows how that differs from the variance:
+            </p>
+
+            <div class="math-display">
+                $$\frac{1}{m}\|X\mathbf{w}\|^2 = \frac{1}{m}\sum_{i=1}^m \big((\mathbf{x}_i - \boldsymbol{\mu})^\top \mathbf{w} + \boldsymbol{\mu}^\top \mathbf{w}\big)^2 = \underbrace{\mathbf{w}^\top C\, \mathbf{w}}_{\text{variance}} + \underbrace{(\boldsymbol{\mu}^\top \mathbf{w})^2}_{\text{pull toward the mean}}$$
+            </div>
+
+            <p>
+                The cross term vanishes because the centered points sum to zero. What is left is the variance plus an extra term
+                that rewards pointing at the mean, $\mathbf{w}^\top(C + \boldsymbol{\mu}\boldsymbol{\mu}^\top)\mathbf{w}$.
+                The further the data sits from the origin, the more that extra term dominates.
             </p>
 
             <div class="highlight-box">
-                <strong>PCA Objective:</strong> Find orthogonal directions that maximize the variance of projected data.
-            </div>
-
-            <p>
-                This is a statistical optimization problem, not just a matrix factorization. The goal is to find 
-                directions in the feature space along which the data exhibits maximum variability.
-            </p>
-
-            <h3>2.2 Data Matrix Setup</h3>
-
-            <p>
-                Let's set up the problem formally. Consider a data matrix:
-            </p>
-
-            <div class="math-display">
-                $$X \in \mathbb{R}^{m \times n}$$
-            </div>
-
-            <p>where:</p>
-            <ul>
-                <li><strong>Rows = samples</strong> ($m$ data points)</li>
-                <li><strong>Columns = features</strong> ($n$ features per sample)</li>
-            </ul>
-
-            <p>
-                Each row $\mathbf{x}_i^T$ represents one data sample, and each column represents one feature across all samples.
-            </p>
-
-            <h3>2.3 Why Center the Data?</h3>
-
-            <p>
-                This is a crucial step that reveals the statistical nature of PCA. We center the data:
-            </p>
-
-            <div class="math-display">
-                $$\tilde{X} = X - \boldsymbol{\mu}$$
-            </div>
-
-            <p>
-                where $\boldsymbol{\mu} = \frac{1}{m}\sum_{i=1}^m \mathbf{x}_i$ is the sample mean vector.
-            </p>
-
-            <p>
-                <strong>Why is centering necessary?</strong> Variance is defined relative to the mean, 
-                $\text{Var}(z) = \mathbb{E}[(z - \mathbb{E}[z])^2]$, so it helps to write out what we are maximizing. 
-                For a unit direction $\mathbf{w}$, the projections $z_i = \mathbf{x}_i^\top \mathbf{w}$ have mean 
-                $\bar{z} = \boldsymbol{\mu}^\top \mathbf{w}$ and variance:
-            </p>
-
-            <div class="math-display">
-                $$\text{Var}(z) = \frac{1}{m} \sum_{i=1}^m (\mathbf{x}_i^\top \mathbf{w} - \boldsymbol{\mu}^\top \mathbf{w})^2 = \mathbf{w}^\top \left[\frac{1}{m} \sum_{i=1}^m (\mathbf{x}_i - \boldsymbol{\mu})(\mathbf{x}_i - \boldsymbol{\mu})^\top\right] \mathbf{w} = \mathbf{w}^\top \Sigma_x \mathbf{w}$$
-            </div>
-
-            <p>
-                The variance objective is <em>always</em> centered: it only ever sees $\mathbf{x}_i - \boldsymbol{\mu}$. 
-                We use $\frac{1}{m}$ throughout this post; the unbiased $\frac{1}{m-1}$ rescales every eigenvalue by the 
-                same constant and leaves the principal directions unchanged.
-            </p>
-
-            <p>
-                So why do we center explicitly? Because a matrix factorization knows nothing about means. 
-                If we run SVD on the <strong>raw</strong> $X$, its top right singular vector maximizes the 
-                <em>second moment</em> instead of the variance:
-            </p>
-
-            <div class="math-display">
-                $$\frac{1}{m}\|X\mathbf{w}\|^2 = \frac{1}{m}\sum_{i=1}^m (\mathbf{x}_i^\top \mathbf{w})^2 = \mathbf{w}^\top \left(\Sigma_x + \boldsymbol{\mu}\boldsymbol{\mu}^\top\right) \mathbf{w}$$
-            </div>
-
-            <div class="highlight-box">
-                <strong>Centering is what turns SVD into PCA.</strong> On uncentered data, SVD maximizes 
-                $\mathbf{w}^\top(\Sigma_x + \boldsymbol{\mu}\boldsymbol{\mu}^\top)\mathbf{w}$, and the extra 
-                $\boldsymbol{\mu}\boldsymbol{\mu}^\top$ term pulls the first direction toward the mean. Subtracting 
+                <strong>Centering is what turns SVD into PCA.</strong> On uncentered data, SVD maximizes
+                $\mathbf{w}^\top(C + \boldsymbol{\mu}\boldsymbol{\mu}^\top)\mathbf{w}$, and the extra
+                $\boldsymbol{\mu}\boldsymbol{\mu}^\top$ term pulls the first direction toward the mean. Subtracting
                 $\boldsymbol{\mu}$ removes that term, and the SVD objective becomes exactly the PCA objective.
             </div>
 
             <div class="figure-container">
                 <div class="viz-container">
                     <div id="centering-viz" style="width: 100%; height: 420px;"></div>
-                    <p class="figure-caption">Figure 1: Why centering matters. The top singular vector of the raw data (dashed, from the origin) is pulled toward the mean $\boldsymbol{\mu}$. The first principal component (solid, through $\boldsymbol{\mu}$) follows the direction of maximum variance.</p>
+                    <p class="figure-caption">Figure 2: Why centering matters. The top singular vector of the raw data (dashed, from the origin) is pulled toward the mean $\boldsymbol{\mu}$. The first principal component (solid, through $\boldsymbol{\mu}$) follows the direction of maximum variance.</p>
                 </div>
             </div>
 
-            <h2>3. Objective: What Are We Maximizing?</h2>
+            <h2 id="practice">7. In Practice: Computing PCA with SVD</h2>
 
-            <h3>3.1 Projection Viewpoint (Key Intuition)</h3>
-
-            <p>
-                The key intuition behind PCA comes from the projection viewpoint. We choose a unit direction 
-                $\mathbf{w} \in \mathbb{R}^n$ (where $\|\mathbf{w}\| = 1$) and project all data points onto it:
-            </p>
-
-            <div class="math-display">
-                $$z_i = \mathbf{x}_i^\top \mathbf{w}$$
-            </div>
+            <h3>7.1 Why use SVD instead of the covariance matrix?</h3>
 
             <p>
-                This gives us a 1D representation of the data. Each high-dimensional point $\mathbf{x}_i$ is 
-                mapped to a scalar $z_i$ along the direction $\mathbf{w}$.
-            </p>
-
-            <div class="figure-container">
-                <div class="viz-container">
-                    <div id="projection-viz" style="width: 100%; height: 450px;"></div>
-                    <p class="figure-caption">Figure 2: Projection viewpoint. Data points are projected onto a direction vector $\mathbf{w}$. PCA finds the direction that maximizes the variance of these projections.</p>
-                </div>
-            </div>
-
-            <p>
-                <strong>PCA asks:</strong> Along which direction does the projected data have maximum variance?
-            </p>
-
-            <p>
-                This is the core statistical question. We want to find the direction that preserves the most 
-                information about the data's variability.
-            </p>
-
-            <h3>3.2 Variance of the Projection</h3>
-
-            <p>
-                For centered data $\tilde{X}$, the variance of the projected data is:
-            </p>
-
-            <div class="math-display">
-                $$\text{Var}(\tilde{X}\mathbf{w}) = \frac{1}{m} \sum_{i=1}^{m} (\tilde{\mathbf{x}}_i^\top \mathbf{w})^2$$
-            </div>
-
-            <p>
-                Note: For centered data, the mean of projections is zero, so variance simplifies to the mean of squared projections. 
-                This is because $\text{Var}(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2$, and for centered data $\mathbb{E}[X] = 0$, 
-                so $\text{Var}(X) = \mathbb{E}[X^2]$.
-            </p>
-
-            <p>
-                Rewriting in matrix form:
-            </p>
-
-            <div class="math-display">
-                $$\text{Var}(\tilde{X}\mathbf{w}) = \frac{1}{m} \sum_{i=1}^{m} (\tilde{\mathbf{x}}_i^\top \mathbf{w})^2 = \frac{1}{m} \mathbf{w}^\top \tilde{X}^\top \tilde{X} \mathbf{w}$$
-            </div>
-
-            <p>
-                Define the sample covariance matrix:
-            </p>
-
-            <div class="math-display">
-                $$\Sigma_x = \frac{1}{m} \tilde{X}^\top \tilde{X}$$
-            </div>
-
-            <p>
-                So the objective becomes:
-            </p>
-
-            <div class="math-display">
-                $$\boxed{ \max_{\mathbf{w}} \quad \mathbf{w}^\top \Sigma_x \mathbf{w} }$$
-            </div>
-
-            <h3>3.3 Constraint: Why Unit Norm?</h3>
-
-            <p>
-                Without a constraint, the objective is meaningless. We could simply scale $\mathbf{w}$ to make 
-                the variance arbitrarily large:
-            </p>
-
-            <div class="math-display">
-                $$\mathbf{w}^\top \Sigma_x \mathbf{w} \rightarrow \infty \quad \text{by scaling } \mathbf{w}$$
-            </div>
-
-            <p>
-                So we impose the constraint:
-            </p>
-
-            <div class="math-display">
-                $$\boxed{ \mathbf{w}^\top \mathbf{w} = 1 }$$
-            </div>
-
-            <p>
-                <strong>Geometric meaning:</strong> We are choosing a <em>direction</em>, not a magnitude. 
-                The constraint ensures we're optimizing over the unit sphere, which makes the problem well-defined.
-            </p>
-
-            <h3>3.4 Full Optimization Problem</h3>
-
-            <p>
-                Combining the objective and constraint, we have:
-            </p>
-
-            <div class="math-display">
-                $$\boxed{ \max_{\mathbf{w}} \quad \mathbf{w}^\top \Sigma_x \mathbf{w} \quad \text{subject to} \quad \mathbf{w}^\top \mathbf{w} = 1 }$$
-            </div>
-
-
-
-            <h2>4. Solution via Lagrange Multipliers</h2>
-
-            <p>
-                We solve this constrained optimization problem using the method of Lagrange multipliers.
-            </p>
-
-            <h3>4.1 Step 1: Construct the Lagrangian</h3>
-
-            <p>
-                The Lagrangian function is:
-            </p>
-
-            <div class="math-display">
-                $$\mathcal{L}(\mathbf{w}, \lambda) = \mathbf{w}^\top \Sigma_x \mathbf{w} - \lambda(\mathbf{w}^\top \mathbf{w} - 1)$$
-            </div>
-
-            <p>
-                where $\lambda$ is the Lagrange multiplier associated with the constraint $\mathbf{w}^\top \mathbf{w} = 1$.
-            </p>
-
-            <h3>4.2 Step 2: Take Gradient with Respect to $\mathbf{w}$</h3>
-
-            <p>
-                Taking the gradient of the Lagrangian with respect to $\mathbf{w}$:
-            </p>
-
-            <div class="math-display">
-                $$\nabla_{\mathbf{w}} \mathcal{L} = 2\Sigma_x \mathbf{w} - 2\lambda \mathbf{w}$$
-            </div>
-
-            <p>
-                Setting the gradient to zero:
-            </p>
-
-            <div class="math-display">
-                $$2\Sigma_x \mathbf{w} - 2\lambda \mathbf{w} = 0$$
-            </div>
-
-            <p>
-                Dividing by 2 and rearranging:
-            </p>
-
-            <div class="math-display">
-                $$\boxed{ \Sigma_x \mathbf{w} = \lambda \mathbf{w} }$$
-            </div>
-
-            <div class="highlight-box">
-                <strong>Key Result:</strong> The PCA directions are eigenvectors of the covariance matrix $\Sigma_x$. 
-                The Lagrange multiplier $\lambda$ is the corresponding eigenvalue.
-            </div>
-
-            <h3>4.3 Step 3: Which Eigenvector?</h3>
-
-            <p>
-                To determine which eigenvector gives the maximum variance, substitute back into the objective. 
-                From the eigenvalue equation:
-            </p>
-
-            <div class="math-display">
-                $$\mathbf{w}^\top \Sigma_x \mathbf{w} = \mathbf{w}^\top (\lambda \mathbf{w}) = \lambda \mathbf{w}^\top \mathbf{w} = \lambda$$
-            </div>
-
-            <p>
-                So:
-            </p>
-
-            <div class="highlight-box">
-                <strong>Maximizing variance ⇔ maximizing eigenvalue</strong>
-            </div>
-
-            <p>
-                Therefore:
-            </p>
-            <ul>
-                <li><strong>First principal component</strong> = eigenvector with largest eigenvalue</li>
-                <li><strong>Second principal component</strong> = eigenvector with second largest eigenvalue (orthogonal to the first)</li>
-                <li><strong>Remaining components</strong> = next largest eigenvalues (all mutually orthogonal)</li>
-            </ul>
-
-            <p>
-                Why the second eigenvector? Maximize $\mathbf{w}^\top \Sigma_x \mathbf{w}$ again, now with the extra 
-                constraint $\mathbf{w} \perp \mathbf{v}_1$. Because $\Sigma_x$ is symmetric, it maps the subspace 
-                $\mathbf{v}_1^\perp$ to itself, so the same Lagrangian argument restricted to that subspace returns its top 
-                eigenvector, $\mathbf{v}_2$. Repeating this gives every remaining component.
-            </p>
-
-            <h2>5. Geometric Interpretation</h2>
-
-            <h3>5.1 Maximum Variance = Minimum Reconstruction Error</h3>
-
-            <p>
-                PCA has a second, equivalent definition: find the direction whose projection loses the least information. 
-                For a centered point $\tilde{\mathbf{x}}_i$ and unit $\mathbf{w}$, split the point into its projection 
-                and a residual. Pythagoras gives:
-            </p>
-
-            <div class="math-display">
-                $$\|\tilde{\mathbf{x}}_i\|^2 = \underbrace{(\tilde{\mathbf{x}}_i^\top \mathbf{w})^2}_{\text{kept}} + \underbrace{\|\tilde{\mathbf{x}}_i - (\tilde{\mathbf{x}}_i^\top \mathbf{w})\mathbf{w}\|^2}_{\text{reconstruction error}}$$
-            </div>
-
-            <p>
-                The left-hand side does not depend on $\mathbf{w}$. Averaged over all points, the first term is the 
-                projected variance $\mathbf{w}^\top \Sigma_x \mathbf{w}$, so making it larger makes the reconstruction error smaller:
-            </p>
-
-            <div class="highlight-box">
-                <strong>Maximizing projected variance ⇔ minimizing squared reconstruction error.</strong>
-            </div>
-
-            <p>
-                Geometrically, PCA rotates the coordinate system so that its axes line up with the directions of greatest 
-                spread, and keeping the first $k$ axes gives the best $k$-dimensional subspace in the least-squares sense.
-                This is also where SVD comes in naturally: by the <strong>Eckart–Young theorem</strong>, truncating the SVD 
-                to its top $k$ singular values gives the best rank-$k$ approximation of $\tilde{X}$. The next section shows 
-                that this is the same subspace PCA finds.
-            </p>
-
-            <h2>6. The Connection: When Do PCA and SVD Meet?</h2>
-
-            <p>
-                Now we can understand when and why PCA and SVD coincide:
-            </p>
-
-            <p>
-                For <strong>centered data</strong> $\tilde{X}$, the covariance matrix is:
-            </p>
-
-            <div class="math-display">
-                $$\Sigma_x = \frac{1}{m} \tilde{X}^\top \tilde{X}$$
-            </div>
-
-            <p>
-                If we apply SVD to the centered data matrix:
-            </p>
-
-            <div class="math-display">
-                $$\tilde{X} = U \Sigma V^\top$$
-            </div>
-
-            <p>
-                where $U \in \mathbb{R}^{m \times m}$ has orthonormal columns, $\Sigma \in \mathbb{R}^{m \times n}$ is diagonal 
-                with singular values, and $V \in \mathbb{R}^{n \times n}$ has orthonormal columns.
-            </p>
-
-            <p>
-                <em>Notation:</em> two similar symbols appear from here on. $\Sigma$ (no subscript) is the SVD's matrix of 
-                singular values, and $\Sigma_x$ is the covariance matrix. They are related, as we are about to see, but they are not the same matrix.
-            </p>
-
-            <p>
-                Now, let's compute $\tilde{X}^\top \tilde{X}$ using the SVD decomposition:
-            </p>
-
-            <div class="math-display">
-                $$\tilde{X}^\top \tilde{X} = (U \Sigma V^\top)^\top (U \Sigma V^\top)$$
-            </div>
-
-            <p>
-                Using the property $(AB)^\top = B^\top A^\top$, we get:
-            </p>
-
-            <div class="math-display">
-                $$\tilde{X}^\top \tilde{X} = (V \Sigma^\top U^\top) (U \Sigma V^\top)$$
-            </div>
-
-            <p>
-                Since $U$ has orthonormal columns, $U^\top U = I_m$ (the $m \times m$ identity matrix). Also, 
-                $\Sigma^\top \Sigma = \Sigma^2$ (since $\Sigma$ is diagonal). Therefore:
-            </p>
-
-            <div class="math-display">
-                $$\tilde{X}^\top \tilde{X} = V \Sigma^\top U^\top U \Sigma V^\top = V \Sigma^\top \Sigma V^\top = V \Sigma^2 V^\top$$
-            </div>
-
-            <p>
-                where $\Sigma^2$ is a diagonal matrix with entries $\sigma_i^2$ (the squares of singular values).
-            </p>
-
-            <p>
-                Now, the covariance matrix becomes:
-            </p>
-
-            <div class="math-display">
-                $$\Sigma_x = \frac{1}{m} \tilde{X}^\top \tilde{X} = \frac{1}{m} V \Sigma^2 V^\top$$
-            </div>
-
-            <p>
-                <strong>Key observation:</strong> This is an eigendecomposition!
-            </p>
-
-            <p>
-                Multiplying both sides by $V$ from the right and using $V V^\top = I_n$:
-            </p>
-
-            <div class="math-display">
-                $$\Sigma_x V = V \left(\frac{1}{m} \Sigma^2\right)$$
-            </div>
-
-            <p>
-                This shows that $\Sigma_x V = V \Lambda$, where $\Lambda = \frac{1}{m} \Sigma^2$ is a diagonal matrix. 
-                This is exactly the eigenvalue equation! Let's visualize what this means.
-            </p>
-
-            <p>
-                The matrix $V$ contains the eigenvectors as <strong>columns</strong>:
-            </p>
-
-            <div class="math-display">
-                $$V = \begin{bmatrix} \mathbf{v}_1 & \mathbf{v}_2 & \cdots & \mathbf{v}_n \end{bmatrix} = \begin{bmatrix}
-                v_{11} & v_{12} & \cdots & v_{1n} \\
-                v_{21} & v_{22} & \cdots & v_{2n} \\
-                \vdots & \vdots & \ddots & \vdots \\
-                v_{n1} & v_{n2} & \cdots & v_{nn}
-                \end{bmatrix}$$
-            </div>
-
-            <p>
-                And $\Lambda$ is a diagonal matrix of eigenvalues:
-            </p>
-
-            <div class="math-display">
-                $$\Lambda = \frac{1}{m} \Sigma^2 = \begin{bmatrix}
-                \lambda_1 & 0 & \cdots & 0 \\
-                0 & \lambda_2 & \cdots & 0 \\
-                \vdots & \vdots & \ddots & \vdots \\
-                0 & 0 & \cdots & \lambda_n
-                \end{bmatrix} = \begin{bmatrix}
-                \frac{\sigma_1^2}{m} & 0 & \cdots & 0 \\
-                0 & \frac{\sigma_2^2}{m} & \cdots & 0 \\
-                \vdots & \vdots & \ddots & \vdots \\
-                0 & 0 & \cdots & \frac{\sigma_n^2}{m}
-                \end{bmatrix}$$
-            </div>
-
-            <p>
-                The eigenvalue equation $\Sigma_x V = V \Lambda$ means that each column $\mathbf{v}_i$ of $V$ satisfies:
-            </p>
-
-            <div class="math-display">
-                $$\Sigma_x \mathbf{v}_i = \lambda_i \mathbf{v}_i$$
-            </div>
-
-            <p>
-                Therefore:
-            </p>
-            <ul>
-                <li>The <strong>columns of $V$</strong> (right singular vectors $\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_n$) 
-                    are the <strong>eigenvectors of $\Sigma_x$</strong>, which are exactly the <strong>principal components</strong></li>
-                <li>The <strong>eigenvalues</strong> are $\lambda_i = \frac{\sigma_i^2}{m}$, where $\sigma_i$ are the singular values</li>
-                <li>The first principal component is $\mathbf{v}_1$ (corresponding to the largest eigenvalue $\lambda_1$)</li>
-            </ul>
-
-            <h3>6.1 Projecting Data onto Principal Directions</h3>
-
-            <p>
-                Now that we have found the principal directions (the columns of $V$), the next step is to project our 
-                data onto these directions. This is where the left singular vectors $U$ come into play.
-            </p>
-
-            <p>
-                For a data point $\tilde{\mathbf{x}}_i$ (a row of $\tilde{X}$) and principal component $\mathbf{v}_j$ 
-                (a column of $V$), the projection is:
-            </p>
-
-            <div class="math-display">
-                $$z_{ij} = \tilde{\mathbf{x}}_i^\top \mathbf{v}_j$$
-            </div>
-
-            <p>
-                This gives the coordinate of data point $i$ along principal component $j$. When we project <strong>all</strong> 
-                data points onto principal component $\mathbf{v}_j$, we get a vector containing the projections of all 
-                $m$ data points:
-            </p>
-
-            <div class="math-display">
-                $$\tilde{X} \mathbf{v}_j = \begin{bmatrix} \tilde{\mathbf{x}}_1^\top \\ \tilde{\mathbf{x}}_2^\top \\ \vdots \\ \tilde{\mathbf{x}}_m^\top \end{bmatrix} \mathbf{v}_j = \begin{bmatrix} \tilde{\mathbf{x}}_1^\top \mathbf{v}_j \\ \tilde{\mathbf{x}}_2^\top \mathbf{v}_j \\ \vdots \\ \tilde{\mathbf{x}}_m^\top \mathbf{v}_j \end{bmatrix}$$
-            </div>
-
-            <p>
-                This vector $\tilde{X} \mathbf{v}_j \in \mathbb{R}^m$ contains the projections of all $m$ data points 
-                onto the $j$-th principal component. Now, let's see how this relates to the SVD and the matrix $U$.
-            </p>
-
-            <h3>6.2 What Are the Left Singular Vectors $U$?</h3>
-
-            <p>
-                From the SVD $\tilde{X} = U \Sigma V^\top$, we can express the projection $\tilde{X} \mathbf{v}_j$ as:
-            </p>
-
-            <div class="math-display">
-                $$\tilde{X} \mathbf{v}_j = U \Sigma V^\top \mathbf{v}_j$$
-            </div>
-
-            <p>
-                Since $V$ has orthonormal columns, $V^\top \mathbf{v}_j$ is the $j$-th standard basis vector $\mathbf{e}_j$ 
-                (a vector with 1 in position $j$ and 0 elsewhere). Therefore:
-            </p>
-
-            <div class="math-display">
-                $$\tilde{X} \mathbf{v}_j = U \Sigma \mathbf{e}_j = U \begin{bmatrix} 0 \\ \vdots \\ \sigma_j \\ \vdots \\ 0 \end{bmatrix} = \sigma_j \mathbf{u}_j$$
-            </div>
-
-            <p>
-                where $\mathbf{u}_j$ is the $j$-th column of $U$. This shows that:
-            </p>
-
-            <div class="math-display">
-                $$\tilde{X} \mathbf{v}_j = \sigma_j \mathbf{u}_j$$
-            </div>
-
-            <p>
-                In other words, <strong>projecting all data points onto principal component $\mathbf{v}_j$ gives $\sigma_j \mathbf{u}_j$</strong>, 
-                where $\mathbf{u}_j$ is the $j$-th left singular vector (normalized projection vector).
-            </p>
-
-            <p>
-                More generally, when we project all data onto all principal components, we get:
-            </p>
-
-            <div class="math-display">
-                $$\tilde{X} V = U \Sigma V^\top V = U \Sigma$$
-            </div>
-
-            <p>
-                since $V^\top V = I_n$. The matrix $\tilde{X} V$ contains all projections: the $(i,j)$-th element is 
-                the projection of data point $i$ onto principal component $j$. This equals $U \Sigma$. Using the 
-                <strong>thin SVD</strong>, which keeps only the $r = \text{rank}(\tilde{X})$ columns with nonzero singular values 
-                ($U_r \in \mathbb{R}^{m \times r}$, $\Sigma_r \in \mathbb{R}^{r \times r}$), gives:
-            </p>
-
-            <div class="math-display">
-                $$U_r \Sigma_r = \begin{bmatrix} \mathbf{u}_1 & \mathbf{u}_2 & \cdots & \mathbf{u}_r \end{bmatrix} \begin{bmatrix}
-                \sigma_1 & 0 & \cdots & 0 \\
-                0 & \sigma_2 & \cdots & 0 \\
-                \vdots & \vdots & \ddots & \vdots \\
-                0 & 0 & \cdots & \sigma_r
-                \end{bmatrix} = \begin{bmatrix}
-                \sigma_1 \mathbf{u}_1 & \sigma_2 \mathbf{u}_2 & \cdots & \sigma_r \mathbf{u}_r
-                \end{bmatrix}$$
-            </div>
-
-            <p>
-                Visualizing $U$ as columns:
-            </p>
-
-            <div class="math-display">
-                $$U = \begin{bmatrix} \mathbf{u}_1 & \mathbf{u}_2 & \cdots & \mathbf{u}_m \end{bmatrix} = \begin{bmatrix}
-                u_{11} & u_{12} & \cdots & u_{1m} \\
-                u_{21} & u_{22} & \cdots & u_{2m} \\
-                \vdots & \vdots & \ddots & \vdots \\
-                u_{m1} & u_{m2} & \cdots & u_{mm}
-                \end{bmatrix}$$
-            </div>
-
-            <p>
-                We can also derive the relationship for $U$ by computing $\tilde{X} \tilde{X}^\top$:
-            </p>
-
-            <div class="math-display">
-                $$\tilde{X} \tilde{X}^\top = (U \Sigma V^\top) (U \Sigma V^\top)^\top = U \Sigma V^\top V \Sigma^\top U^\top = U \Sigma \Sigma^\top U^\top = U \Sigma^2 U^\top$$
-            </div>
-
-            <p>
-                where we used $V^\top V = I_n$, and $\Sigma \Sigma^\top$ is the $m \times m$ diagonal matrix with entries 
-                $\sigma_j^2$ (padded with zeros), which we write as $\Sigma^2$. 
-                This shows:
-            </p>
-
-            <div class="math-display">
-                $$\tilde{X} \tilde{X}^\top = U \Lambda' U^\top$$
-            </div>
-
-            <p>
-                where $\Lambda' = \Sigma^2$ is a diagonal matrix. This is also an eigendecomposition, so:
-            </p>
-
-            <div class="math-display">
-                $$(\tilde{X} \tilde{X}^\top) \mathbf{u}_j = \sigma_j^2 \mathbf{u}_j$$
-            </div>
-
-            <p>
-                <strong>Summary of what $U$ represents:</strong>
-            </p>
-            <ul>
-                <li>The <strong>columns of $U$</strong> (left singular vectors) are the <strong>eigenvectors of $\tilde{X} \tilde{X}^\top$</strong></li>
-                <li>The <strong>$j$-th column $\mathbf{u}_j$</strong> is the <strong>normalized projection vector</strong>: when we project 
-                    all data points onto principal component $\mathbf{v}_j$, we get $\sigma_j \mathbf{u}_j$</li>
-                <li>The <strong>$i$-th row of $U$</strong> contains the normalized coordinates of data point $i$ in the 
-                    principal component space</li>
-                <li>The <strong>actual projections</strong> of data onto principal components are given by $U \Sigma$ (the 
-                    $i$-th row, $j$-th column element is $\sigma_j u_{ij}$, the projection of point $i$ onto component $j$)</li>
-            </ul>
-
-            <div class="highlight-box">
-                <strong>Summary:</strong> For centered data $\tilde{X} = U \Sigma V^\top$:
-                <ul style="margin-top: 0.5rem;">
-                    <li>$V$ contains eigenvectors of $\tilde{X}^\top \tilde{X}$ (and of covariance matrix $\Sigma_x$)</li>
-                    <li>$U$ contains eigenvectors of $\tilde{X} \tilde{X}^\top$</li>
-                    <li>Eigenvalues: $\lambda_i = \frac{\sigma_i^2}{m}$ where $\sigma_i$ are singular values</li>
-                </ul>
-            </div>
-
-            <div class="highlight-box">
-                <strong>When They Meet:</strong> For centered data, PCA and SVD produce the same result. The principal 
-                components from PCA (eigenvectors of the covariance matrix) are exactly the right singular vectors 
-                from SVD, up to sign (and up to rotation within any repeated eigenvalue). However, they are still <em>different things</em>—PCA is solving a statistical optimization 
-                problem, while SVD is performing a matrix factorization. They just happen to coincide for centered data.
-            </div>
-
-            <h3>6.3 Why Use SVD for PCA Computationally?</h3>
-
-            <p>
-                Even though PCA and SVD are conceptually different, in practice, SVD is often the preferred 
+                Even though PCA and SVD are conceptually different, in practice, SVD is often the preferred
                 computational method for PCA because:
             </p>
 
             <ol>
-                <li><strong>Numerical Stability:</strong> Forming $\tilde{X}^\top \tilde{X}$ squares the 
-                    condition number ($\kappa(\tilde{X}^\top \tilde{X}) = \kappa(\tilde{X})^2$), so small singular values lose 
-                    precision before the eigensolver even starts. SVD algorithms (like those in LAPACK) work on $\tilde{X}$ 
+                <li><strong>Numerical Stability:</strong> Forming $\tilde{X}^\top \tilde{X}$ squares the
+                    condition number ($\kappa(\tilde{X}^\top \tilde{X}) = \kappa(\tilde{X})^2$), so small singular values lose
+                    precision before the eigensolver even starts. SVD algorithms (like those in LAPACK) work on $\tilde{X}$
                     directly and avoid this.</li>
-                <li><strong>Efficiency:</strong> For large matrices, SVD can be more efficient, especially when we only 
+                <li><strong>Efficiency:</strong> For large matrices, SVD can be more efficient, especially when we only
                     need the top $k$ components (truncated SVD).</li>
-                <li><strong>Memory Efficiency:</strong> When $n$ is very large, computing $\Sigma_x \in \mathbb{R}^{n \times n}$ 
+                <li><strong>Memory Efficiency:</strong> When $n$ is very large, computing $C \in \mathbb{R}^{n \times n}$
                     may be infeasible, but SVD can work directly on $\tilde{X}$.</li>
             </ol>
 
             <p>
-                This is why libraries like scikit-learn implement PCA using SVD under the hood—it's the best 
+                This is why libraries like scikit-learn implement PCA using SVD under the hood—it's the best
                 computational approach, even though PCA itself is a statistical technique.
             </p>
 
-
-
-            <h2>7. Practical Considerations</h2>
-
-            <h3>7.1 Implementation</h3>
+            <h3>7.2 Implementation</h3>
             <p>
                 In Python, both approaches are available. Here's a complete example showing the relationship:
             </p>
-
             <div class="code-block">
                 <div class="code-header">
                     Python Implementation: PCA vs SVD
@@ -1288,74 +768,46 @@ print("They match:", np.allclose(s[:k]**2 / (m - 1), eigenvals[:k]),
                 in the derivation above. The directions are identical either way.
             </p>
 
-            <h3>7.2 Computational Complexity</h3>
+            <h3>7.3 Computational Complexity</h3>
             <p>
                 For a data matrix $\tilde{X} \in \mathbb{R}^{m \times n}$ ($m$ samples, $n$ features):
             </p>
             <ul>
                 <li><strong>Full SVD:</strong> $O(\min(m^2 n, m n^2))$</li>
                 <li><strong>Truncated SVD (top $k$):</strong> roughly $O(kmn)$ using iterative or randomized methods</li>
-                <li><strong>PCA via Covariance:</strong> $O(mn^2 + n^3)$ (computing $\Sigma_x$ + eigendecomposition)</li>
+                <li><strong>PCA via Covariance:</strong> $O(mn^2 + n^3)$ (computing $C$ + eigendecomposition)</li>
             </ul>
 
             <p>
                 For large-scale problems, truncated SVD is often preferred.
             </p>
 
-            <div class="highlight-box" style="border-left-width: 6px; padding: 2rem; margin: 3rem 0 2rem;">
-                <h3 style="margin-top: 0; color: var(--accent);">Takeaways</h3>
-                <ul style="margin-bottom: 0;">
+            <div class="highlight-box">
+                <h3>Takeaways</h3>
+                <ul>
                     <li><strong>PCA is an objective</strong>: find the directions of maximum variance, or equivalently of minimum reconstruction error. <strong>SVD is a factorization</strong> that exists for any matrix.</li>
                     <li><strong>Centering is the bridge.</strong> On centered data $\tilde{X} = U\Sigma V^\top$, the columns of $V$ are the principal directions, $\sigma_i^2/m$ are the variances along them, and $U\Sigma$ holds the projected coordinates.</li>
                     <li><strong>Compute PCA with SVD, but don't confuse the two.</strong> SVD is more stable and scales better, and forgetting to center silently gives you a different answer.</li>
                 </ul>
             </div>
-
-     
-
-
-   
-
-
+            <footer class="post-footer">
+                <a href="../index.html#blogs">← All writing</a>
+                <a href="https://github.com/aarjunsrinivasan" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://linkedin.com/in/arjunsrinivasana/" target="_blank" rel="noopener">LinkedIn</a>
+                <a href="mailto:arjunsrinivasan.a@gmail.com">Email</a>
+            </footer>
         </div>
     </div>
 
     <script>
-        // Theme toggle functionality
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        }
-
-        // Load saved theme
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-        });
-
-        // Update theme icon
-        document.addEventListener('DOMContentLoaded', () => {
-            const themeToggle = document.querySelector('.theme-toggle');
-            const updateIcon = () => {
-                const theme = document.documentElement.getAttribute('data-theme');
-                themeToggle.querySelector('.theme-icon').textContent = theme === 'dark' ? '☀️' : '🌙';
-            };
-            updateIcon();
-            themeToggle.addEventListener('click', () => {
-                setTimeout(updateIcon, 100);
-            });
-        });
-
-        // Interactive Visualizations
-        document.addEventListener('DOMContentLoaded', () => {
+        // Interactive visualizations, redrawn whenever the theme changes
+        function drawPlots() {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            const bgColor = isDark ? '#1c1917' : '#fafaf9';
+            const bgColor = isDark ? '#292524' : '#ffffff';
             const textColor = isDark ? '#fafaf9' : '#292524';
             const gridColor = isDark ? '#44403c' : '#e7e5e4';
-            const primaryColor = isDark ? '#d97706' : '#b45309';
-            const secondaryColor = isDark ? '#f59e0b' : '#92400e';
+            const primaryColor = isDark ? '#f59e0b' : '#b45309';
+            const secondaryColor = isDark ? '#fbbf24' : '#92400e';
 
             // Visualization 1: Effect of Centering
             if (document.getElementById('centering-viz')) {
@@ -1408,7 +860,7 @@ print("They match:", np.allclose(s[:k]**2 / (m - 1), eigenvals[:k]),
                 ], {
                     xaxis: { gridcolor: gridColor, zeroline: true, zerolinecolor: gridColor, range: [-1, 8.5] },
                     yaxis: { gridcolor: gridColor, zeroline: true, zerolinecolor: gridColor, scaleanchor: 'x' },
-                    plot_bgcolor: bgColor, paper_bgcolor: bgColor, font: { color: textColor },
+                    plot_bgcolor: bgColor, paper_bgcolor: bgColor, font: { color: textColor, family: '"Source Sans 3", sans-serif' },
                     legend: { orientation: 'h', y: -0.15 }, margin: { t: 20, r: 20 }
                 }, { responsive: true });
             }
@@ -1529,11 +981,16 @@ print("They match:", np.allclose(s[:k]**2 / (m - 1), eigenvals[:k]),
                     yaxis: { title: 'Feature 2', gridcolor: gridColor, scaleanchor: 'x' },
                     plot_bgcolor: bgColor,
                     paper_bgcolor: bgColor,
-                    font: { color: textColor },
+                    font: { color: textColor, family: '"Source Sans 3", sans-serif' },
                     showlegend: true
                 }, { responsive: true });
             }
-        });
+        }
+
+        document.addEventListener('DOMContentLoaded', drawPlots);
+        new MutationObserver(drawPlots).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     </script>
+    <script src="../js/main.js"></script>
+    <script src="../js/post.js"></script>
 </body>
 </html>
