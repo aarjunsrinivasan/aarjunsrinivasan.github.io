@@ -10,6 +10,13 @@
     --border: #e7e5e4;
     --surface: #ffffff;
     --code-bg: #f5f5f4;
+    --code-head-bg: #e7e5e4;
+    --tok-comment: #78716c;
+    --tok-keyword: #b45309;
+    --tok-string: #4d7c0f;
+    --tok-number: #0f766e;
+    --tok-function: #1d4ed8;
+    --tok-punct: #57534e;
     --font-sans: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-serif: "Source Serif 4", Georgia, serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -27,6 +34,13 @@
         --border: #44403c;
         --surface: #292524;
         --code-bg: #292524;
+        --code-head-bg: #44403c;
+        --tok-comment: #a8a29e;
+        --tok-keyword: #f59e0b;
+        --tok-string: #a3e635;
+        --tok-number: #5eead4;
+        --tok-function: #93c5fd;
+        --tok-punct: #d6d3d1;
     }
 }
 
@@ -41,6 +55,13 @@
     --border: #44403c;
     --surface: #292524;
     --code-bg: #292524;
+    --code-head-bg: #44403c;
+    --tok-comment: #a8a29e;
+    --tok-keyword: #f59e0b;
+    --tok-string: #a3e635;
+    --tok-number: #5eead4;
+    --tok-function: #93c5fd;
+    --tok-punct: #d6d3d1;
 }
 
 * {
@@ -259,6 +280,74 @@ a:hover {
     padding: 0;
     font-size: 1em;
     color: inherit;
+}
+
+/* Syntax-highlighted code blocks (Prism tokenises; colours come from the theme tokens) */
+.code-block {
+    margin: 1.5rem 0 2rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background: var(--code-head-bg);
+    color: var(--text-muted);
+    padding: 0.45rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+}
+
+.blog-content .code-header a {
+    color: inherit;
+}
+
+.blog-content .code-block pre {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: var(--code-bg);
+    color: var(--text);
+    font-size: 0.8rem;
+    line-height: 1.55;
+}
+
+.blog-content .code-block pre code {
+    font-size: 1em;
+}
+
+.blog-content .code-block .token.comment,
+.blog-content .code-block .token.prolog,
+.blog-content .code-block .token.doctype {
+    color: var(--tok-comment);
+    font-style: italic;
+}
+
+.blog-content .code-block .token.keyword,
+.blog-content .code-block .token.boolean,
+.blog-content .code-block .token.operator {
+    color: var(--tok-keyword);
+}
+
+.blog-content .code-block .token.string,
+.blog-content .code-block .token.char,
+.blog-content .code-block .token.attr-value {
+    color: var(--tok-string);
+}
+
+.blog-content .code-block .token.number,
+.blog-content .code-block .token.constant {
+    color: var(--tok-number);
+}
+
+.blog-content .code-block .token.function,
+.blog-content .code-block .token.class-name,
+.blog-content .code-block .token.builtin {
+    color: var(--tok-function);
+}
+
+.blog-content .code-block .token.punctuation {
+    color: var(--tok-punct);
 }
 
 .blog-content .comment,

@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arjun Srinivasan</title>
-    <meta name="description" content="Research engineer working on training correctness and efficiency. Worklogs on attention leakage in packed VLM training, loss-path efficiency, and hybrid long-context LMs.">
+    <meta name="description" content="Research engineer working on training correctness and efficiency. Worklogs on attention leakage in packed VLM training and hybrid long-context LMs.">
     <meta name="author" content="Arjun Srinivasan">
     <link rel="canonical" href="https://aarjunsrinivasan.github.io/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Arjun Srinivasan">
     <meta property="og:title" content="Arjun Srinivasan – Research Engineer">
-    <meta property="og:description" content="Research engineer working on training correctness and efficiency. Worklogs on attention leakage in packed VLM training, loss-path efficiency, and hybrid long-context LMs.">
+    <meta property="og:description" content="Research engineer working on training correctness and efficiency. Worklogs on attention leakage in packed VLM training and hybrid long-context LMs.">
     <meta property="og:url" content="https://aarjunsrinivasan.github.io/">
     <meta property="og:image" content="https://aarjunsrinivasan.github.io/mydp.jpg">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Arjun Srinivasan – Research Engineer">
-    <meta name="twitter:description" content="Research engineer working on training correctness and efficiency. Worklogs on attention leakage in packed VLM training, loss-path efficiency, and hybrid long-context LMs.">
+    <meta name="twitter:description" content="Research engineer working on training correctness and efficiency. Worklogs on attention leakage in packed VLM training and hybrid long-context LMs.">
     <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Arjun Srinivasan", "url": "https://aarjunsrinivasan.github.io/", "jobTitle": "Research Engineer", "image": "https://aarjunsrinivasan.github.io/mydp.jpg", "sameAs": ["https://github.com/aarjunsrinivasan", "https://linkedin.com/in/arjunsrinivasana/"]}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -78,10 +78,10 @@
                 results are reliable.
             </p>
             <p>
-                For six years at Fraunhofer USA I've taken applied ML from research to production. My work has
-                spanned training generative models (diffusion, controlled editing, unsupervised latent
-                edits), building AI-assisted human annotation workflows, and robustness evaluation tool for the US
-                Navy. Now I focus on post-training vision-language models. Outside of work I run controlled
+                For six years at Fraunhofer USA I've taken applied ML from research to production, on projects
+                for NSF, the US Navy, and industry partners. My recent work centers on transformer-based
+                vision-language models and LLMs: post-training, evals and robustness testing, and AI-assisted
+                human annotation workflows. Outside of work I run controlled
                 experiments on how models are built and trained: architecture trade-offs, training correctness,
                 throughput and memory efficiency, and the math underneath. The writing and projects below are
                 where that work lives.
@@ -94,8 +94,8 @@
                 <li>
                     <span class="date">Sep 2026</span>
                     <div>
-                        <a href="blog/nanovlm-packing.html">Packed Sequences Are Leaking Attention in Your Training Run</a>
-                        <p>Packed VLM training let unrelated samples attend to each other &mdash; a silent train/inference skew in a widely-read reference repo. Proving it took a test the existing suite couldn't fail; of seven downstream benchmarks, one moved.</p>
+                        <a href="blog/nanovlm-packing.html">Is Packing Leaking Attention in Your Training Run? A nanoVLM Worklog</a>
+                        <p>Packed VLM training let unrelated samples attend to each other &mdash; a silent train/inference skew in a widely-read reference repo. Proving it took a test my first packing tests couldn't fail; of seven downstream benchmarks, one moved.</p>
                         <p class="item-links"><a href="https://github.com/aarjunsrinivasan/nanoVLM" target="_blank" rel="noopener">Code</a></p>
                     </div>
                 </li>
@@ -145,8 +145,10 @@
                     <div class="cv-row cv-sub"><span class="cv-title">Research Data Scientist</span><span>2021 – now</span></div>
                     <ul>
                         <li>Vision-language models and generative modeling on medical data to improve downstream task performance.</li>
-                        <li>Robustness AI evaluation tool for the US Navy: black-box robustness testing, 300× batch capacity.</li>
-                        <li>NSF-funded project: video frame prediction to model single-crystal diamond growth (J. Vac. Sci. Technol. A, 2025).</li>
+                        <li>Synthetic and real data mixtures for post-training: how the mix affects downstream model performance.</li>
+                        <li>Active learning with model-assisted, human-in-the-loop annotation on Labelbox; built a unified evals tool to track model improvements across annotation rounds.</li>
+                        <li>Robustness AI evaluation tool for the US Navy: black-box robustness testing.</li>
+                        <li>NSF-funded project: video frame prediction to model single-crystal diamond growth (<a href="https://pubs.aip.org/avs/jva/article/43/3/032708/3345804/AI-guided-frame-prediction-techniques-to-model" target="_blank" rel="noopener">J. Vac. Sci. Technol. A, 2025</a>).</li>
                     </ul>
                     <div class="cv-row cv-sub"><span class="cv-title">Research Assistant Intern</span><span>2020 – 2021</span></div>
                     <div class="cv-role">Computer vision and synthetic data for manufacturing inspection.</div>
@@ -168,19 +170,22 @@
         </section>
 
         <section id="publications">
-            <h2>Publications</h2>
+            <h2>Selected Publications</h2>
             <ul class="pub-list">
                 <li>
                     <a href="https://pubs.aip.org/avs/jva/article/43/3/032708/3345804/AI-guided-frame-prediction-techniques-to-model" target="_blank" rel="noopener">AI-Guided Frame Prediction Techniques to Model Single Crystal Diamond Growth</a>
                     <span>R. R. Mekala, <b>A. Srinivasan</b>, M. Muehle, E. Garratt, A. Porter, M. Lindvall. <i>J. Vacuum Science &amp; Technology A</i>, 2025</span>
+                    <p class="pub-desc">Video frame-prediction models forecast crystal growth from in-situ imaging.</p>
                 </li>
-                <li>
-                    <a href="https://ieeexplore.ieee.org/abstract/document/9561983" target="_blank" rel="noopener">Can a Robot Trust You? A DRL-Based Approach to Trust-Driven Human-Guided Navigation</a>
-                    <span>V. S. Dorbala, <b>A. Srinivasan</b>, A. Bera. <i>IEEE ICRA</i>, 2021 · <a href="https://github.com/vdorbala/DRL-Robot-Trust" target="_blank" rel="noopener">code</a></span>
-                </li>
-                <li>
-                    <a href="https://link.springer.com/article/10.1007/s10846-017-0707-2" target="_blank" rel="noopener">Effect of Overlap and Offset on the Design of a Novel Quadrotor Configuration, VOOPS</a>
-                    <span>G. Nandakumar, <b>A. Srinivasan</b>, A. Thondiyath. <i>J. Intelligent &amp; Robotic Systems</i>, 2018</span>
+                <li class="pub-item">
+                    <a class="pub-thumb" href="https://ieeexplore.ieee.org/abstract/document/9561983" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+                        <img src="images/pubs/robot-trust.webp" alt="" width="160" height="100" loading="lazy">
+                    </a>
+                    <div>
+                        <a href="https://ieeexplore.ieee.org/abstract/document/9561983" target="_blank" rel="noopener">Can a Robot Trust You? A DRL-Based Approach to Trust-Driven Human-Guided Navigation</a>
+                        <span>V. S. Dorbala, <b>A. Srinivasan</b>, A. Bera. <i>IEEE ICRA</i>, 2021 · <a href="https://github.com/vdorbala/DRL-Robot-Trust" target="_blank" rel="noopener">code</a></span>
+                        <p class="pub-desc">Deep RL agent that learns when to trust human navigation guidance.</p>
+                    </div>
                 </li>
             </ul>
         </section>
