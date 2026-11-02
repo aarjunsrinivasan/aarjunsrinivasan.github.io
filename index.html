@@ -100,10 +100,10 @@
                     </div>
                 </li>
                 <li>
-                    <span class="date">Apr 2026</span>
+                    <span class="date">Apr&ndash;Oct 2026</span>
                     <div>
-                        <a href="blog/hybrid_llm.html">OpenAI Parameter Golf, Re-checked: How Much of a Hybrid LM's Long-Context Win Was the Attention Kernel?</a>
-                        <p>A Gated DeltaNet hybrid beat full attention at 32k by 0.235 bpb (accepted submission). With FlashAttention-3 on both arms the lead fell to 0.065. A head-dim fix (42 → 64, 15% faster steps) brought it to 0.092, and Kimi Delta Attention lost to GDN.</p>
+                        <a href="blog/hybrid_llm.html">Hybrid LMs at 32k, Extended: FlashAttention-3, Head-Dim Alignment, and a Sharper Comparison</a>
+                        <p>My accepted Parameter Golf submission: a Gated DeltaNet hybrid beats full attention at 32k context under a fixed 10-minute budget. Extended with FlashAttention-3 on both models, the hybrid still wins &mdash; by 0.092 bpb after a head-dim alignment fix worth 15% of step time.</p>
                         <p class="item-links"><a href="https://github.com/openai/parameter-golf/pull/1371" target="_blank" rel="noopener">PR #1371</a></p>
                     </div>
                 </li>
