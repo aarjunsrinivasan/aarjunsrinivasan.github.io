@@ -102,8 +102,8 @@
                 <li>
                     <span class="date">Apr 2026</span>
                     <div>
-                        <a href="blog/hybrid_llm.html">OpenAI Parameter Golf: Hybrid Attention Wins at 16k+ Context (GDN vs. Full Attention, 17M Params)</a>
-                        <p>A Gated DeltaNet hybrid loses at 8k context and wins at 16k and 32k: 1.4709 vs 1.7059 val_bpb at 32k, with 1.62× faster steps. Accepted non-record submission.</p>
+                        <a href="blog/hybrid_llm.html">OpenAI Parameter Golf, Re-checked: How Much of a Hybrid LM's Long-Context Win Was the Attention Kernel?</a>
+                        <p>A Gated DeltaNet hybrid beat full attention at 32k by 0.235 bpb (accepted submission). With FlashAttention-3 on both arms the lead fell to 0.065. A head-dim fix (42 → 64, 15% faster steps) brought it to 0.092, and Kimi Delta Attention lost to GDN.</p>
                         <p class="item-links"><a href="https://github.com/openai/parameter-golf/pull/1371" target="_blank" rel="noopener">PR #1371</a></p>
                     </div>
                 </li>

@@ -1,6 +1,58 @@
-# OpenAI Parameter Golf: Hybrid Attention Wins at 16k+ Context (GDN vs. Full Attention, 17M Params)
+# OpenAI Parameter Golf, Re-checked: How Much of a Hybrid LM's Long-Context Win Was the Attention Kernel?
 
-*A Parameter Golf non-record submission accepted on 2026-04-04.*
+*A Parameter Golf non-record submission accepted on 2026-04-04. Updated 2026-10-28 with an FA3 follow-up.*
+
+> **Update, Oct 2026.** I re-ran the 32k comparison on an H100 with FlashAttention-3 on *both* arms and a wall-clock-tied schedule. The hybrid still wins, but by much less:
+> - **SDPA baseline (April record):** hybrid ahead by 0.235 bpb.
+> - **FA3 on both arms:** hybrid ahead by 0.065. Full attention gets 1.76× faster, the hybrid 1.23×.
+> - **FA3 + GDN head dim 42 → 64:** hybrid ahead by 0.092 (1.3908 vs 1.4829 val_bpb). Steps are 15% faster and per-step loss is unchanged.
+> - **Kimi Delta Attention in place of GDN:** no per-step gain, 14–23% slower, and it loses at both shapes.
+
+![Hybrid lead over full attention at 32k, and step times with FA3](../images/hybrid_fa3.png)
+
+## Follow-up, Oct 2026: re-checking the result with a fair attention kernel
+
+The original comparison had a weak spot. The baseline ran attention through PyTorch SDPA (FlashAttention-2), and the hybrid's whole advantage was step time. If full attention gets a faster kernel, the baseline fits more steps into 600 seconds, and the margin should shrink. So I re-ran the headline 32k comparison on an H100 with **FlashAttention-3 on both arms**. I also changed the schedule: warmup and warmdown are now fractions of the wall-clock budget rather than step counts tuned for one kernel's speed.
+
+### Step 1: reproduce the original run first
+
+The April hybrid, rerun unchanged (SDPA, step-count schedule, seed 1342) on the new machine, reproduced: same parameter count (17,424,332), train loss 6.9344 / 5.9570 / 3.2037 at steps 1 / 10 / 100 against 6.9344 / 5.9574 / 3.2059 originally. It scored 1.4630 vs 1.4703, slightly better because this H100 ran 4% faster per step (1308 vs 1361 ms).
+
+### Step 2: FA3 on both arms
+
+| Arm (seq 32768, FA3) | Params | ms/step | Steps | val_bpb (2 seeds) | vs baseline |
+|---|---:|---:|---:|---:|---:|
+| Full-attention baseline | 17.06M | 1253 | 480 | 1.4829 ± 0.0013 | — |
+| GDN hybrid 8×42 (April shape) | 17.42M | 1062 | 565 | 1.4184 ± 0.0003 | −0.0645 |
+| **GDN hybrid 5×64** | 17.00M | **903** | 665 | **1.3908 ± 0.0005** | **−0.0922** |
+| KDA hybrid 8×42 | 17.86M | 1304 | 460 | 1.4632 ± 0.0007 | −0.0197 |
+| KDA hybrid 5×64 | 17.68M | 1034 | 581 | 1.4119 ± 0.0026 | −0.0711 |
+
+FA3 speeds up full attention 1.76× (2202 → 1253 ms/step) but the hybrid only 1.23× (1308 → 1062), because only 2 of its 9 layers are attention. The hybrid's quality lead falls from **0.235 to 0.065 bpb**. The hybrid still wins, but most of the April effect size came from the baseline's setup (kernel and schedule), not the architecture.
+
+### Step 3: a head dim that the kernel actually uses
+
+With width 448 and 8 heads, the GDN head dim is 42, which the flash-linear-attention kernels pad to 64: a third of every key lane was wasted. **5 heads × 64** keeps almost the same key/value width (320/640 vs 336/672), uses slightly fewer parameters, and makes steps **15% faster** (1062 → 903 ms), about 100 more steps in 600 s. Per-step val_bpb is identical (1.9013 vs 1.8976 at step 100, 1.4766 vs 1.4760 at step 400), so the gain is purely speed. The lead grows back to **0.092 bpb**.
+
+### Step 4: does Kimi Delta Attention help?
+
+Swapping only GDN's per-head decay gate for KDA's per-channel decay (checked numerically against `chunk_gated_delta_rule` first) gives no per-step gain and a 14–23% slower kernel. KDA trails GDN by +0.045 bpb at 8×42 and +0.021 at 5×64.
+
+### What this changes
+
+About 70% of the original margin disappeared once both arms got FA3 and a wall-clock schedule. Kernel, schedule and day all changed together, so the 70% can't be pinned on the kernel alone. The next run to separate them is an SDPA baseline under the wall-clock schedule.
+
+1. **Equal kernels for both arms.** Under a fixed compute budget, an architecture comparison is partly a kernel comparison.
+2. **Tie schedules to the budget, not to step counts.** Otherwise a faster kernel silently changes the LR schedule.
+3. **Check shapes against what the kernel computes.** A head dim of 42 cost 15% of the step time.
+
+Limitations: only seq 32768; two seeds per arm (largest spread ±0.0026); KDA tested as a decay-gate swap only.
+
+Code and logs: [2026-10-28_GDN_Hybrid_FA3_H100](https://github.com/aarjunsrinivasan/parameter-golf/tree/gdn_fa3_h100/records/track_non_record_16mb/2026-10-28_GDN_Hybrid_FA3_H100).
+
+## Original study (Apr 2026)
+
+The rest of this post is the April write-up as submitted, with SDPA (FlashAttention-2) attention on the baseline.
 
 ## One-line result
 

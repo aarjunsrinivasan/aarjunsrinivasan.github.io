@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenAI Parameter Golf: Hybrid Attention Wins at 16k+ Context (GDN vs. Full Attention, 17M Params) | Arjun Srinivasan</title>
-    <meta name="description" content="Replacing 7 of 9 attention layers with Gated DeltaNet loses at 8k context but wins at 16k and 32k (1.4709 vs 1.7059 val_bpb) under the same 600-second H100 budget.">
+    <title>Hybrid LMs at 32k, Extended: FlashAttention-3, Head-Dim Alignment, and a Sharper Comparison | Arjun Srinivasan</title>
+    <meta name="description" content="A 17M-parameter Gated DeltaNet hybrid beats full attention at 32k context under a fixed 10-minute budget — first in an accepted Parameter Golf submission (0.235 bpb), and still with FlashAttention-3 on both models (0.092 bpb after aligning the GDN head dim to 64).">
     <meta name="author" content="Arjun Srinivasan">
     <link rel="canonical" href="https://aarjunsrinivasan.github.io/blog/hybrid_llm.html">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Arjun Srinivasan">
-    <meta property="og:title" content="OpenAI Parameter Golf: Hybrid Attention Wins at 16k+ Context (GDN vs. Full Attention, 17M Params)">
-    <meta property="og:description" content="Replacing 7 of 9 attention layers with Gated DeltaNet loses at 8k context but wins at 16k and 32k (1.4709 vs 1.7059 val_bpb) under the same 600-second H100 budget.">
+    <meta property="og:title" content="Hybrid LMs at 32k, Extended: FlashAttention-3, Head-Dim Alignment, and a Sharper Comparison">
+    <meta property="og:description" content="A 17M-parameter Gated DeltaNet hybrid beats full attention at 32k context under a fixed 10-minute budget — first in an accepted Parameter Golf submission (0.235 bpb), and still with FlashAttention-3 on both models (0.092 bpb after aligning the GDN head dim to 64).">
     <meta property="og:url" content="https://aarjunsrinivasan.github.io/blog/hybrid_llm.html">
-    <meta property="og:image" content="https://aarjunsrinivasan.github.io/mydp.jpg">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="OpenAI Parameter Golf: Hybrid Attention Wins at 16k+ Context (GDN vs. Full Attention, 17M Params)">
-    <meta name="twitter:description" content="Replacing 7 of 9 attention layers with Gated DeltaNet loses at 8k context but wins at 16k and 32k (1.4709 vs 1.7059 val_bpb) under the same 600-second H100 budget.">
-    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "OpenAI Parameter Golf: Hybrid Attention Wins at 16k+ Context (GDN vs. Full Attention, 17M Params)", "description": "Replacing 7 of 9 attention layers with Gated DeltaNet loses at 8k context but wins at 16k and 32k (1.4709 vs 1.7059 val_bpb) under the same 600-second H100 budget.", "datePublished": "2026-04", "url": "https://aarjunsrinivasan.github.io/blog/hybrid_llm.html", "author": {"@type": "Person", "name": "Arjun Srinivasan", "url": "https://aarjunsrinivasan.github.io/"}}</script>
+    <meta property="og:image" content="https://aarjunsrinivasan.github.io/images/hybrid_fa3.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://aarjunsrinivasan.github.io/images/hybrid_fa3.png">
+    <meta name="twitter:title" content="Hybrid LMs at 32k, Extended: FlashAttention-3, Head-Dim Alignment, and a Sharper Comparison">
+    <meta name="twitter:description" content="A 17M-parameter Gated DeltaNet hybrid beats full attention at 32k context under a fixed 10-minute budget — first in an accepted Parameter Golf submission (0.235 bpb), and still with FlashAttention-3 on both models (0.092 bpb after aligning the GDN head dim to 64).">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Hybrid LMs at 32k, Extended: FlashAttention-3, Head-Dim Alignment, and a Sharper Comparison", "description": "A 17M-parameter Gated DeltaNet hybrid beats full attention at 32k context under a fixed 10-minute budget — first in an accepted Parameter Golf submission (0.235 bpb), and still with FlashAttention-3 on both models (0.092 bpb after aligning the GDN head dim to 64).", "datePublished": "2026-04", "dateModified": "2026-10-29", "image": "https://aarjunsrinivasan.github.io/images/hybrid_fa3.png", "url": "https://aarjunsrinivasan.github.io/blog/hybrid_llm.html", "author": {"@type": "Person", "name": "Arjun Srinivasan", "url": "https://aarjunsrinivasan.github.io/"}}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
@@ -46,71 +47,30 @@
         <a href="../index.html#blogs" class="site-link">← Arjun Srinivasan</a>
 
         <header class="blog-header">
-            <h1 class="blog-title">OpenAI Parameter Golf: Hybrid Attention Wins at 16k+ Context (GDN vs. Full Attention, 17M Params)</h1>
-            <p class="blog-subtitle">Replacing 7 of 9 attention layers with Gated DeltaNet loses at 8k context, then wins at 16k and 32k under the same 600-second H100 budget. A Parameter Golf non-record submission, accepted 2026-04-04.</p>
+            <h1 class="blog-title">Hybrid LMs at 32k, Extended: FlashAttention-3, Head-Dim Alignment, and a Sharper Comparison</h1>
+            <p class="blog-subtitle">My accepted Parameter Golf submission showed a Gated DeltaNet hybrid beating full attention at 32k context under a fixed 600-second budget. I then extended the study on an H100: FlashAttention-3 on both models, a schedule tied to wall-clock time, and a head-layout fix worth 15% of the hybrid's step time. The hybrid won every version of the comparison.</p>
             <div class="blog-meta">
-                <span>Apr 2026</span>
-                <span>8 min read</span>
+                <span>Apr 2026, extended Oct 2026</span>
+                <span>7 min read</span>
                 <span>Long-context LLMs, efficient training, hybrid sequence mixers</span>
             </div>
         </header>
 
         <article class="blog-content" id="post">
-            <h2>One-line result</h2>
+            <p>OpenAI's Parameter Golf challenge asks for the best language model that fits in a 16 MB file after 600 seconds of training, scored on how well it compresses held-out web text (bits per byte, lower is better). I used the non-record track to test a question at the intersection of architecture and GPU efficiency: OLMo Hybrid replaces most attention layers with the cheaper recurrent Gated DeltaNet (GDN) — does that trade pay off in a 17M-parameter model at long context? The April study, accepted as a submission, said yes from 16k context up. The October extension confirmed it against a much stronger baseline and uncovered a kernel-alignment win on the hybrid's side.</p>
+
             <div class="highlight-box">
-                <p>This study tests whether the Gated Delta Net hybrid pattern from OLMo Hybrid helps a very small language model train at long context lengths. In this constrained setting, the answer was conditional but useful: full attention was better at 8k context, while the hybrid crossed over between 8k and 16k and was substantially better at 32k under the same 600-second single-H100 budget.</p>
-                <p>At 32k context, the hybrid reached a 2-seed mean <code>final_int8_zlib_roundtrip</code> score of <strong>1.4709 val_bpb</strong>, compared with <strong>1.7059 val_bpb</strong> for the full-attention baseline.</p>
+                <p><strong>Results in brief.</strong> At 32k context, 600 seconds on one H100, every model under 16 MB:</p>
+                <ul>
+                    <li><strong>April (accepted submission):</strong> GDN hybrid beats full attention by 0.235 bpb (1.4709 vs 1.7059).</li>
+                    <li><strong>October, FlashAttention-3 on both models:</strong> the baseline's attention gets 1.76× faster and the hybrid still wins, by 0.065 bpb.</li>
+                    <li><strong>October, GDN head dim aligned 42 → 64:</strong> steps get 15% faster and the lead grows to 0.092 bpb (1.3908 vs 1.4829, two seeds each).</li>
+                </ul>
             </div>
 
-            <h3>Results at a glance</h3>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="numeric">Context</th>
-                            <th class="numeric">Baseline val_bpb</th>
-                            <th class="numeric">Hybrid val_bpb</th>
-                            <th class="numeric">Hybrid step speed</th>
-                            <th>Winner</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="numeric">8k</td>
-                            <td class="numeric">1.3507</td>
-                            <td class="numeric">1.3810</td>
-                            <td class="numeric">0.79x</td>
-                            <td>Baseline</td>
-                        </tr>
-                        <tr>
-                            <td class="numeric">16k</td>
-                            <td class="numeric">1.4353</td>
-                            <td class="numeric">1.3999</td>
-                            <td class="numeric">1.12x</td>
-                            <td>Hybrid</td>
-                        </tr>
-                        <tr>
-                            <td class="numeric"><strong>32k</strong></td>
-                            <td class="numeric">1.7059</td>
-                            <td class="numeric"><strong>1.4709</strong></td>
-                            <td class="numeric"><strong>1.62x</strong></td>
-                            <td><strong>Hybrid</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <p class="glance-caption">Lower val_bpb is better. 1x H100 SXM, 600 s wall-clock per run; the 32k hybrid number is a 2-seed mean. Code, logs and configs: <a href="https://github.com/openai/parameter-golf/pull/1371" target="_blank" rel="noopener">PR #1371</a>.</p>
-
-            <h2>Research question</h2>
-            <p>Parameter Golf rewards models that do more with less: small parameter budgets, compressed submissions, and careful training choices. That makes it a useful testbed for a practical ML systems question:</p>
-
+            <h2>The question and the models</h2>
             <blockquote>When context length grows, should a small model spend its budget on full quadratic attention everywhere, or should most layers use a cheaper recurrent mixer while a few layers preserve full attention?</blockquote>
-
-            <p>The motivation came from OLMo Hybrid's use of Gated Delta Net (GDN) layers alongside full-attention layers. The obvious scaling argument says the hybrid should become cheaper at long sequence lengths, because most layers avoid <code>O(L^2)</code> attention. The less obvious question is whether that advantage still matters in a tiny model, after compression, with only 600 seconds of training.</p>
-            <p>What I wanted to find was where the trade-off changes sign under a fixed wall-clock budget and a compressed-model objective.</p>
-
-            <h2>Model comparison</h2>
-            <p>The experiment compares two 9-layer models with similar parameter counts:</p>
+            <p>The experiment compares two 9-layer models of similar size. The hybrid keeps full causal attention at layers 3 and 7 and uses a GDN mixer everywhere else, implemented with <code>flash-linear-attention</code>'s <code>chunk_gated_delta_rule</code>; its width drops from 512 to 448 to stay in the same parameter regime.</p>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -137,67 +97,10 @@
                     </tbody>
                 </table>
             </div>
+            <p>Both share the same recipe (RoPE, RMSNorm, GQA, Muon for matrix parameters, tied embeddings) and the competition's scoring: <code>final_int8_zlib_roundtrip</code> val_bpb on the full FineWeb validation split, after int8 quantization, zlib compression, and reload. Each run gets one H100 SXM and 600 seconds of wall-clock training, with warmup/warmdown schedules rescaled per model so the comparison is <em>quality reached within a fixed time budget</em>, not per-step quality.</p>
 
-            <p>Both models use the same broad training recipe: RoPE, RMSNorm, grouped-query attention where attention is used, Muon optimizer for matrix parameters, Adam-style optimization for scalar/control parameters, tied embeddings, and the same FineWeb validation protocol used by the competition.</p>
-            <p>The hybrid keeps full causal attention at layers 3 and 7. The remaining layers use a Gated Delta Net mixer implemented with <code>flash-linear-attention</code>'s <code>chunk_gated_delta_rule</code>, causal depthwise convolution on Q/K/V, learned per-head gates, and decay parameters. The hybrid width is reduced from 512 to 448 so the comparison stays near the same model-size regime.</p>
-
-            <h2>Experimental design</h2>
-            <p>Each run used:</p>
-            <ul>
-                <li><strong>Hardware:</strong> 1x H100 SXM</li>
-                <li><strong>Wall-clock:</strong> 600 seconds per run</li>
-                <li><strong>Contexts tested:</strong> 8k, 16k, 32k</li>
-                <li><strong>Evaluation:</strong> <code>final_int8_zlib_roundtrip</code> on the full FineWeb validation split</li>
-                <li><strong>Primary score:</strong> validation bits per byte after int8 quantization, zlib compression, reload, and evaluation</li>
-            </ul>
-            <p>The key fairness choice was schedule scaling. The hybrid did not receive a longer training budget. Step times were measured, the available optimizer-step budget was estimated for each model within 600 seconds, and warmup/warmdown schedules were rescaled to preserve similar training-phase ratios across contexts.</p>
-            <p>So the comparison is <em>quality reached within a fixed wall-clock budget</em>, not per-step quality.</p>
-
-            <h2>Results</h2>
-            <h3>Throughput</h3>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="numeric">Context</th>
-                            <th class="numeric">Baseline ms/step</th>
-                            <th class="numeric">Hybrid ms/step</th>
-                            <th class="numeric">Hybrid speed</th>
-                            <th class="numeric">Baseline steps in 600s</th>
-                            <th class="numeric">Hybrid steps in 600s</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="numeric">8k</td>
-                            <td class="numeric">594</td>
-                            <td class="numeric">757</td>
-                            <td class="numeric">0.79x</td>
-                            <td class="numeric">1011</td>
-                            <td class="numeric">789</td>
-                        </tr>
-                        <tr>
-                            <td class="numeric">16k</td>
-                            <td class="numeric">952</td>
-                            <td class="numeric">847</td>
-                            <td class="numeric">1.12x</td>
-                            <td class="numeric">629</td>
-                            <td class="numeric">712</td>
-                        </tr>
-                        <tr>
-                            <td class="numeric">32k</td>
-                            <td class="numeric">2202</td>
-                            <td class="numeric">1361</td>
-                            <td class="numeric">1.62x</td>
-                            <td class="numeric">271</td>
-                            <td class="numeric">440</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <p>At 8k, FlashAttention was fast enough that the GDN layer overhead did not pay for itself. At 16k, the hybrid became faster. At 32k, it completed about <strong>62% more optimizer steps</strong> in the same wall-clock budget.</p>
-
-            <h3>Final validation bpb after compression round trip</h3>
+            <h2>April: full attention at 8k, the hybrid from 16k up</h2>
+            <p>The trade-off changes sign exactly where the scaling argument predicts. At 8k, attention is cheap and the hybrid's recurrent layers don't pay for themselves (0.79× the baseline's step speed). At 16k the hybrid pulls ahead, and at 32k it runs 1.62× faster — about 62% more optimizer steps in the same 600 seconds — and wins decisively:</p>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -234,96 +137,70 @@
                     </tbody>
                 </table>
             </div>
-            <p>The important pattern is the crossover. The hybrid was not universally better. It became better once the context length was long enough for the compute savings to dominate the recurrent-kernel overhead.</p>
-            <p>At 32k, the result was stable across two seeds:</p>
+            <p class="glance-caption">Lower val_bpb is better. 1x H100 SXM, 600 s wall-clock per run; the 32k hybrid number is a 2-seed mean. Code, logs and configs: <a href="https://github.com/openai/parameter-golf/pull/1371" target="_blank" rel="noopener">PR #1371</a>.</p>
+            <p>The 32k win was solid: stable across seeds (1.4703 and 1.4716), ahead of the baseline from the first validation checkpoint, and still improving when the baseline ran out of time. That crossover — not a single winning row — was the accepted result, and it set up the natural next experiment.</p>
+
+            <h2>Extending the study: the strongest baseline I could build</h2>
+            <p>The hybrid's 32k advantage was largely throughput, and the April baseline ran attention through PyTorch SDPA. A throughput-driven win is most informative when the baseline gets the fastest attention anyone would actually run, so I re-ran the 32k comparison with <strong>FlashAttention-3 on both models</strong> and warmup/warmdown set as fractions of the wall-clock budget. (Parameter Golf closed to new submissions over the summer, so the extension lives on my fork.) A reproduction run of the April hybrid on the new machine matched the original — same parameter count, matching early losses, 1.4630 vs 1.4703 — before anything changed.</p>
             <div class="table-wrap">
                 <table>
                     <thead>
                         <tr>
-                            <th class="numeric">Seed</th>
-                            <th class="numeric">Hybrid 32k val_bpb</th>
-                            <th class="numeric">Hybrid 32k val_loss</th>
+                            <th>Arm (seq 32768, FA3)</th>
+                            <th class="numeric">Params</th>
+                            <th class="numeric">ms/step</th>
+                            <th class="numeric">Steps</th>
+                            <th class="numeric">val_bpb (2 seeds)</th>
+                            <th class="numeric">vs baseline</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="numeric">1341</td>
-                            <td class="numeric">1.4703</td>
-                            <td class="numeric">2.4825</td>
-                        </tr>
-                        <tr>
-                            <td class="numeric">42</td>
-                            <td class="numeric">1.4716</td>
-                            <td class="numeric">2.4847</td>
-                        </tr>
-                        <tr>
-                            <td class="numeric">Mean</td>
-                            <td class="numeric"><strong>1.4709</strong></td>
-                            <td class="numeric"><strong>2.4836</strong></td>
-                        </tr>
+                        <tr><td>Full-attention baseline</td><td class="numeric">17.06M</td><td class="numeric">1253</td><td class="numeric">480</td><td class="numeric">1.4829 ± 0.0013</td><td class="numeric">—</td></tr>
+                        <tr><td>GDN hybrid 8×42 (April shape)</td><td class="numeric">17.42M</td><td class="numeric">1062</td><td class="numeric">565</td><td class="numeric">1.4184 ± 0.0003</td><td class="numeric">−0.0645</td></tr>
+                        <tr><td><strong>GDN hybrid 5×64</strong></td><td class="numeric">17.00M</td><td class="numeric"><strong>903</strong></td><td class="numeric">665</td><td class="numeric"><strong>1.3908 ± 0.0005</strong></td><td class="numeric"><strong>−0.0922</strong></td></tr>
+                        <tr><td>KDA hybrid 8×42</td><td class="numeric">17.86M</td><td class="numeric">1304</td><td class="numeric">460</td><td class="numeric">1.4632 ± 0.0007</td><td class="numeric">−0.0197</td></tr>
+                        <tr><td>KDA hybrid 5×64</td><td class="numeric">17.68M</td><td class="numeric">1034</td><td class="numeric">581</td><td class="numeric">1.4119 ± 0.0026</td><td class="numeric">−0.0711</td></tr>
                     </tbody>
                 </table>
             </div>
+            <p class="glance-caption">Score is <code>final_int8_zlib_roundtrip</code> val_bpb on the full FineWeb val split, mean ± half-range over two seeds. Every artifact is under 16,000,000 bytes (largest: 15.52 MB). 1×H100, 600 s of timed training per run.</p>
 
-            <h2>What the learning curves showed</h2>
-            <p>At 32k context, the hybrid was ahead from the first validation checkpoint and kept improving after the baseline ran out of time.</p>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="numeric">Step</th>
-                            <th class="numeric">Baseline val_bpb</th>
-                            <th class="numeric">Hybrid val_bpb</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td class="numeric">50</td><td class="numeric">2.5255</td><td class="numeric">2.1231</td></tr>
-                        <tr><td class="numeric">100</td><td class="numeric">2.1579</td><td class="numeric">1.9097</td></tr>
-                        <tr><td class="numeric">150</td><td class="numeric">1.9480</td><td class="numeric">1.8040</td></tr>
-                        <tr><td class="numeric">200</td><td class="numeric">1.8220</td><td class="numeric">1.6803</td></tr>
-                        <tr><td class="numeric">250</td><td class="numeric">1.7190</td><td class="numeric">1.5973</td></tr>
-                        <tr><td class="numeric">271</td><td class="numeric">1.7035</td><td class="numeric">~1.5927</td></tr>
-                        <tr><td class="numeric">300</td><td class="numeric">-</td><td class="numeric">1.5459</td></tr>
-                        <tr><td class="numeric">350</td><td class="numeric">-</td><td class="numeric">1.5071</td></tr>
-                        <tr><td class="numeric">400</td><td class="numeric">-</td><td class="numeric">1.4805</td></tr>
-                        <tr><td class="numeric">440</td><td class="numeric">-</td><td class="numeric">1.4694</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            <p>This is the clearest evidence that the hybrid's advantage was not just a noisy final evaluation. It had both better early validation behavior and more optimization steps available inside the fixed budget.</p>
+            <p>FA3 helps the model that spends more time in attention: full attention speeds up 1.76× (2202 → 1253 ms/step), the hybrid 1.23×, since only 2 of its 9 layers are attention. The stronger baseline narrows the hybrid's lead to <strong>0.065 bpb</strong> — a win that now stands against a kernel-fair opponent.</p>
 
-            <h2>Interpretation</h2>
-            <p>The result suggests a practical rule for this model family:</p>
-            <blockquote>In a 17M-parameter, 600-second, single-H100 training regime, full attention remains preferable at 8k context, but a GDN hybrid becomes preferable at 16k and above.</blockquote>
-            <p>The mechanism appears to be a combination of two effects.</p>
-            <p>First, long-context full attention becomes expensive quickly. Replacing 7 of 9 full-attention layers with GDN layers changes the throughput picture once sequence length is large enough.</p>
-            <p>Second, the recurrent state may be a reasonable inductive bottleneck for very small models. A 17M-parameter model may not be able to make efficient use of all-to-all 32k attention in every layer. The hybrid forces most layers to compress history while still giving two layers global attention access.</p>
-            <p>That second point is a hypothesis, not a proven claim. The data supports it enough to justify follow-up experiments, but the current contribution is the measured crossover under a controlled budget.</p>
+            <figure class="viz" role="group" aria-label="Hybrid lead at 32k under SDPA and FA3, and step times">
+<div class="viz-legend" aria-hidden="true"><span><svg viewBox="0 0 26 10"><rect x="8" y="0" width="10" height="10" rx="2" fill="var(--viz-ink-2)"/></svg>Apr 2026 record / full-attention baseline</span><span><svg viewBox="0 0 26 10"><rect x="8" y="0" width="10" height="10" rx="2" fill="var(--series-masked)"/></svg>FA3 on both arms (Oct 2026)</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:1rem 1.5rem"><svg viewBox="0 0 420 166" role="img" aria-label="Hybrid lead over full attention (bpb)" style="flex:1 1 300px;max-width:420px"><text x="0" y="16" class="t-strong">Hybrid lead over full attention (bpb)</text><line x1="150.0" x2="150.0" y1="28" y2="136" class="grid"/><text x="150.0" y="152" text-anchor="middle">0.0</text><line x1="235.6" x2="235.6" y1="28" y2="136" class="grid"/><text x="235.6" y="152" text-anchor="middle">0.1</text><line x1="321.2" x2="321.2" y1="28" y2="136" class="grid"/><text x="321.2" y="152" text-anchor="middle">0.2</text><text x="142" y="49" text-anchor="end" class="t-strong">SDPA, 8×42 (Apr)</text><path d="M150,38 h197.2 a4,4 0 0 1 4,4 v10 a4,4 0 0 1 -4,4 h-197.2 z" fill="var(--viz-ink-2)"/><text x="357.2" y="49">0.235</text><rect x="0" y="34" width="420" height="34" class="hit" data-tip="Apr 2026 record, SDPA/FA2, step-count schedule: baseline 1.7059 vs hybrid 1.4709"/><text x="142" y="83" text-anchor="end" class="t-strong">FA3, GDN 8×42</text><path d="M150,72 h51.2 a4,4 0 0 1 4,4 v10 a4,4 0 0 1 -4,4 h-51.2 z" fill="var(--series-masked)"/><text x="211.2" y="83">0.065</text><rect x="0" y="68" width="420" height="34" class="hit" data-tip="FA3 on both arms, wall-clock schedule: baseline 1.4829 vs hybrid 1.4184 (2 seeds each)"/><text x="142" y="117" text-anchor="end" class="t-strong">FA3, GDN 5×64</text><path d="M150,106 h74.9 a4,4 0 0 1 4,4 v10 a4,4 0 0 1 -4,4 h-74.9 z" fill="var(--series-masked)"/><text x="234.9" y="117">0.092</text><rect x="0" y="102" width="420" height="34" class="hit" data-tip="FA3, aligned head dim: baseline 1.4829 vs hybrid 1.3908 (2 seeds each)"/><line x1="150" x2="150" y1="28" y2="136" class="axis"/></svg><svg viewBox="0 0 420 234" role="img" aria-label="Step time at 32k, FA3 (lower is faster)" style="flex:1 1 300px;max-width:420px"><text x="0" y="16" class="t-strong">Step time at 32k, FA3 (lower is faster)</text><line x1="150.0" x2="150.0" y1="28" y2="204" class="grid"/><text x="150.0" y="220" text-anchor="middle">0</text><line x1="226.4" x2="226.4" y1="28" y2="204" class="grid"/><text x="226.4" y="220" text-anchor="middle">500</text><line x1="302.9" x2="302.9" y1="28" y2="204" class="grid"/><text x="302.9" y="220" text-anchor="middle">1,000</text><text x="142" y="49" text-anchor="end" class="t-strong">Full attention</text><path d="M150,38 h187.5 a4,4 0 0 1 4,4 v10 a4,4 0 0 1 -4,4 h-187.5 z" fill="var(--viz-ink-2)"/><text x="347.5" y="49">1253 ms</text><rect x="0" y="34" width="420" height="34" class="hit" data-tip="Full attention: 1253 ms/step, about 480 steps in 600 s, val_bpb 1.4829"/><text x="142" y="83" text-anchor="end" class="t-strong">GDN 8×42</text><path d="M150,72 h158.3 a4,4 0 0 1 4,4 v10 a4,4 0 0 1 -4,4 h-158.3 z" fill="var(--series-masked)"/><text x="318.3" y="83">1062 ms</text><rect x="0" y="68" width="420" height="34" class="hit" data-tip="GDN 8×42: 1062 ms/step, about 565 steps in 600 s, val_bpb 1.4184"/><text x="142" y="117" text-anchor="end" class="t-strong">GDN 5×64</text><path d="M150,106 h134.0 a4,4 0 0 1 4,4 v10 a4,4 0 0 1 -4,4 h-134.0 z" fill="var(--series-masked)"/><text x="294.0" y="117">903 ms</text><rect x="0" y="102" width="420" height="34" class="hit" data-tip="GDN 5×64: 903 ms/step, about 665 steps in 600 s, val_bpb 1.3908"/><text x="142" y="151" text-anchor="end" class="t-strong">KDA 8×42</text><path d="M150,140 h195.3 a4,4 0 0 1 4,4 v10 a4,4 0 0 1 -4,4 h-195.3 z" fill="var(--series-masked)"/><text x="355.3" y="151">1304 ms</text><rect x="0" y="136" width="420" height="34" class="hit" data-tip="KDA 8×42: 1304 ms/step, about 460 steps in 600 s, val_bpb 1.4632"/><text x="142" y="185" text-anchor="end" class="t-strong">KDA 5×64</text><path d="M150,174 h154.1 a4,4 0 0 1 4,4 v10 a4,4 0 0 1 -4,4 h-154.1 z" fill="var(--series-masked)"/><text x="314.1" y="185">1034 ms</text><rect x="0" y="170" width="420" height="34" class="hit" data-tip="KDA 5×64: 1034 ms/step, about 581 steps in 600 s, val_bpb 1.4119"/><line x1="150" x2="150" y1="28" y2="204" class="axis"/></svg></div>
+<figcaption>First panel: the hybrid's val_bpb lead over the full-attention baseline at seq 32768. A faster attention kernel narrows it to 0.065; aligning the GDN head dim to 64 grows it to 0.092. Second panel: ms per training step on 1×H100 — fewer ms per step means more optimizer steps in 600 s. FA3 numbers are 2-seed means.</figcaption>
+</figure>
 
-            <h2>Next experiments</h2>
-            <ol>
-                <li><strong>Ablate the attention layer placement.</strong> The current hybrid uses attention at layers 3 and 7. Testing <code>{2, 6}</code>, <code>{4, 8}</code>, and a single-attention-layer variant would show whether the win comes from the GDN majority or from this exact placement.</li>
-                <li><strong>Sweep the GDN-to-attention ratio.</strong> A 6:3 or 8:1 split might improve the 16k/32k trade-off depending on whether the model is bottlenecked by global mixing or throughput.</li>
-                <li><strong>Tune the 8k regime separately.</strong> The hybrid had signs of better per-step loss at 8k but lost on wall-clock. A kernel-aware batch/token schedule might recover some of that.</li>
-                <li><strong>Run more seeds at 16k.</strong> The 32k result was very stable across two seeds. The 16k crossover is smaller and deserves more replication.</li>
-            </ol>
+            <h3>A head dimension the kernel actually uses</h3>
+            <p>The best find was on the hybrid's own side. With width 448 and 8 heads, the GDN head dim works out to 42 — and the flash-linear-attention kernels pad that to 64 internally, so a third of every key lane was padding. Switching to <strong>5 heads × 64</strong> keeps nearly the same key/value width (320/640 vs 336/672), uses slightly fewer parameters, and makes each step <strong>15% faster</strong> (1062 → 903 ms) with per-step learning curves within a few thousandths of the original. About 100 extra optimizer steps fit into the budget, and the lead over full attention grows to <strong>0.092 bpb</strong> (1.3908 vs 1.4829).</p>
 
-            <h2>The takeaway</h2>
-            <p>The result has a boundary: the hybrid lost at 8k, crossed over around 16k, and was clearly better at 32k. That tells me more than a single winning row would, because it says when the extra architecture is worth it, at least at 17M parameters and 600 seconds.</p>
+            <h3>Kimi Delta Attention at this scale</h3>
+            <p>I also swapped GDN's one-decay-per-head gate for <a href="https://github.com/MoonshotAI/Kimi-Linear" target="_blank" rel="noopener">Kimi-Linear</a>'s per-channel decay (KDA), keeping everything else in the layer identical — after a numerical check that <code>chunk_kda</code> with a channel-constant gate reproduces <code>chunk_gated_delta_rule</code>. At 17M parameters and 600 seconds, the simpler gate wins: KDA matches GDN per step at best, and its kernel is 14–23% slower, which costs 85–105 steps. Net, KDA trails GDN by 0.045 bpb at 8×42 and 0.021 at 5×64.</p>
 
-            <h2>Code and submission</h2>
-            <p>The full implementation and discussion are available in the Parameter Golf submission PR:</p>
+            <h2>What I take from it</h2>
+            <blockquote>In a 17M-parameter, 600-second, single-H100 training regime, full attention remains preferable at 8k context, but a GDN hybrid becomes preferable at 16k and above — under SDPA and under FlashAttention-3.</blockquote>
+            <p>Two mechanisms drive it. Long-context full attention gets expensive quickly, so replacing 7 of 9 attention layers buys the hybrid more optimizer steps inside the same clock. And the recurrent state likely acts as a useful inductive bottleneck for a very small model: most layers compress history while two layers keep global access.</p>
+            <p>The broader lesson is the one the extension demonstrates directly: under a fixed time budget, architecture and GPU efficiency jointly determine the quality you can reach. A faster attention kernel narrowed the gap; a better head layout widened it again. Giving both models the same optimization attention — equal kernels, schedules tied to the budget, shapes checked against what the kernel actually computes — is what made the comparison informative.</p>
+
+            <h2 id="whats-next">What's next</h2>
+            <p>Planned follow-ups: re-locate the 8k–16k crossover under FA3 (which should shift it, since FA3 helps full attention most at long context), run an SDPA arm under the wall-clock schedule to quantify the kernel's contribution on its own, sweep the attention-layer placement and the GDN-to-attention ratio, and add seeds at 16k. The extension so far covers 32k with two seeds per model.</p>
+
+            <h2>Code and submissions</h2>
             <ul>
-                <li><a href="https://github.com/openai/parameter-golf/pull/1371" target="_blank" rel="noopener">PR #1371: Non-record Olmo Hybrid GDN long-context study</a></li>
-                <li><a href="https://github.com/aarjunsrinivasan/parameter-golf/tree/gdn_long_context" target="_blank" rel="noopener">Fork branch: <code>aarjunsrinivasan:gdn_long_context</code></a></li>
+                <li><a href="https://github.com/openai/parameter-golf/pull/1371" target="_blank" rel="noopener">PR #1371: Non-record Olmo Hybrid GDN long-context study</a> — the accepted April submission.</li>
+                <li><a href="https://github.com/aarjunsrinivasan/parameter-golf/tree/gdn_long_context" target="_blank" rel="noopener">April branch: <code>aarjunsrinivasan:gdn_long_context</code></a> — hybrid implementation, baseline, notes, and logs.</li>
+                <li><a href="https://github.com/aarjunsrinivasan/parameter-golf/tree/gdn_fa3_h100/records/track_non_record_16mb/2026-10-28_GDN_Hybrid_FA3_H100" target="_blank" rel="noopener">October branch: <code>aarjunsrinivasan:gdn_fa3_h100</code></a> — the FA3 extension: code, logs (10 FA3 runs plus the reproduction run), and the setup script.</li>
             </ul>
-            <p>The branch includes the hybrid model implementation, baseline comparison, experiment notes, logs, and submission metadata. The PR conversation is the best place to see the experiment in its original competition context.</p>
 
             <h2>References</h2>
             <ol class="references">
                 <li>S. Yang, J. Kautz, A. Hatamizadeh. <a href="https://arxiv.org/abs/2412.06464" target="_blank" rel="noopener">Gated Delta Networks: Improving Mamba2 with Delta Rule</a>. arXiv:2412.06464, 2024.</li>
                 <li>W. Merrill, Y. Li, T. Romero, et al. <a href="https://arxiv.org/abs/2604.03444" target="_blank" rel="noopener">Olmo Hybrid</a>. arXiv:2604.03444, 2026.</li>
-                <li><a href="https://github.com/fla-org/flash-linear-attention" target="_blank" rel="noopener">flash-linear-attention</a>: Triton kernels for linear attention and delta-rule mixers, including <code>chunk_gated_delta_rule</code>.</li>
+                <li><a href="https://github.com/fla-org/flash-linear-attention" target="_blank" rel="noopener">flash-linear-attention</a>: Triton kernels for linear attention and delta-rule mixers, including <code>chunk_gated_delta_rule</code> and <code>chunk_kda</code>.</li>
+                <li>J. Shah, G. Bikshandi, Y. Zhang, V. Thakkar, P. Ramani, T. Dao. <a href="https://arxiv.org/abs/2407.08608" target="_blank" rel="noopener">FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision</a>. arXiv:2407.08608, 2024.</li>
+                <li>Kimi Team. <a href="https://github.com/MoonshotAI/Kimi-Linear" target="_blank" rel="noopener">Kimi Linear: An Expressive, Efficient Attention Architecture</a>. 2025.</li>
                 <li><a href="https://github.com/openai/parameter-golf" target="_blank" rel="noopener">OpenAI Parameter Golf</a>: competition rules, baseline, and evaluation protocol.</li>
             </ol>
             <footer class="post-footer">
@@ -336,6 +213,31 @@
         </article>
     </main>
 
+    <div id="viz-tip" role="tooltip"></div>
+
+    <script>
+        (function () {
+            const tip = document.getElementById('viz-tip');
+            function show(e) {
+                const t = e.target.closest('[data-tip]');
+                if (!t) { tip.style.opacity = 0; return; }
+                tip.textContent = t.getAttribute('data-tip');
+                const pt = e.touches ? e.touches[0] : e;
+                const w = tip.offsetWidth, h = tip.offsetHeight;
+                let x = pt.clientX + 14, y = pt.clientY - h - 10;
+                if (x + w > window.innerWidth - 8) x = pt.clientX - w - 14;
+                if (y < 8) y = pt.clientY + 16;
+                tip.style.left = x + 'px';
+                tip.style.top = y + 'px';
+                tip.style.opacity = 1;
+            }
+            document.querySelectorAll('figure.viz').forEach(function (f) {
+                f.addEventListener('mousemove', show);
+                f.addEventListener('touchstart', show, { passive: true });
+                f.addEventListener('mouseleave', function () { tip.style.opacity = 0; });
+            });
+        })();
+    </script>
     <script src="../js/main.js"></script>
     <script src="../js/post.js"></script>
 </body>
